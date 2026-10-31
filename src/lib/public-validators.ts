@@ -138,7 +138,25 @@ export function formatDateId(iso: string | null): string {
 
 const LOCAL_IMAGE_PATH = /^\/portfolio\/[a-z0-9-]{1,80}\.(?:jpg|jpeg|png|webp)$/;
 
+const PORTFOLIO_IMAGE_MAP: Record<string, string> = {
+  "cv-berkah-pangan": "/portfolio/cv-berkah-pangan.jpg",
+  "klinik-pratama-sehat": "/portfolio/klinik-pratama-sehat.jpg",
+  "pt-mandiri-logistik": "/portfolio/pt-mandiri-logistik.jpg",
+  "studio-kopi-nusantara": "/portfolio/studio-kopi-nusantara.jpg",
+  "bimbel-prestasi-gemilang": "/portfolio/bimbel-prestasi-gemilang.jpg",
+  "toko-ritel-sembako-modern": "/portfolio/toko-ritel-sembako-modern.jpg",
+  "karsa-logistics": "/portfolio/karsa-logistics.jpg",
+  "nusa-precast": "/portfolio/nusa-precast.jpg",
+  "medikalink-express": "/portfolio/medikalink-express.jpg",
+  "finops-dashboard": "/portfolio/finops-dashboard.jpg",
+  "artha-retail-pos": "/portfolio/artha-retail-pos.jpg",
+  "aura-living": "/portfolio/aura-living.jpg",
+};
+
 export function resolvePortfolioImage(slug: string): string | null {
+  if (PORTFOLIO_IMAGE_MAP[slug]) {
+    return PORTFOLIO_IMAGE_MAP[slug];
+  }
   const candidate = `/portfolio/${slug}.jpg`;
-  return LOCAL_IMAGE_PATH.test(candidate) ? candidate : null;
+  return LOCAL_IMAGE_PATH.test(candidate) ? candidate : "/portfolio/karsa-logistics.jpg";
 }
