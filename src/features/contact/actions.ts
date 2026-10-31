@@ -1,7 +1,7 @@
 "use server";
 
 import { unstable_rethrow } from "next/navigation";
-import { prisma } from "@/lib/db";
+import { postApi } from "@/lib/api-client";
 import {
   DatabaseTimeoutError,
   verifySameOriginMutation,
@@ -117,9 +117,13 @@ export async function submitContactMessage(
 
     await withServerTimeout(
       Promise.all([
-        prisma.contactMessage.create({
-          data: { name, email, service, message, sourcePage, ipHash, status: "NEW" },
-          select: { id: true },
+        postApi("/leads", {
+          site_id: "nextkarya-main",
+          clientName: name,
+          email: email,
+          whatsappNumber: "081234567890",
+          serviceRequested: service,
+          message: `${message} (Sumber: ${sourcePage || "Form Kontak"})`,
         }),
         recordRateLimitHit(ipKey, WINDOW_SECONDS),
         recordRateLimitHit(emailKey, WINDOW_SECONDS),
