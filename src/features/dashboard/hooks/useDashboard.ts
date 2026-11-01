@@ -2,19 +2,20 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { CmsAnalyticsOverview } from "../types";
-import { dashboardApi } from "../api/dashboardApi";
+import { dashboardApi, type PeriodFilter } from "../api/dashboardApi";
 
 export function useDashboard(initialAnalytics?: CmsAnalyticsOverview | null) {
   const [analytics, setAnalytics] = useState<CmsAnalyticsOverview | null>(
     initialAnalytics || null
   );
   const [loading, setLoading] = useState(false);
-  const [period, setPeriod] = useState("30d");
+  const [period, setPeriod] = useState<PeriodFilter>("30d");
 
-  const refreshAnalytics = useCallback(async (selectedPeriod?: string) => {
+  const refreshAnalytics = useCallback(async (selectedPeriod?: PeriodFilter) => {
+    const targetPeriod = selectedPeriod || period;
     setLoading(true);
     try {
-      const data = await dashboardApi.getAnalyticsOverview(selectedPeriod || period);
+      const data = await dashboardApi.getFullAnalytics(targetPeriod);
       if (data) {
         setAnalytics(data);
       }
@@ -23,9 +24,14 @@ export function useDashboard(initialAnalytics?: CmsAnalyticsOverview | null) {
     }
   }, [period]);
 
+  const changePeriod = useCallback((newPeriod: PeriodFilter) => {
+    setPeriod(newPeriod);
+    refreshAnalytics(newPeriod);
+  }, [refreshAnalytics]);
+
   useEffect(() => {
     if (!initialAnalytics) {
-      refreshAnalytics();
+      refreshAnalytics("30d");
     }
   }, [initialAnalytics, refreshAnalytics]);
 
@@ -33,7 +39,7 @@ export function useDashboard(initialAnalytics?: CmsAnalyticsOverview | null) {
     analytics,
     loading,
     period,
-    setPeriod,
+    setPeriod: changePeriod,
     refreshAnalytics,
   };
 }

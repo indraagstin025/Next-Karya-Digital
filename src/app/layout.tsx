@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StaffShortcutModal } from "@/components/StaffShortcutModal";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import "./globals.css";
 
 const siteUrl = "https://nextkarya.web.id";
@@ -169,6 +170,7 @@ export default function RootLayout({
         className="min-h-screen bg-slate-50 text-slate-900 antialiased font-sans flex flex-col"
         suppressHydrationWarning
       >
+        <AnalyticsTracker />
         {children}
         <StaffShortcutModal />
       </body>

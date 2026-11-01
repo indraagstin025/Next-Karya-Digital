@@ -18,23 +18,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import type { AnalyticsTrafficSource } from "../types";
 
-const salesPlanPercentage = 64;
-const totalBars = 24;
-const filledBars = Math.round((salesPlanPercentage * totalBars) / 100);
+const defaultColors = [
+  "var(--primary)",
+  "color-mix(in oklab, var(--primary) 70%, transparent)",
+  "color-mix(in oklab, var(--primary) 45%, transparent)",
+  "color-mix(in oklab, var(--primary) 20%, transparent)",
+];
 
-const salesChartData = Array.from({ length: totalBars }, (_, index) => {
-  const date = new Date(2025, 5, index + 1);
-  const formattedDate = date.toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "2-digit",
-  });
-
-  return {
-    date: formattedDate,
-    sales: index < filledBars ? 240 : 0.0001,
-  };
-});
+const fallbackRevenueData = [
+  { name: "Pencarian Organik", sales: 8200, fill: defaultColors[0], share: 49.4 },
+  { name: "Langsung (Direct)", sales: 5100, fill: defaultColors[1], share: 29.4 },
+  { name: "Media Sosial", sales: 3400, fill: defaultColors[2], share: 16.0 },
+  { name: "Rujukan Mitra", sales: 1750, fill: defaultColors[3], share: 5.2 },
+];
 
 const salesChartConfig = {
   sales: {
@@ -42,27 +40,9 @@ const salesChartConfig = {
   },
 } satisfies ChartConfig;
 
-const revenueChartData = [
-  { month: "january", sales: 280, fill: "var(--color-january)" },
-  { month: "february", sales: 180, fill: "var(--color-february)" },
-  { month: "march", sales: 140, fill: "var(--color-march)" },
-];
-
 const revenueChartConfig = {
   sales: {
-    label: "Status",
-  },
-  january: {
-    label: "Selesai",
-    color: "var(--primary)",
-  },
-  february: {
-    label: "Dalam Proses",
-    color: "color-mix(in oklab, var(--primary) 60%, transparent)",
-  },
-  march: {
-    label: "Penawaran",
-    color: "color-mix(in oklab, var(--primary) 20%, transparent)",
+    label: "Tayangan",
   },
 } satisfies ChartConfig;
 
@@ -72,6 +52,7 @@ export interface SalesMetricsCardProps {
   activeLeadsValue?: string;
   dealValue?: string;
   completedProjectsValue?: string;
+  sources?: AnalyticsTrafficSource[];
 }
 
 export function SalesMetricsCard({
@@ -80,7 +61,37 @@ export function SalesMetricsCard({
   activeLeadsValue = "6 Klien",
   dealValue = "Rp 36 Jt",
   completedProjectsValue = "12 Proyek",
+  sources,
 }: SalesMetricsCardProps) {
+  const chartPieData =
+    sources && sources.length > 0
+      ? sources.map((s, idx) => ({
+          name: s.label,
+          sales: s.pageviews,
+          fill: defaultColors[idx % defaultColors.length],
+          share: s.sharePercentage,
+        }))
+      : fallbackRevenueData;
+
+  const topSource = chartPieData[0] || fallbackRevenueData[0];
+  const topPercentage = Math.round(topSource.share);
+
+  const totalBars = 24;
+  const filledBars = Math.round((topPercentage * totalBars) / 100);
+
+  const dynamicBarData = Array.from({ length: totalBars }, (_, index) => {
+    const date = new Date(2026, 9, index + 1);
+    const formattedDate = date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+    });
+
+    return {
+      date: formattedDate,
+      sales: index < filledBars ? 240 : 0.0001,
+    };
+  });
+
   const metricsData = [
     {
       icons: <TrendingUpIcon className="size-5" />,
@@ -109,7 +120,7 @@ export function SalesMetricsCard({
       <CardContent>
         <div className="grid gap-6 lg:grid-cols-5">
           <div className="flex flex-col justify-between gap-7 lg:col-span-3">
-            <span className="text-lg font-semibold">Aktivitas Prospek & Proyek</span>
+            <span className="text-lg font-semibold">Aktivitas Prospek & Trafik</span>
             <div className="flex items-center gap-3">
               <img
                 src="/images/brands/logo-square.webp"
@@ -145,7 +156,7 @@ export function SalesMetricsCard({
 
           <Card className="ring-foreground/10 justify-between gap-4 shadow-none ring-1 lg:col-span-2">
             <CardHeader className="gap-1">
-              <CardTitle className="text-lg font-semibold">Status Pengerjaan</CardTitle>
+              <CardTitle className="text-lg font-semibold">Saluran Rujukan</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
@@ -153,9 +164,9 @@ export function SalesMetricsCard({
                 <PieChart margin={{ top: 0, bottom: 0, left: 0, right: 0 }}>
                   <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                   <Pie
-                    data={revenueChartData}
+                    data={chartPieData}
                     dataKey="sales"
-                    nameKey="month"
+                    nameKey="name"
                     startAngle={300}
                     endAngle={660}
                     innerRadius={58}
@@ -177,14 +188,14 @@ export function SalesMetricsCard({
                                 y={(viewBox.cy || 0) - 12}
                                 className="fill-card-foreground text-lg font-bold"
                               >
-                                {salesPlanPercentage}%
+                                {topPercentage}%
                               </tspan>
                               <tspan
                                 x={viewBox.cx}
                                 y={(viewBox.cy || 0) + 19}
-                                className="fill-muted-foreground text-sm"
+                                className="fill-muted-foreground text-xs"
                               >
-                                Berjalan
+                                Organik
                               </tspan>
                             </text>
                           );
@@ -195,8 +206,10 @@ export function SalesMetricsCard({
                 </PieChart>
               </ChartContainer>
               <div className="flex items-center justify-between">
-                <span className="text-base text-muted-foreground">Target pengerjaan</span>
-                <span className="text-2xl font-semibold text-primary">{salesPlanPercentage}%</span>
+                <span className="text-xs text-muted-foreground truncate max-w-[170px]">
+                  {topSource.name}
+                </span>
+                <span className="text-2xl font-semibold text-primary">{topPercentage}%</span>
               </div>
             </CardContent>
           </Card>
@@ -207,33 +220,33 @@ export function SalesMetricsCard({
         <Card className="ring-foreground/10 shadow-none ring-1">
           <CardContent className="grid gap-4 lg:grid-cols-5">
             <div className="flex flex-col justify-center gap-6">
-              <span className="text-lg font-semibold">Aktivitas Prospek</span>
-              <span className="max-lg:text-5xl text-6xl font-bold">{salesPlanPercentage}%</span>
+              <span className="text-lg font-semibold">Pencarian Organik</span>
+              <span className="max-lg:text-5xl text-6xl font-bold">{topPercentage}%</span>
               <span className="text-muted-foreground text-sm">
-                Alur tindak lanjut calon klien yang berkonsultasi
+                Porsi kontribusi trafik pengunjung dari mesin pencari
               </span>
             </div>
             <div className="flex flex-col gap-6 text-lg md:col-span-4">
-              <span className="font-medium">Alur Komunikasi Prospek</span>
+              <span className="font-medium">Saluran Pemasaran Digital</span>
               <span className="text-muted-foreground text-sm text-wrap">
-                Pemantauan pesan masuk, pembuatan penawaran layanan, dan penjadwalan pengerjaan
-                website klien.
+                Pemantauan rujukan Google, tautan langsung, media sosial, dan mitra bisnis
+                untuk efisiensi akuisisi calon klien.
               </span>
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="flex items-center gap-2">
                   <ChartNoAxesCombinedIcon className="size-6 text-primary" />
-                  <span className="text-base font-medium">Konsultasi Aktif</span>
+                  <span className="text-base font-medium">Trafik Alami Google</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CirclePercentIcon className="size-6 text-primary" />
-                  <span className="text-base font-medium">Tindak Lanjut Cepat</span>
+                  <span className="text-base font-medium">Pengunjung Berkualitas</span>
                 </div>
               </div>
 
               <ChartContainer config={salesChartConfig} className="h-7.75 w-full">
                 <BarChart
                   accessibilityLayer
-                  data={salesChartData}
+                  data={dynamicBarData}
                   margin={{
                     left: 0,
                     right: 0,

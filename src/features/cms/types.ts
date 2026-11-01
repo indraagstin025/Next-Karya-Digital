@@ -225,6 +225,8 @@ export interface CmsAnalyticsOverview {
     conversionRate: number;
     conversionRateChange: number;
   };
+  pages?: CmsAnalyticsPage[];
+  sources?: CmsAnalyticsSource[];
 }
 
 export interface CmsAnalyticsPage {

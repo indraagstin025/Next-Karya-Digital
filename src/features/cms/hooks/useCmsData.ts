@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { dashboardApi, type PeriodFilter } from "@/features/dashboard";
 import type {
   ActiveTab,
   CmsAnalyticsOverview,
@@ -112,6 +113,8 @@ export function useCmsData() {
         leadsRes,
         schedulesRes,
         analyticsRes,
+        pagesRes,
+        sourcesRes,
       ] = await Promise.all([
         fetch("/api/cms/categories"),
         fetch("/api/cms/posts?limit=50"),
@@ -127,6 +130,8 @@ export function useCmsData() {
         fetch("/api/cms/crm/leads?limit=50"),
         fetch("/api/cms/crm/schedules"),
         fetch("/api/cms/analytics/overview"),
+        fetch("/api/cms/analytics/pages?limit=10"),
+        fetch("/api/cms/analytics/sources"),
       ]);
 
       if (catRes.status === 401 || postRes.status === 401) {
@@ -149,6 +154,8 @@ export function useCmsData() {
         leadsJson,
         schedJson,
         analyticsJson,
+        pagesJson,
+        sourcesJson,
       ] = await Promise.all([
         catRes.json().catch(() => null),
         postRes.json().catch(() => null),
@@ -164,6 +171,8 @@ export function useCmsData() {
         leadsRes.json().catch(() => null),
         schedulesRes.json().catch(() => null),
         analyticsRes.json().catch(() => null),
+        pagesRes.json().catch(() => null),
+        sourcesRes.json().catch(() => null),
       ]);
 
       if (catJson?.success && Array.isArray(catJson.data)) setCategories(catJson.data);
@@ -178,7 +187,13 @@ export function useCmsData() {
       if (usersJson?.success && Array.isArray(usersJson.data)) setStaffUsers(usersJson.data);
       if (leadsJson?.success && Array.isArray(leadsJson.data)) setLeads(leadsJson.data);
       if (schedJson?.success && Array.isArray(schedJson.data)) setSchedules(schedJson.data);
-      if (analyticsJson?.success && analyticsJson.data) setAnalyticsOverview(analyticsJson.data);
+      if (analyticsJson?.success && analyticsJson.data) {
+        setAnalyticsOverview({
+          ...analyticsJson.data,
+          pages: pagesJson?.success && Array.isArray(pagesJson.data) ? pagesJson.data : [],
+          sources: sourcesJson?.success && Array.isArray(sourcesJson.data) ? sourcesJson.data : [],
+        });
+      }
       if (emJson?.success && emJson.data) setEmergencyOverview(emJson.data);
     } catch {
       // Error is caught gracefully
@@ -190,6 +205,17 @@ export function useCmsData() {
   useEffect(() => {
     loadWorkspaceData();
   }, [loadWorkspaceData]);
+
+  const refreshAnalyticsByPeriod = useCallback(async (period: PeriodFilter) => {
+    try {
+      const data = await dashboardApi.getFullAnalytics(period);
+      if (data) {
+        setAnalyticsOverview(data as unknown as CmsAnalyticsOverview);
+      }
+    } catch {
+      // Graceful fallback
+    }
+  }, []);
 
   const counts = {
     posts: posts.length,
@@ -235,6 +261,7 @@ export function useCmsData() {
     schedules,
     setSchedules,
     analyticsOverview,
+    refreshAnalyticsByPeriod,
     emergencyOverview,
     setEmergencyOverview,
   };

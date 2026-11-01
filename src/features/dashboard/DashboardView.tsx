@@ -1,21 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
+  ActivityIcon,
   BriefcaseIcon,
-  CheckCircle2Icon,
+  ClockIcon,
   FileTextIcon,
   MessageSquareIcon,
   TrendingUpIcon,
   UsersIcon,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import type { CmsAnalyticsOverview, DashboardEmergencyNotice } from "./types";
+import type {
+  CmsAnalyticsOverview,
+  DashboardEmergencyNotice,
+} from "./types";
+import type { PeriodFilter } from "./api/dashboardApi";
 import { EmergencyAlertBanner } from "./components/EmergencyAlertBanner";
 import { StatisticsCard } from "./components/StatisticsCard";
 import { ProductInsightsCard } from "./components/ProductInsightsCard";
 import { TotalEarningCard } from "./components/TotalEarningCard";
 import { SalesMetricsCard } from "./components/SalesMetricsCard";
+import { TopPagesTable } from "./components/TopPagesTable";
 import {
   DashboardTransactionTable,
   defaultTransactionData,
@@ -41,6 +47,8 @@ export interface DashboardViewProps {
   totalServicesCount: number;
   analytics?: CmsAnalyticsOverview | null;
   emergencyNotice?: DashboardEmergencyNotice | null;
+  selectedPeriod?: PeriodFilter;
+  onPeriodChange?: (period: PeriodFilter) => void;
   onNavigateTab: (tab: string, sub?: string) => void;
   onNewPost?: () => void;
   onNewPortfolio?: () => void;
@@ -59,14 +67,34 @@ export function DashboardView({
   totalServicesCount,
   analytics,
   emergencyNotice,
+  selectedPeriod = "30d",
+  onPeriodChange,
   onNavigateTab,
   onNewPost,
   onNewPortfolio,
 }: DashboardViewProps) {
-  const visitorsCount = analytics?.metrics?.visitors ?? 1850;
-  const pageviewsCount = analytics?.metrics?.pageviews ?? 4200;
-  const conversionRate = analytics?.metrics?.conversionRate ?? 8.4;
-  const whatsappClicks = analytics?.metrics?.whatsappClicks ?? 18;
+  const [internalPeriod, setInternalPeriod] = useState<PeriodFilter>(selectedPeriod);
+  const currentPeriod = onPeriodChange ? selectedPeriod : internalPeriod;
+
+  function handlePeriodSelect(period: PeriodFilter) {
+    setInternalPeriod(period);
+    if (onPeriodChange) {
+      onPeriodChange(period);
+    }
+  }
+
+  const visitorsCount = analytics?.metrics?.visitors ?? 4250;
+  const pageviewsCount = analytics?.metrics?.pageviews ?? 18450;
+  const sessionsCount = analytics?.metrics?.sessions ?? 5120;
+  const conversionRate = analytics?.metrics?.conversionRate ?? 6.94;
+  const whatsappClicks = analytics?.metrics?.whatsappClicks ?? 210;
+  const formSubmits = analytics?.metrics?.formSubmits ?? 85;
+  const averageDurationSec = analytics?.metrics?.averageDurationSec ?? 145;
+  const bounceRate = analytics?.metrics?.bounceRate ?? 38.2;
+
+  const visitorsChange = analytics?.metrics?.visitorsChange ?? 14.8;
+  const conversionRateChange = analytics?.metrics?.conversionRateChange ?? 0.22;
+  const averageDurationChange = analytics?.metrics?.averageDurationChange ?? 5.0;
 
   // Map real leads to template datatable items if available, or fall back to template sample data
   const tableData: TransactionItem[] =
@@ -107,7 +135,7 @@ export function DashboardView({
         onNavigateToEmergency={() => onNavigateTab("emergency")}
       />
 
-      {/* Top Welcome & Quick Actions */}
+      {/* Top Welcome & Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -117,7 +145,45 @@ export function DashboardView({
             Informasi performa website, statistik pengunjung, dan permohonan konsultasi yang masuk.
           </p>
         </div>
+
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* Period Selector Filter */}
+          <div className="inline-flex rounded-lg border border-border bg-muted/40 p-1 text-xs">
+            <button
+              type="button"
+              onClick={() => handlePeriodSelect("today")}
+              className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
+                currentPeriod === "today"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Hari Ini
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePeriodSelect("7d")}
+              className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
+                currentPeriod === "7d"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              7 Hari
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePeriodSelect("30d")}
+              className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
+                currentPeriod === "30d"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              30 Hari
+            </button>
+          </div>
+
           {onNewPost && (
             <button type="button" onClick={onNewPost} className={PRIMARY_BTN_CLASS}>
               <FileTextIcon className="size-4 mr-1.5" />
@@ -149,24 +215,23 @@ export function DashboardView({
             icon={<TrendingUpIcon className="size-4" />}
             title="Pengunjung Website"
             value={visitorsCount.toLocaleString("id-ID")}
-            changePercentage="+5.4%"
-            subtitle={`${pageviewsCount.toLocaleString("id-ID")} tayangan`}
+            changePercentage={`${visitorsChange >= 0 ? "+" : ""}${visitorsChange.toFixed(1)}%`}
+            subtitle={`${pageviewsCount.toLocaleString("id-ID")} tayangan (${sessionsCount.toLocaleString("id-ID")} sesi)`}
             onClick={() => onNavigateTab("dashboard")}
           />
           <StatisticsCard
             icon={<MessageSquareIcon className="size-4" />}
             title="Kontak WhatsApp"
             value={`${conversionRate.toFixed(1)}%`}
-            changePercentage="+2.1%"
-            subtitle={`${whatsappClicks} pesan masuk`}
+            changePercentage={`${conversionRateChange >= 0 ? "+" : ""}${conversionRateChange.toFixed(2)}%`}
+            subtitle={`${whatsappClicks} pesan, ${formSubmits} formulir`}
           />
           <StatisticsCard
-            icon={<CheckCircle2Icon className="size-4" />}
-            title="Proyek Berjalan"
-            value={dealLeadsCount.toString()}
-            changePercentage="+10.0%"
-            subtitle="klien aktif"
-            onClick={() => onNavigateTab("crm")}
+            icon={<ClockIcon className="size-4" />}
+            title="Waktu Kunjungan"
+            value={`${Math.floor(averageDurationSec / 60)}m ${averageDurationSec % 60}s`}
+            changePercentage={`${averageDurationChange >= 0 ? "+" : ""}${averageDurationChange.toFixed(1)}%`}
+            subtitle={`Pantulan ${bounceRate.toFixed(1)}% (Bounce Rate)`}
           />
         </div>
 
@@ -175,8 +240,9 @@ export function DashboardView({
           <ProductInsightsCard
             title="Statistik Konten"
             publishedDate={`Terbit ${publishedPortfoliosCount} portofolio, ${publishedPostsCount} artikel`}
-            reachedValue={visitorsCount.toLocaleString("id-ID")}
-            orderValue={totalLeadsCount.toString()}
+            reachedValue={pageviewsCount.toLocaleString("id-ID")}
+            orderValue={(whatsappClicks + formSubmits).toString()}
+            pages={analytics?.pages}
             className="justify-between gap-3 *:data-[slot=card-content]:space-y-5"
           />
 
@@ -190,18 +256,26 @@ export function DashboardView({
           />
         </div>
 
-        {/* Baris 2 Kanan: Sales Metrics Card dengan Recharts */}
+        {/* Baris 2 Kanan: Sales Metrics Card dengan Saluran Rujukan Recharts */}
         <SalesMetricsCard
           activeLeadsValue={`${totalLeadsCount} Klien`}
           dealValue={`Rp ${totalPipelineValue}`}
           completedProjectsValue={`${publishedPortfoliosCount} Portofolio`}
+          sources={analytics?.sources}
           className="col-span-full *:data-[slot=card-content]:space-y-6 xl:col-span-2"
         />
 
-        {/* Baris 3: Datatable Prospek Klien Ber-avatar & Badge */}
-        <Card className="col-span-full w-full py-0">
-          <DashboardTransactionTable data={tableData} />
-        </Card>
+        {/* Baris 3: Datatable Prospek Klien & Tabel Halaman Terpopuler */}
+        <div className="col-span-full grid gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <Card className="w-full py-0 h-full">
+              <DashboardTransactionTable data={tableData} />
+            </Card>
+          </div>
+          <div className="xl:col-span-1">
+            <TopPagesTable pages={analytics?.pages} className="h-full" />
+          </div>
+        </div>
       </div>
     </div>
   );

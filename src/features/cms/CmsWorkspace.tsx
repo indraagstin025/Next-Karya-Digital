@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertTriangleIcon,
@@ -16,7 +16,7 @@ import type { CmsSnapshotItem } from "./types";
 import { AdminTemplateShell } from "./AdminTemplateShell";
 import { ConflictModal } from "./components/ConflictModal";
 import { SnapshotDialog } from "./snapshots/SnapshotDialog";
-import { DashboardView } from "@/features/dashboard";
+import { DashboardView, type PeriodFilter } from "@/features/dashboard";
 import { CrmView } from "@/features/crm";
 import { PostModule } from "./posts/PostModule";
 import { PortfolioModule } from "./portfolios/PortfolioModule";
@@ -60,9 +60,20 @@ export function CmsWorkspace({ currentUser }: CmsWorkspaceProps) {
     leads,
     schedules,
     analyticsOverview,
+    refreshAnalyticsByPeriod,
     emergencyOverview,
     loadWorkspaceData,
   } = useCmsData();
+
+  const [dashboardPeriod, setDashboardPeriod] = useState<PeriodFilter>("30d");
+
+  const handleDashboardPeriodChange = useCallback(
+    (period: PeriodFilter) => {
+      setDashboardPeriod(period);
+      refreshAnalyticsByPeriod(period);
+    },
+    [refreshAnalyticsByPeriod]
+  );
 
   // Centralized Mutation Handler
   const {
@@ -242,6 +253,8 @@ export function CmsWorkspace({ currentUser }: CmsWorkspaceProps) {
                 publishedServicesCount={services.filter((s) => s.status === "PUBLISHED").length}
                 totalServicesCount={services.length}
                 analytics={analyticsOverview}
+                selectedPeriod={dashboardPeriod}
+                onPeriodChange={handleDashboardPeriodChange}
                 emergencyNotice={
                   emergencyOverview?.site
                     ? {
