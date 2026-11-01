@@ -48,109 +48,6 @@ export type TransactionItem = {
   paidBy: "mastercard" | "visa";
 };
 
-export const defaultTransactionData: TransactionItem[] = [
-  {
-    id: "1",
-    avatar: "/images/avatars/avatar-1.webp",
-    avatarFallback: "BS",
-    name: "Budi Santoso",
-    amount: 8500000,
-    status: "paid",
-    email: "CV Berkah Pangan",
-    paidBy: "mastercard",
-  },
-  {
-    id: "2",
-    avatar: "/images/avatars/avatar-2.webp",
-    avatarFallback: "MS",
-    name: "dr. Maya Safitri",
-    amount: 12000000,
-    status: "processing",
-    email: "Klinik Pratama Sehat",
-    paidBy: "visa",
-  },
-  {
-    id: "3",
-    avatar: "/images/avatars/avatar-3.webp",
-    avatarFallback: "AF",
-    name: "Ahmad Fauzi",
-    amount: 15500000,
-    status: "paid",
-    email: "PT Mandiri Logistik",
-    paidBy: "mastercard",
-  },
-  {
-    id: "4",
-    avatar: "/images/avatars/avatar-4.webp",
-    avatarFallback: "SR",
-    name: "Siti Rahma",
-    amount: 6500000,
-    status: "pending",
-    email: "Studio Kopi Nusantara",
-    paidBy: "visa",
-  },
-  {
-    id: "5",
-    avatar: "/images/avatars/avatar-5.webp",
-    avatarFallback: "HK",
-    name: "Hendra Kusuma",
-    amount: 7000000,
-    status: "processing",
-    email: "Toko Sembako Modern",
-    paidBy: "mastercard",
-  },
-  {
-    id: "6",
-    avatar: "/images/avatars/avatar-6.webp",
-    avatarFallback: "DL",
-    name: "Dewi Lestari",
-    amount: 9000000,
-    status: "paid",
-    email: "Bimbel Prestasi Gemilang",
-    paidBy: "mastercard",
-  },
-  {
-    id: "7",
-    avatar: "/images/avatars/avatar-7.webp",
-    avatarFallback: "RK",
-    name: "Ir. Ridwan Kamil",
-    amount: 11000000,
-    status: "processing",
-    email: "CV Karya Bangun",
-    paidBy: "visa",
-  },
-  {
-    id: "8",
-    avatar: "/images/avatars/avatar-8.webp",
-    avatarFallback: "LP",
-    name: "Lisa Permata",
-    amount: 5000000,
-    status: "pending",
-    email: "Butik Busana Cantik",
-    paidBy: "mastercard",
-  },
-  {
-    id: "9",
-    avatar: "/images/avatars/avatar-9.webp",
-    avatarFallback: "WH",
-    name: "Wahyu Hidayat",
-    amount: 14000000,
-    status: "paid",
-    email: "Ekspedisi Cepat Nusantara",
-    paidBy: "visa",
-  },
-  {
-    id: "10",
-    avatar: "/images/avatars/avatar-10.webp",
-    avatarFallback: "AF",
-    name: "Anisa Fitri",
-    amount: 8000000,
-    status: "pending",
-    email: "Rumah Bersalin Sehat",
-    paidBy: "mastercard",
-  },
-];
-
 function RowActions() {
   return (
     <DropdownMenu>
@@ -274,7 +171,7 @@ export interface DashboardTransactionTableProps {
 }
 
 export function DashboardTransactionTable({
-  data = defaultTransactionData,
+  data = [],
 }: DashboardTransactionTableProps) {
   const pageSize = 5;
 
@@ -335,7 +232,7 @@ export function DashboardTransactionTable({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Tidak ada data prospek.
+                  Tidak ada data permohonan konsultasi masuk.
                 </TableCell>
               </TableRow>
             )}

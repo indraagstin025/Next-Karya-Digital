@@ -17,7 +17,7 @@ import { Progress } from "@/components/ui/progress";
 const listItems = ["Lihat Rincian", "Perbarui Nilai", "Ekspor Laporan"];
 
 export interface EarningItem {
-  img: string;
+  img?: string;
   platform: string;
   technologies: string;
   earnings: string;
@@ -34,34 +34,19 @@ export interface TotalEarningCardProps {
   className?: string;
 }
 
-const defaultEarningData: EarningItem[] = [
-  {
-    img: "/images/widgets/zipcar.webp",
-    platform: "Website Profil Bisnis",
-    technologies: "Next.js & Tailwind",
-    earnings: "Rp 15.000.000",
-    progressPercentage: 60,
-  },
-  {
-    img: "/images/widgets/bitbank.webp",
-    platform: "Aplikasi Web & Sistem",
-    technologies: "React & Node.js",
-    earnings: "Rp 21.150.000",
-    progressPercentage: 40,
-  },
-];
-
 export function TotalEarningCard({
-  earningData = defaultEarningData,
+  earningData = [],
   title = "Estimasi Nilai Proyek",
-  earning = "36.150.000",
+  earning = "0",
   trend = "up",
-  percentage = 8,
-  comparisonText = "Nilai permohonan dan proyek aktif",
+  percentage,
+  comparisonText = "Akumulasi nilai dari proyek yang telah disepakati",
   className,
 }: TotalEarningCardProps) {
   const formattedEarning =
     typeof earning === "number" ? earning.toLocaleString("id-ID") : earning;
+
+  const hasTrend = typeof percentage === "number" && percentage > 0;
 
   return (
     <Card className={className}>
@@ -93,49 +78,60 @@ export function TotalEarningCard({
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="text-2xl font-semibold">Rp {formattedEarning}</span>
-            <span className="flex items-center gap-1">
-              {trend === "up" ? (
-                <ChevronUpIcon className="size-4 text-emerald-500" />
-              ) : (
-                <ChevronDownIcon className="size-4 text-rose-500" />
-              )}
-              <span
-                className={`text-sm font-medium ${
-                  trend === "up" ? "text-emerald-500" : "text-rose-500"
-                }`}
-              >
-                {percentage}%
+            {hasTrend && (
+              <span className="flex items-center gap-1">
+                {trend === "up" ? (
+                  <ChevronUpIcon className="size-4 text-emerald-500" />
+                ) : (
+                  <ChevronDownIcon className="size-4 text-rose-500" />
+                )}
+                <span
+                  className={`text-sm font-medium ${
+                    trend === "up" ? "text-emerald-500" : "text-rose-500"
+                  }`}
+                >
+                  {percentage}%
+                </span>
               </span>
-            </span>
+            )}
           </div>
           <span className="text-muted-foreground text-sm">{comparisonText}</span>
         </div>
       </CardContent>
       <CardContent className="flex flex-1 flex-col gap-4">
-        <div className="flex flex-1 flex-col justify-evenly gap-4">
-          {earningData.map((item, index) => (
-            <div key={index} className="flex items-center justify-between gap-2.5">
-              <div className="flex items-center justify-between gap-2.5">
-                <Avatar className="size-11 rounded-sm after:rounded-[inherit] after:border-0">
-                  <AvatarFallback className="bg-primary/10 shrink-0 rounded-sm">
-                    <img src={item.img} alt={item.platform} className="size-6 object-contain" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-1">
-                  <span className="text-base font-medium">{item.platform}</span>
-                  <span className="text-muted-foreground text-sm">{item.technologies}</span>
+        {earningData && earningData.length > 0 ? (
+          <div className="flex flex-1 flex-col justify-evenly gap-4">
+            {earningData.map((item, index) => (
+              <div key={index} className="flex items-center justify-between gap-2.5">
+                <div className="flex items-center justify-between gap-2.5">
+                  <Avatar className="size-11 rounded-sm after:rounded-[inherit] after:border-0">
+                    <AvatarFallback className="bg-primary/10 shrink-0 rounded-sm text-xs font-semibold text-primary">
+                      {item.platform.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-base font-medium">{item.platform}</span>
+                    <span className="text-muted-foreground text-sm">{item.technologies}</span>
+                  </div>
+                </div>
+                <div className="space-y-2 text-right">
+                  <p className="text-sm font-semibold">{item.earnings}</p>
+                  <Progress
+                    value={item.progressPercentage}
+                    className="w-36 **:data-[slot=progress-track]:h-1.5"
+                  />
                 </div>
               </div>
-              <div className="space-y-2 text-right">
-                <p className="text-sm font-semibold">{item.earnings}</p>
-                <Progress
-                  value={item.progressPercentage}
-                  className="w-36 **:data-[slot=progress-track]:h-1.5"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-6 text-center text-muted-foreground border border-dashed border-border rounded-lg p-4">
+            <p className="text-xs font-medium">Belum ada proyek berstatus Deal saat ini.</p>
+            <p className="text-[11px] text-muted-foreground/80 mt-1">
+              Nilai estimasi akan terhitung otomatis saat ada prospek disepakati di modul CRM.
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

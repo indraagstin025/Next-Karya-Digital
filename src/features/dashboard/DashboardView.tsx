@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  ActivityIcon,
   BriefcaseIcon,
   ClockIcon,
   FileTextIcon,
@@ -24,7 +23,6 @@ import { SalesMetricsCard } from "./components/SalesMetricsCard";
 import { TopPagesTable } from "./components/TopPagesTable";
 import {
   DashboardTransactionTable,
-  defaultTransactionData,
   type TransactionItem,
 } from "./components/DashboardTransactionTable";
 import type { DashboardLeadPreview } from "./components/RecentLeadsCard";
@@ -83,20 +81,20 @@ export function DashboardView({
     }
   }
 
-  const visitorsCount = analytics?.metrics?.visitors ?? 4250;
-  const pageviewsCount = analytics?.metrics?.pageviews ?? 18450;
-  const sessionsCount = analytics?.metrics?.sessions ?? 5120;
-  const conversionRate = analytics?.metrics?.conversionRate ?? 6.94;
-  const whatsappClicks = analytics?.metrics?.whatsappClicks ?? 210;
-  const formSubmits = analytics?.metrics?.formSubmits ?? 85;
-  const averageDurationSec = analytics?.metrics?.averageDurationSec ?? 145;
-  const bounceRate = analytics?.metrics?.bounceRate ?? 38.2;
+  const visitorsCount = analytics?.metrics?.visitors ?? 0;
+  const pageviewsCount = analytics?.metrics?.pageviews ?? 0;
+  const sessionsCount = analytics?.metrics?.sessions ?? 0;
+  const conversionRate = analytics?.metrics?.conversionRate ?? 0;
+  const whatsappClicks = analytics?.metrics?.whatsappClicks ?? 0;
+  const formSubmits = analytics?.metrics?.formSubmits ?? 0;
+  const averageDurationSec = analytics?.metrics?.averageDurationSec ?? 0;
+  const bounceRate = analytics?.metrics?.bounceRate ?? 0;
 
-  const visitorsChange = analytics?.metrics?.visitorsChange ?? 14.8;
-  const conversionRateChange = analytics?.metrics?.conversionRateChange ?? 0.22;
-  const averageDurationChange = analytics?.metrics?.averageDurationChange ?? 5.0;
+  const visitorsChange = analytics?.metrics?.visitorsChange;
+  const conversionRateChange = analytics?.metrics?.conversionRateChange;
+  const averageDurationChange = analytics?.metrics?.averageDurationChange;
 
-  // Map real leads to template datatable items if available, or fall back to template sample data
+  // Map real leads to datatable items if available, or keep array empty (no dummy fallback)
   const tableData: TransactionItem[] =
     leadsPreview && leadsPreview.length > 0
       ? leadsPreview.map((lead, index) => {
@@ -115,17 +113,17 @@ export function DashboardView({
             email: lead.companyName
               ? `${lead.companyName} (${lead.whatsappNumber})`
               : lead.whatsappNumber,
-            amount: 5500000 + (index % 5) * 2500000,
+            amount: 5000000 + (index % 5) * 2500000,
             status: itemStatus,
             paidBy: index % 2 === 0 ? "mastercard" : "visa",
           };
         })
-      : defaultTransactionData;
+      : [];
 
   const totalPipelineValue =
     dealLeadsCount > 0
       ? (dealLeadsCount * 8500000).toLocaleString("id-ID")
-      : "36.150.000";
+      : "0";
 
   return (
     <div className="space-y-6">
@@ -207,7 +205,7 @@ export function DashboardView({
             icon={<UsersIcon className="size-4" />}
             title="Prospek Konsultasi"
             value={newLeadsCount.toString()}
-            changePercentage="+8.2%"
+            changePercentage={newLeadsCount > 0 ? `${newLeadsCount} baru` : "0 baru"}
             subtitle={`dari total ${totalLeadsCount} prospek`}
             onClick={() => onNavigateTab("crm")}
           />
@@ -215,7 +213,11 @@ export function DashboardView({
             icon={<TrendingUpIcon className="size-4" />}
             title="Pengunjung Website"
             value={visitorsCount.toLocaleString("id-ID")}
-            changePercentage={`${visitorsChange >= 0 ? "+" : ""}${visitorsChange.toFixed(1)}%`}
+            changePercentage={
+              visitorsChange !== undefined
+                ? `${visitorsChange >= 0 ? "+" : ""}${visitorsChange.toFixed(1)}%`
+                : "0%"
+            }
             subtitle={`${pageviewsCount.toLocaleString("id-ID")} tayangan (${sessionsCount.toLocaleString("id-ID")} sesi)`}
             onClick={() => onNavigateTab("dashboard")}
           />
@@ -223,14 +225,26 @@ export function DashboardView({
             icon={<MessageSquareIcon className="size-4" />}
             title="Kontak WhatsApp"
             value={`${conversionRate.toFixed(1)}%`}
-            changePercentage={`${conversionRateChange >= 0 ? "+" : ""}${conversionRateChange.toFixed(2)}%`}
+            changePercentage={
+              conversionRateChange !== undefined
+                ? `${conversionRateChange >= 0 ? "+" : ""}${conversionRateChange.toFixed(2)}%`
+                : "0%"
+            }
             subtitle={`${whatsappClicks} pesan, ${formSubmits} formulir`}
           />
           <StatisticsCard
             icon={<ClockIcon className="size-4" />}
             title="Waktu Kunjungan"
-            value={`${Math.floor(averageDurationSec / 60)}m ${averageDurationSec % 60}s`}
-            changePercentage={`${averageDurationChange >= 0 ? "+" : ""}${averageDurationChange.toFixed(1)}%`}
+            value={
+              averageDurationSec > 0
+                ? `${Math.floor(averageDurationSec / 60)}m ${averageDurationSec % 60}s`
+                : "0m 0s"
+            }
+            changePercentage={
+              averageDurationChange !== undefined
+                ? `${averageDurationChange >= 0 ? "+" : ""}${averageDurationChange.toFixed(1)}%`
+                : "0%"
+            }
             subtitle={`Pantulan ${bounceRate.toFixed(1)}% (Bounce Rate)`}
           />
         </div>
@@ -250,8 +264,9 @@ export function DashboardView({
             title="Estimasi Nilai Proyek"
             earning={totalPipelineValue}
             trend="up"
-            percentage={8}
-            comparisonText="Akumulasi nilai dari calon klien dan proyek aktif"
+            percentage={dealLeadsCount > 0 ? 100 : undefined}
+            comparisonText="Akumulasi nilai dari proyek yang telah disepakati"
+            earningData={[]}
             className="justify-between gap-5 sm:min-w-0"
           />
         </div>
@@ -261,6 +276,7 @@ export function DashboardView({
           activeLeadsValue={`${totalLeadsCount} Klien`}
           dealValue={`Rp ${totalPipelineValue}`}
           completedProjectsValue={`${publishedPortfoliosCount} Portofolio`}
+          conversionTrendValue={`${conversionRate.toFixed(1)}%`}
           sources={analytics?.sources}
           className="col-span-full *:data-[slot=card-content]:space-y-6 xl:col-span-2"
         />

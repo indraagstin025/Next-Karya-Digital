@@ -2,18 +2,11 @@
 
 import React from "react";
 import { Bar, BarChart } from "recharts";
+import { BookOpenIcon } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 import type { AnalyticsPageRank } from "../types";
-
-const defaultReachData = [
-  { month: "1", reached: 120 },
-  { month: "2", reached: 210 },
-  { month: "3", reached: 180 },
-  { month: "4", reached: 260 },
-  { month: "5", reached: 240 },
-];
 
 const productReachChartConfig = {
   reached: {
@@ -22,18 +15,10 @@ const productReachChartConfig = {
   },
 } satisfies ChartConfig;
 
-const defaultOrderData = [
-  { month: "1", orders: 4 },
-  { month: "2", orders: 8 },
-  { month: "3", orders: 6 },
-  { month: "4", orders: 11 },
-  { month: "5", orders: 9 },
-];
-
 const orderPlacedChartConfig = {
   orders: {
     label: "Konversi",
-    color: "color-mix(in oklab, var(--primary) 10%, transparent)",
+    color: "color-mix(in oklab, var(--primary) 20%, transparent)",
   },
 } satisfies ChartConfig;
 
@@ -50,38 +35,36 @@ export function ProductInsightsCard({
   className,
   title = "Statistik Konten",
   publishedDate = "Portofolio & artikel aktif",
-  reachedValue = "1.850",
-  orderValue = "8",
+  reachedValue = "0",
+  orderValue = "0",
   pages,
 }: ProductInsightsCardProps) {
-  const reachData =
-    pages && pages.length > 0
-      ? pages.slice(0, 5).map((p, idx) => ({
-          month: String(idx + 1),
-          reached: p.pageviews,
-        }))
-      : defaultReachData;
+  const hasPages = pages && pages.length > 0;
 
-  const conversionData =
-    pages && pages.length > 0
-      ? pages.slice(0, 5).map((p, idx) => ({
-          month: String(idx + 1),
-          orders: p.conversions || 1,
-        }))
-      : defaultOrderData;
+  const reachData = hasPages
+    ? pages.slice(0, 5).map((p, idx) => ({
+        month: String(idx + 1),
+        reached: p.pageviews,
+      }))
+    : [{ month: "0", reached: 0 }];
+
+  const conversionData = hasPages
+    ? pages.slice(0, 5).map((p, idx) => ({
+        month: String(idx + 1),
+        orders: p.conversions || 0,
+      }))
+    : [{ month: "0", orders: 0 }];
 
   return (
     <Card className={className}>
-      <CardHeader className="flex justify-between">
+      <CardHeader className="flex justify-between items-center">
         <div className="flex flex-col gap-1">
           <span className="text-lg font-semibold">{title}</span>
           <span className="text-muted-foreground text-sm">{publishedDate}</span>
         </div>
-        <img
-          src="/images/widgets/image-7.webp"
-          alt="Konten"
-          className="w-20.5 rounded-md object-cover"
-        />
+        <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <BookOpenIcon className="size-5" />
+        </div>
       </CardHeader>
       <CardContent>
         <Separator />

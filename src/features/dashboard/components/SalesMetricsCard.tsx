@@ -27,13 +27,6 @@ const defaultColors = [
   "color-mix(in oklab, var(--primary) 20%, transparent)",
 ];
 
-const fallbackRevenueData = [
-  { name: "Pencarian Organik", sales: 8200, fill: defaultColors[0], share: 49.4 },
-  { name: "Langsung (Direct)", sales: 5100, fill: defaultColors[1], share: 29.4 },
-  { name: "Media Sosial", sales: 3400, fill: defaultColors[2], share: 16.0 },
-  { name: "Rujukan Mitra", sales: 1750, fill: defaultColors[3], share: 5.2 },
-];
-
 const salesChartConfig = {
   sales: {
     label: "Aktivitas",
@@ -57,27 +50,28 @@ export interface SalesMetricsCardProps {
 
 export function SalesMetricsCard({
   className,
-  conversionTrendValue = "+8.4%",
-  activeLeadsValue = "6 Klien",
-  dealValue = "Rp 36 Jt",
-  completedProjectsValue = "12 Proyek",
+  conversionTrendValue = "0%",
+  activeLeadsValue = "0 Klien",
+  dealValue = "Rp 0",
+  completedProjectsValue = "0 Portofolio",
   sources,
 }: SalesMetricsCardProps) {
-  const chartPieData =
-    sources && sources.length > 0
-      ? sources.map((s, idx) => ({
-          name: s.label,
-          sales: s.pageviews,
-          fill: defaultColors[idx % defaultColors.length],
-          share: s.sharePercentage,
-        }))
-      : fallbackRevenueData;
+  const hasSources = Boolean(sources && sources.length > 0);
 
-  const topSource = chartPieData[0] || fallbackRevenueData[0];
-  const topPercentage = Math.round(topSource.share);
+  const chartPieData = hasSources
+    ? sources!.map((s, idx) => ({
+        name: s.label,
+        sales: s.pageviews,
+        fill: defaultColors[idx % defaultColors.length],
+        share: s.sharePercentage,
+      }))
+    : [{ name: "Belum Ada Rujukan", sales: 1, fill: "color-mix(in oklab, var(--muted) 40%, transparent)", share: 0 }];
+
+  const topSource = hasSources ? chartPieData[0] : null;
+  const topPercentage = topSource ? Math.round(topSource.share) : 0;
 
   const totalBars = 24;
-  const filledBars = Math.round((topPercentage * totalBars) / 100);
+  const filledBars = topPercentage > 0 ? Math.round((topPercentage * totalBars) / 100) : 0;
 
   const dynamicBarData = Array.from({ length: totalBars }, (_, index) => {
     const date = new Date(2026, 9, index + 1);
@@ -123,13 +117,13 @@ export function SalesMetricsCard({
             <span className="text-lg font-semibold">Aktivitas Prospek & Trafik</span>
             <div className="flex items-center gap-3">
               <img
-                src="/images/brands/logo-square.webp"
-                className="size-10.5 rounded-lg"
+                src="/icon.png"
+                className="size-10.5 rounded-lg object-contain bg-primary/10 p-1"
                 alt="Next Karya Logo"
               />
               <div className="flex flex-col gap-0.5">
-                <span className="text-xl font-medium">Next Karya Solusindo</span>
-                <span className="text-muted-foreground text-sm">agency@nextkarya.com</span>
+                <span className="text-xl font-medium">Next Karya Digital Solutions</span>
+                <span className="text-muted-foreground text-sm">nextkarya@gmail.com</span>
               </div>
             </div>
 
@@ -195,7 +189,7 @@ export function SalesMetricsCard({
                                 y={(viewBox.cy || 0) + 19}
                                 className="fill-muted-foreground text-xs"
                               >
-                                Organik
+                                {hasSources ? "Organik" : "Data Kosong"}
                               </tspan>
                             </text>
                           );
@@ -207,7 +201,7 @@ export function SalesMetricsCard({
               </ChartContainer>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground truncate max-w-[170px]">
-                  {topSource.name}
+                  {topSource ? topSource.name : "Belum Ada Rujukan"}
                 </span>
                 <span className="text-2xl font-semibold text-primary">{topPercentage}%</span>
               </div>
@@ -220,10 +214,12 @@ export function SalesMetricsCard({
         <Card className="ring-foreground/10 shadow-none ring-1">
           <CardContent className="grid gap-4 lg:grid-cols-5">
             <div className="flex flex-col justify-center gap-6">
-              <span className="text-lg font-semibold">Pencarian Organik</span>
+              <span className="text-lg font-semibold">Saluran Teratas</span>
               <span className="max-lg:text-5xl text-6xl font-bold">{topPercentage}%</span>
               <span className="text-muted-foreground text-sm">
-                Porsi kontribusi trafik pengunjung dari mesin pencari
+                {hasSources
+                  ? "Porsi kontribusi trafik pengunjung dari saluran rujukan teratas"
+                  : "Menunggu kunjungan rujukan pertama dari Google atau tautan luar"}
               </span>
             </div>
             <div className="flex flex-col gap-6 text-lg md:col-span-4">
