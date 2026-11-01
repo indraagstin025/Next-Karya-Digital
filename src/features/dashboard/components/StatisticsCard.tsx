@@ -18,7 +18,7 @@ export function StatisticsCard({
   value,
   title,
   changePercentage,
-  subtitle = "than last month",
+  subtitle = "dibandingkan bulan lalu",
   className,
   onClick,
 }: StatisticsCardProps) {

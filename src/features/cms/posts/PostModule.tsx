@@ -243,7 +243,7 @@ export function PostModule({
             Artikel Blog
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Tulis, sunting, dan atur publikasi artikel wawasan digital Next Karya Solusindo.
+            Kelola publikasi artikel, panduan teknis, dan informasi layanan pada website.
           </p>
         </div>
         <div className="flex items-center gap-2">

@@ -117,7 +117,7 @@ export function PostEditorModal({
                 {editingId ? "Sunting Artikel Blog" : "Tulis Artikel Baru"}
               </h3>
               <p className="text-xs text-muted-foreground">
-                Kelola konten publikasi wawasan dan artikel digital Next Karya.
+                Kelola isi artikel dan pengaturan publikasi pada website.
               </p>
             </div>
           </div>

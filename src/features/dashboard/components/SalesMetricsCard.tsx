@@ -19,7 +19,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const salesPlanPercentage = 78;
+const salesPlanPercentage = 64;
 const totalBars = 24;
 const filledBars = Math.round((salesPlanPercentage * totalBars) / 100);
 
@@ -32,7 +32,7 @@ const salesChartData = Array.from({ length: totalBars }, (_, index) => {
 
   return {
     date: formattedDate,
-    sales: index < filledBars ? 315 : 0.0001,
+    sales: index < filledBars ? 240 : 0.0001,
   };
 });
 
@@ -43,14 +43,14 @@ const salesChartConfig = {
 } satisfies ChartConfig;
 
 const revenueChartData = [
-  { month: "january", sales: 340, fill: "var(--color-january)" },
-  { month: "february", sales: 200, fill: "var(--color-february)" },
-  { month: "march", sales: 200, fill: "var(--color-march)" },
+  { month: "january", sales: 280, fill: "var(--color-january)" },
+  { month: "february", sales: 180, fill: "var(--color-february)" },
+  { month: "march", sales: 140, fill: "var(--color-march)" },
 ];
 
 const revenueChartConfig = {
   sales: {
-    label: "Capaian",
+    label: "Status",
   },
   january: {
     label: "Selesai",
@@ -61,7 +61,7 @@ const revenueChartConfig = {
     color: "color-mix(in oklab, var(--primary) 60%, transparent)",
   },
   march: {
-    label: "Pipeline",
+    label: "Penawaran",
     color: "color-mix(in oklab, var(--primary) 20%, transparent)",
   },
 } satisfies ChartConfig;
@@ -76,30 +76,30 @@ export interface SalesMetricsCardProps {
 
 export function SalesMetricsCard({
   className,
-  conversionTrendValue = "+24.8%",
-  activeLeadsValue = "42 Klien",
-  dealValue = "Rp 85 Jt",
-  completedProjectsValue = "18 Proyek",
+  conversionTrendValue = "+8.4%",
+  activeLeadsValue = "6 Klien",
+  dealValue = "Rp 36 Jt",
+  completedProjectsValue = "12 Proyek",
 }: SalesMetricsCardProps) {
   const metricsData = [
     {
       icons: <TrendingUpIcon className="size-5" />,
-      title: "Tren Konversi",
+      title: "Tingkat Respon",
       value: conversionTrendValue,
     },
     {
       icons: <BadgePercentIcon className="size-5" />,
-      title: "Prospek Aktif",
+      title: "Prospek Masuk",
       value: activeLeadsValue,
     },
     {
       icons: <DollarSignIcon className="size-5" />,
-      title: "Estimasi Deal",
+      title: "Estimasi Nilai",
       value: dealValue,
     },
     {
       icons: <ShoppingBagIcon className="size-5" />,
-      title: "Proyek Rilis",
+      title: "Portofolio Rilis",
       value: completedProjectsValue,
     },
   ];
@@ -109,7 +109,7 @@ export function SalesMetricsCard({
       <CardContent>
         <div className="grid gap-6 lg:grid-cols-5">
           <div className="flex flex-col justify-between gap-7 lg:col-span-3">
-            <span className="text-lg font-semibold">Performa & Metrik Agensi</span>
+            <span className="text-lg font-semibold">Aktivitas Prospek & Proyek</span>
             <div className="flex items-center gap-3">
               <img
                 src="/images/brands/logo-square.webp"
@@ -145,7 +145,7 @@ export function SalesMetricsCard({
 
           <Card className="ring-foreground/10 justify-between gap-4 shadow-none ring-1 lg:col-span-2">
             <CardHeader className="gap-1">
-              <CardTitle className="text-lg font-semibold">Target Capaian</CardTitle>
+              <CardTitle className="text-lg font-semibold">Status Pengerjaan</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
@@ -177,14 +177,14 @@ export function SalesMetricsCard({
                                 y={(viewBox.cy || 0) - 12}
                                 className="fill-card-foreground text-lg font-bold"
                               >
-                                78%
+                                {salesPlanPercentage}%
                               </tspan>
                               <tspan
                                 x={viewBox.cx}
                                 y={(viewBox.cy || 0) + 19}
                                 className="fill-muted-foreground text-sm"
                               >
-                                Target Deal
+                                Berjalan
                               </tspan>
                             </text>
                           );
@@ -195,8 +195,8 @@ export function SalesMetricsCard({
                 </PieChart>
               </ChartContainer>
               <div className="flex items-center justify-between">
-                <span className="text-base text-muted-foreground">Target triwulan</span>
-                <span className="text-2xl font-semibold text-primary">78%</span>
+                <span className="text-base text-muted-foreground">Target pengerjaan</span>
+                <span className="text-2xl font-semibold text-primary">{salesPlanPercentage}%</span>
               </div>
             </CardContent>
           </Card>
@@ -207,26 +207,26 @@ export function SalesMetricsCard({
         <Card className="ring-foreground/10 shadow-none ring-1">
           <CardContent className="grid gap-4 lg:grid-cols-5">
             <div className="flex flex-col justify-center gap-6">
-              <span className="text-lg font-semibold">Aktivitas Pipeline</span>
+              <span className="text-lg font-semibold">Aktivitas Prospek</span>
               <span className="max-lg:text-5xl text-6xl font-bold">{salesPlanPercentage}%</span>
               <span className="text-muted-foreground text-sm">
-                Rasio konversi dari konsultasi menjadi proyek
+                Alur tindak lanjut calon klien yang berkonsultasi
               </span>
             </div>
             <div className="flex flex-col gap-6 text-lg md:col-span-4">
-              <span className="font-medium">Indikator Tren Pertumbuhan</span>
+              <span className="font-medium">Alur Komunikasi Prospek</span>
               <span className="text-muted-foreground text-sm text-wrap">
-                Pemantauan alur komunikasi prospek baru, pengiriman proposal penawaran, hingga deal
-                kontrak pengerjaan solusi digital.
+                Pemantauan pesan masuk, pembuatan penawaran layanan, dan penjadwalan pengerjaan
+                website klien.
               </span>
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="flex items-center gap-2">
                   <ChartNoAxesCombinedIcon className="size-6 text-primary" />
-                  <span className="text-base font-medium">Statistik Terbuka</span>
+                  <span className="text-base font-medium">Konsultasi Aktif</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CirclePercentIcon className="size-6 text-primary" />
-                  <span className="text-base font-medium">Persentase Kenaikan</span>
+                  <span className="text-base font-medium">Tindak Lanjut Cepat</span>
                 </div>
               </div>
 

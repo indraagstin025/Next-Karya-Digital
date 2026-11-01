@@ -63,10 +63,10 @@ export function DashboardView({
   onNewPost,
   onNewPortfolio,
 }: DashboardViewProps) {
-  const visitorsCount = analytics?.metrics?.visitors ?? 21153;
-  const pageviewsCount = analytics?.metrics?.pageviews ?? 64200;
-  const conversionRate = analytics?.metrics?.conversionRate ?? 14.8;
-  const whatsappClicks = analytics?.metrics?.whatsappClicks ?? 48;
+  const visitorsCount = analytics?.metrics?.visitors ?? 1850;
+  const pageviewsCount = analytics?.metrics?.pageviews ?? 4200;
+  const conversionRate = analytics?.metrics?.conversionRate ?? 8.4;
+  const whatsappClicks = analytics?.metrics?.whatsappClicks ?? 18;
 
   // Map real leads to template datatable items if available, or fall back to template sample data
   const tableData: TransactionItem[] =
@@ -87,7 +87,7 @@ export function DashboardView({
             email: lead.companyName
               ? `${lead.companyName} (${lead.whatsappNumber})`
               : lead.whatsappNumber,
-            amount: 12500000 + (index % 5) * 4500000,
+            amount: 5500000 + (index % 5) * 2500000,
             status: itemStatus,
             paidBy: index % 2 === 0 ? "mastercard" : "visa",
           };
@@ -96,7 +96,7 @@ export function DashboardView({
 
   const totalPipelineValue =
     dealLeadsCount > 0
-      ? (dealLeadsCount * 18500000).toLocaleString("id-ID")
+      ? (dealLeadsCount * 8500000).toLocaleString("id-ID")
       : "36.150.000";
 
   return (
@@ -111,10 +111,10 @@ export function DashboardView({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Pusat Komando Agensi
+            Ringkasan Agensi
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Ringkasan performa digital, metrik pengunjung, dan pipeline klien Next Karya Solusindo.
+            Informasi performa website, statistik pengunjung, dan permohonan konsultasi yang masuk.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
@@ -141,31 +141,31 @@ export function DashboardView({
             icon={<UsersIcon className="size-4" />}
             title="Prospek Konsultasi"
             value={newLeadsCount.toString()}
-            changePercentage="+18.2%"
+            changePercentage="+8.2%"
             subtitle={`dari total ${totalLeadsCount} prospek`}
             onClick={() => onNavigateTab("crm")}
           />
           <StatisticsCard
             icon={<TrendingUpIcon className="size-4" />}
-            title="Pengunjung Unik"
+            title="Pengunjung Website"
             value={visitorsCount.toLocaleString("id-ID")}
-            changePercentage="+12.4%"
+            changePercentage="+5.4%"
             subtitle={`${pageviewsCount.toLocaleString("id-ID")} tayangan`}
             onClick={() => onNavigateTab("dashboard")}
           />
           <StatisticsCard
             icon={<MessageSquareIcon className="size-4" />}
-            title="Konversi Kontak"
+            title="Kontak WhatsApp"
             value={`${conversionRate.toFixed(1)}%`}
-            changePercentage="+4.3%"
-            subtitle={`${whatsappClicks} interaksi WA`}
+            changePercentage="+2.1%"
+            subtitle={`${whatsappClicks} pesan masuk`}
           />
           <StatisticsCard
             icon={<CheckCircle2Icon className="size-4" />}
-            title="Deal & Kontrak"
+            title="Proyek Berjalan"
             value={dealLeadsCount.toString()}
-            changePercentage="+22.5%"
-            subtitle="solusi digital aktif"
+            changePercentage="+10.0%"
+            subtitle="klien aktif"
             onClick={() => onNavigateTab("crm")}
           />
         </div>
@@ -173,19 +173,19 @@ export function DashboardView({
         {/* Baris 2 Kiri: Product Insights Card & Total Earning Card */}
         <div className="grid gap-6 max-xl:col-span-full lg:max-xl:grid-cols-2">
           <ProductInsightsCard
-            title="Product & Portofolio Insight"
-            publishedDate={`Terbit ${publishedPortfoliosCount} Portofolio, ${publishedPostsCount} Artikel`}
+            title="Statistik Konten"
+            publishedDate={`Terbit ${publishedPortfoliosCount} portofolio, ${publishedPostsCount} artikel`}
             reachedValue={visitorsCount.toLocaleString("id-ID")}
             orderValue={totalLeadsCount.toString()}
             className="justify-between gap-3 *:data-[slot=card-content]:space-y-5"
           />
 
           <TotalEarningCard
-            title="Total Nilai Pipeline"
+            title="Estimasi Nilai Proyek"
             earning={totalPipelineValue}
             trend="up"
-            percentage={18}
-            comparisonText="Target deal triwulan kuartal berjalan"
+            percentage={8}
+            comparisonText="Akumulasi nilai dari calon klien dan proyek aktif"
             className="justify-between gap-5 sm:min-w-0"
           />
         </div>
@@ -194,7 +194,7 @@ export function DashboardView({
         <SalesMetricsCard
           activeLeadsValue={`${totalLeadsCount} Klien`}
           dealValue={`Rp ${totalPipelineValue}`}
-          completedProjectsValue={`${publishedPortfoliosCount} Proyek`}
+          completedProjectsValue={`${publishedPortfoliosCount} Portofolio`}
           className="col-span-full *:data-[slot=card-content]:space-y-6 xl:col-span-2"
         />
 

@@ -7,31 +7,31 @@ import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 
 const productReachChartData = [
-  { month: "January", reached: 168 },
-  { month: "February", reached: 305 },
-  { month: "March", reached: 213 },
-  { month: "April", reached: 330 },
-  { month: "May", reached: 305 },
+  { month: "Jan", reached: 120 },
+  { month: "Feb", reached: 210 },
+  { month: "Mar", reached: 180 },
+  { month: "Apr", reached: 260 },
+  { month: "Mei", reached: 240 },
 ];
 
 const productReachChartConfig = {
   reached: {
-    label: "Reached",
+    label: "Pembaca",
     color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
 const orderPlacedChartData = [
-  { month: "January", orders: 168 },
-  { month: "February", orders: 305 },
-  { month: "March", orders: 213 },
-  { month: "April", orders: 330 },
-  { month: "May", orders: 305 },
+  { month: "Jan", orders: 4 },
+  { month: "Feb", orders: 8 },
+  { month: "Mar", orders: 6 },
+  { month: "Apr", orders: 11 },
+  { month: "Mei", orders: 9 },
 ];
 
 const orderPlacedChartConfig = {
   orders: {
-    label: "Orders",
+    label: "Permohonan",
     color: "color-mix(in oklab, var(--primary) 10%, transparent)",
   },
 } satisfies ChartConfig;
@@ -46,10 +46,10 @@ export interface ProductInsightsCardProps {
 
 export function ProductInsightsCard({
   className,
-  title = "Product insight",
-  publishedDate = "Published on 12 MAY 2025 (Aktif)",
-  reachedValue = "21,153",
-  orderValue = "2,123",
+  title = "Statistik Konten",
+  publishedDate = "Portofolio & artikel aktif",
+  reachedValue = "1.850",
+  orderValue = "8",
 }: ProductInsightsCardProps) {
   return (
     <Card className={className}>
@@ -60,7 +60,7 @@ export function ProductInsightsCard({
         </div>
         <img
           src="/images/widgets/image-7.webp"
-          alt="Product"
+          alt="Konten"
           className="w-20.5 rounded-md object-cover"
         />
       </CardHeader>
@@ -70,7 +70,7 @@ export function ProductInsightsCard({
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between gap-1">
           <div className="flex flex-col gap-1">
-            <span className="text-xs">Product reached</span>
+            <span className="text-xs text-muted-foreground">Pembaca Artikel</span>
             <span className="text-2xl font-semibold">{reachedValue}</span>
           </div>
           <ChartContainer config={productReachChartConfig} className="min-h-13 max-w-18">
@@ -82,7 +82,7 @@ export function ProductInsightsCard({
 
         <div className="flex items-center justify-between gap-1">
           <div className="flex flex-col gap-1">
-            <span className="text-xs">Order placed</span>
+            <span className="text-xs text-muted-foreground">Permohonan Masuk</span>
             <span className="text-2xl font-semibold">{orderValue}</span>
           </div>
           <ChartContainer config={orderPlacedChartConfig} className="min-h-13 max-w-18">

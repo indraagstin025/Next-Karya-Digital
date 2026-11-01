@@ -52,121 +52,101 @@ export const defaultTransactionData: TransactionItem[] = [
   {
     id: "1",
     avatar: "/images/avatars/avatar-1.webp",
-    avatarFallback: "JA",
-    name: "Jack Alfredo",
-    amount: 316.0,
+    avatarFallback: "BS",
+    name: "Budi Santoso",
+    amount: 8500000,
     status: "paid",
-    email: "jack@shadcnstudio.com",
+    email: "CV Berkah Pangan",
     paidBy: "mastercard",
   },
   {
     id: "2",
     avatar: "/images/avatars/avatar-2.webp",
-    avatarFallback: "MG",
-    name: "Maria Gonzalez",
-    amount: 253.4,
-    status: "pending",
-    email: "maria.g@shadcnstudio.com",
+    avatarFallback: "MS",
+    name: "dr. Maya Safitri",
+    amount: 12000000,
+    status: "processing",
+    email: "Klinik Pratama Sehat",
     paidBy: "visa",
   },
   {
     id: "3",
     avatar: "/images/avatars/avatar-3.webp",
-    avatarFallback: "JD",
-    name: "John Doe",
-    amount: 852.0,
+    avatarFallback: "AF",
+    name: "Ahmad Fauzi",
+    amount: 15500000,
     status: "paid",
-    email: "john.doe@shadcnstudio.com",
+    email: "PT Mandiri Logistik",
     paidBy: "mastercard",
   },
   {
     id: "4",
     avatar: "/images/avatars/avatar-4.webp",
-    avatarFallback: "EC",
-    name: "Emily Carter",
-    amount: 889.0,
+    avatarFallback: "SR",
+    name: "Siti Rahma",
+    amount: 6500000,
     status: "pending",
-    email: "emily.carter@shadcnstudio.com",
+    email: "Studio Kopi Nusantara",
     paidBy: "visa",
   },
   {
     id: "5",
     avatar: "/images/avatars/avatar-5.webp",
-    avatarFallback: "DL",
-    name: "David Lee",
-    amount: 723.16,
-    status: "paid",
-    email: "david.lee@shadcnstudio.com",
+    avatarFallback: "HK",
+    name: "Hendra Kusuma",
+    amount: 7000000,
+    status: "processing",
+    email: "Toko Sembako Modern",
     paidBy: "mastercard",
   },
   {
     id: "6",
     avatar: "/images/avatars/avatar-6.webp",
-    avatarFallback: "SP",
-    name: "Sophia Patel",
-    amount: 612.0,
-    status: "failed",
-    email: "sophia.patel@shadcnstudio.com",
+    avatarFallback: "DL",
+    name: "Dewi Lestari",
+    amount: 9000000,
+    status: "paid",
+    email: "Bimbel Prestasi Gemilang",
     paidBy: "mastercard",
   },
   {
     id: "7",
     avatar: "/images/avatars/avatar-7.webp",
-    avatarFallback: "RW",
-    name: "Robert Wilson",
-    amount: 445.25,
-    status: "paid",
-    email: "robert.wilson@shadcnstudio.com",
+    avatarFallback: "RK",
+    name: "Ir. Ridwan Kamil",
+    amount: 11000000,
+    status: "processing",
+    email: "CV Karya Bangun",
     paidBy: "visa",
   },
   {
     id: "8",
     avatar: "/images/avatars/avatar-8.webp",
-    avatarFallback: "LM",
-    name: "Lisa Martinez",
-    amount: 297.8,
-    status: "processing",
-    email: "lisa.martinez@shadcnstudio.com",
+    avatarFallback: "LP",
+    name: "Lisa Permata",
+    amount: 5000000,
+    status: "pending",
+    email: "Butik Busana Cantik",
     paidBy: "mastercard",
   },
   {
     id: "9",
     avatar: "/images/avatars/avatar-9.webp",
-    avatarFallback: "MT",
-    name: "Michael Thompson",
-    amount: 756.9,
+    avatarFallback: "WH",
+    name: "Wahyu Hidayat",
+    amount: 14000000,
     status: "paid",
-    email: "michael.thompson@shadcnstudio.com",
+    email: "Ekspedisi Cepat Nusantara",
     paidBy: "visa",
   },
   {
     id: "10",
     avatar: "/images/avatars/avatar-10.webp",
-    avatarFallback: "AJ",
-    name: "Amanda Johnson",
-    amount: 189.5,
+    avatarFallback: "AF",
+    name: "Anisa Fitri",
+    amount: 8000000,
     status: "pending",
-    email: "amanda.johnson@shadcnstudio.com",
-    paidBy: "mastercard",
-  },
-  {
-    id: "11",
-    avatar: "/images/avatars/avatar-11.webp",
-    avatarFallback: "KB",
-    name: "Kevin Brown",
-    amount: 1024.75,
-    status: "paid",
-    email: "kevin.brown@shadcnstudio.com",
-    paidBy: "visa",
-  },
-  {
-    id: "12",
-    avatar: "/images/avatars/avatar-12.webp",
-    avatarFallback: "SD",
-    name: "Sarah Davis",
-    amount: 367.2,
-    status: "failed",
-    email: "sarah.davis@shadcnstudio.com",
+    email: "Rumah Bersalin Sehat",
     paidBy: "mastercard",
   },
 ];
@@ -179,23 +159,20 @@ function RowActions() {
           <Button
             size="icon"
             variant="ghost"
-            aria-label="Edit item"
+            aria-label="Aksi baris"
             className="cursor-pointer size-8"
           />
         }
       >
-        <EllipsisVerticalIcon className="size-5" aria-hidden="true" />
+        <EllipsisVerticalIcon className="size-4" aria-hidden="true" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <span>Edit</span>
+            <span>Lihat Detail</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <span>Duplicate</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem variant="destructive">
-            <span>Delete</span>
+            <span>Hubungi WhatsApp</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -206,15 +183,17 @@ function RowActions() {
 export const columns: ColumnDef<TransactionItem>[] = [
   {
     accessorKey: "name",
-    header: "Customer",
+    header: "Calon Klien",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <Avatar className="size-9">
           <AvatarImage src={row.original.avatar} alt={row.getValue("name")} />
-          <AvatarFallback className="text-xs">{row.original.avatarFallback}</AvatarFallback>
+          <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+            {row.original.avatarFallback}
+          </AvatarFallback>
         </Avatar>
         <div className="flex flex-col text-sm">
-          <span className="text-card-foreground font-medium">{row.getValue("name")}</span>
+          <span className="text-card-foreground font-semibold">{row.getValue("name")}</span>
           <span className="text-muted-foreground text-xs">{row.original.email}</span>
         </div>
       </div>
@@ -222,12 +201,13 @@ export const columns: ColumnDef<TransactionItem>[] = [
   },
   {
     accessorKey: "amount",
-    header: "Amount",
+    header: "Estimasi Nilai",
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("id-ID", {
         style: "currency",
-        currency: "USD",
+        currency: "IDR",
+        maximumFractionDigits: 0,
       }).format(amount);
 
       return <span className="font-semibold text-sm">{formatted}</span>;
@@ -235,43 +215,54 @@ export const columns: ColumnDef<TransactionItem>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Status Pipeline",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      const badgeClass =
+      const badgeConfig =
         status === "paid"
-          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+          ? {
+              label: "Deal",
+              className: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+            }
           : status === "processing"
-          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+          ? {
+              label: "Penawaran",
+              className: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+            }
           : status === "pending"
-          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-          : "bg-rose-500/10 text-rose-600 dark:text-rose-400";
+          ? {
+              label: "Konsultasi",
+              className: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+            }
+          : {
+              label: "Batal",
+              className: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+            };
 
       return (
-        <Badge className={`${badgeClass} h-auto rounded-sm px-1.5 capitalize font-medium border-0`}>
-          {status}
+        <Badge
+          className={`${badgeConfig.className} h-auto rounded-sm px-2 py-0.5 capitalize font-medium border-0`}
+        >
+          {badgeConfig.label}
         </Badge>
       );
     },
   },
   {
     accessorKey: "paidBy",
-    header: () => <span className="w-fit">Paid by</span>,
-    cell: ({ row }) => (
-      <img
-        src={
-          row.getValue("paidBy") === "mastercard"
-            ? "/images/datatable/image-1.webp"
-            : "/images/datatable/image-2.webp"
-        }
-        alt="Payment platform"
-        className="w-10.5"
-      />
-    ),
+    header: () => <span className="w-fit">Tahap Pengerjaan</span>,
+    cell: ({ row }) => {
+      const isTermin = row.getValue("paidBy") === "visa";
+      return (
+        <span className="text-xs text-muted-foreground font-medium">
+          {isTermin ? "Termin Pengerjaan" : "Kesepakatan Awal"}
+        </span>
+      );
+    },
   },
   {
     id: "actions",
-    header: () => "Actions",
+    header: () => "Aksi",
     cell: () => <RowActions />,
     size: 60,
     enableHiding: false,
@@ -344,7 +335,7 @@ export function DashboardTransactionTable({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  Tidak ada data prospek.
                 </TableCell>
               </TableRow>
             )}
@@ -354,9 +345,9 @@ export function DashboardTransactionTable({
 
       <div className="flex items-center justify-between gap-3 px-6 py-4 max-sm:flex-col md:max-lg:flex-col">
         <p className="text-muted-foreground text-sm whitespace-nowrap" aria-live="polite">
-          Showing{" "}
+          Menampilkan{" "}
           <span>
-            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
+            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} sampai{" "}
             {Math.min(
               Math.max(
                 table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
@@ -366,7 +357,7 @@ export function DashboardTransactionTable({
               table.getRowCount()
             )}
           </span>{" "}
-          of <span>{table.getRowCount().toString()} entries</span>
+          dari <span>{table.getRowCount().toString()} entri</span>
         </p>
 
         <div>
@@ -378,10 +369,10 @@ export function DashboardTransactionTable({
                   variant="ghost"
                   onClick={() => table.previousPage()}
                   disabled={!table.getCanPreviousPage()}
-                  aria-label="Go to previous page"
+                  aria-label="Halaman sebelumnya"
                 >
                   <ChevronLeftIcon aria-hidden="true" />
-                  Previous
+                  Sebelumnya
                 </Button>
               </PaginationItem>
 
@@ -424,9 +415,9 @@ export function DashboardTransactionTable({
                   variant="ghost"
                   onClick={() => table.nextPage()}
                   disabled={!table.getCanNextPage()}
-                  aria-label="Go to next page"
+                  aria-label="Halaman berikutnya"
                 >
-                  Next
+                  Berikutnya
                   <ChevronRightIcon aria-hidden="true" />
                 </Button>
               </PaginationItem>

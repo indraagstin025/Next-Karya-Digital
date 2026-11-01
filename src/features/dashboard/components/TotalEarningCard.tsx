@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
 
-const listItems = ["Detail Performa", "Perbarui Nilai", "Ekspor Laporan"];
+const listItems = ["Lihat Rincian", "Perbarui Nilai", "Ekspor Laporan"];
 
 export interface EarningItem {
   img: string;
@@ -37,27 +37,27 @@ export interface TotalEarningCardProps {
 const defaultEarningData: EarningItem[] = [
   {
     img: "/images/widgets/zipcar.webp",
-    platform: "Sistem Web & CRM",
-    technologies: "Next.js & PostgreSQL",
-    earnings: "Rp 23.500.000",
-    progressPercentage: 75,
+    platform: "Website Profil Bisnis",
+    technologies: "Next.js & Tailwind",
+    earnings: "Rp 15.000.000",
+    progressPercentage: 60,
   },
   {
     img: "/images/widgets/bitbank.webp",
-    platform: "Landing Page & SEO",
-    technologies: "Figma & Tailwind CSS",
-    earnings: "Rp 12.650.000",
-    progressPercentage: 45,
+    platform: "Aplikasi Web & Sistem",
+    technologies: "React & Node.js",
+    earnings: "Rp 21.150.000",
+    progressPercentage: 40,
   },
 ];
 
 export function TotalEarningCard({
   earningData = defaultEarningData,
-  title = "Total Earning & Pipeline",
-  earning = "36,150,000",
+  title = "Estimasi Nilai Proyek",
+  earning = "36.150.000",
   trend = "up",
-  percentage = 18,
-  comparisonText = "Dibandingkan bulan lalu (Rp 30.500.000)",
+  percentage = 8,
+  comparisonText = "Nilai permohonan dan proyek aktif",
   className,
 }: TotalEarningCardProps) {
   const formattedEarning =
