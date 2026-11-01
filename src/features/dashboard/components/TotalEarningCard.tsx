@@ -1,0 +1,144 @@
+"use client";
+
+import React from "react";
+import { EllipsisVerticalIcon, ChevronUpIcon, ChevronDownIcon } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
+
+const listItems = ["Detail Performa", "Perbarui Nilai", "Ekspor Laporan"];
+
+export interface EarningItem {
+  img: string;
+  platform: string;
+  technologies: string;
+  earnings: string;
+  progressPercentage: number;
+}
+
+export interface TotalEarningCardProps {
+  title?: string;
+  earning?: number | string;
+  trend?: "up" | "down";
+  percentage?: number;
+  comparisonText?: string;
+  earningData?: EarningItem[];
+  className?: string;
+}
+
+const defaultEarningData: EarningItem[] = [
+  {
+    img: "/images/widgets/zipcar.webp",
+    platform: "Sistem Web & CRM",
+    technologies: "Next.js & PostgreSQL",
+    earnings: "Rp 23.500.000",
+    progressPercentage: 75,
+  },
+  {
+    img: "/images/widgets/bitbank.webp",
+    platform: "Landing Page & SEO",
+    technologies: "Figma & Tailwind CSS",
+    earnings: "Rp 12.650.000",
+    progressPercentage: 45,
+  },
+];
+
+export function TotalEarningCard({
+  earningData = defaultEarningData,
+  title = "Total Earning & Pipeline",
+  earning = "36,150,000",
+  trend = "up",
+  percentage = 18,
+  comparisonText = "Dibandingkan bulan lalu (Rp 30.500.000)",
+  className,
+}: TotalEarningCardProps) {
+  const formattedEarning =
+    typeof earning === "number" ? earning.toLocaleString("id-ID") : earning;
+
+  return (
+    <Card className={className}>
+      <CardContent className="flex flex-col gap-6">
+        <span className="flex items-center justify-between">
+          <div className="text-lg font-semibold">{title}</div>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground size-6 rounded-full cursor-pointer"
+                />
+              }
+            >
+              <EllipsisVerticalIcon className="size-4" />
+              <span className="sr-only">Menu</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                {listItems.map((item, index) => (
+                  <DropdownMenuItem key={index}>{item}</DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-semibold">Rp {formattedEarning}</span>
+            <span className="flex items-center gap-1">
+              {trend === "up" ? (
+                <ChevronUpIcon className="size-4 text-emerald-500" />
+              ) : (
+                <ChevronDownIcon className="size-4 text-rose-500" />
+              )}
+              <span
+                className={`text-sm font-medium ${
+                  trend === "up" ? "text-emerald-500" : "text-rose-500"
+                }`}
+              >
+                {percentage}%
+              </span>
+            </span>
+          </div>
+          <span className="text-muted-foreground text-sm">{comparisonText}</span>
+        </div>
+      </CardContent>
+      <CardContent className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-1 flex-col justify-evenly gap-4">
+          {earningData.map((item, index) => (
+            <div key={index} className="flex items-center justify-between gap-2.5">
+              <div className="flex items-center justify-between gap-2.5">
+                <Avatar className="size-11 rounded-sm after:rounded-[inherit] after:border-0">
+                  <AvatarFallback className="bg-primary/10 shrink-0 rounded-sm">
+                    <img src={item.img} alt={item.platform} className="size-6 object-contain" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1">
+                  <span className="text-base font-medium">{item.platform}</span>
+                  <span className="text-muted-foreground text-sm">{item.technologies}</span>
+                </div>
+              </div>
+              <div className="space-y-2 text-right">
+                <p className="text-sm font-semibold">{item.earnings}</p>
+                <Progress
+                  value={item.progressPercentage}
+                  className="w-36 **:data-[slot=progress-track]:h-1.5"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default TotalEarningCard;
