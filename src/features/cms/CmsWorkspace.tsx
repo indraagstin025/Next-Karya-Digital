@@ -16,12 +16,12 @@ import type { CmsSnapshotItem } from "./types";
 import { AdminTemplateShell } from "./AdminTemplateShell";
 import { ConflictModal } from "./components/ConflictModal";
 import { SnapshotDialog } from "./snapshots/SnapshotDialog";
-import { AgencyOverviewDashboard } from "./dashboard/AgencyOverviewDashboard";
+import { DashboardView } from "@/features/dashboard";
+import { CrmView } from "@/features/crm";
 import { PostModule } from "./posts/PostModule";
 import { PortfolioModule } from "./portfolios/PortfolioModule";
 import { ServiceModule } from "./services/ServiceModule";
 import { MediaModule } from "./media/MediaModule";
-import { CrmModule } from "./crm/CrmModule";
 import { StructuredModule } from "./structured/StructuredModule";
 import { EmergencyModule } from "./emergency/EmergencyModule";
 import { useCmsData } from "./hooks/useCmsData";
@@ -223,14 +223,38 @@ export function CmsWorkspace({ currentUser }: CmsWorkspaceProps) {
           <>
             {/* TAB 0: DASHBOARD OVERVIEW */}
             {activeTab === "dashboard" && (
-              <AgencyOverviewDashboard
-                posts={posts}
-                portfolios={portfolios}
-                services={services}
-                leads={leads}
+              <DashboardView
+                totalLeadsCount={leads.length}
+                newLeadsCount={leads.filter((l) => l.status === "BARU").length}
+                dealLeadsCount={leads.filter((l) => l.status === "DEAL").length}
+                leadsPreview={leads.map((l) => ({
+                  id: l.id,
+                  clientName: l.clientName,
+                  companyName: l.companyName,
+                  serviceRequested: l.serviceRequested,
+                  whatsappNumber: l.whatsappNumber,
+                  status: l.status,
+                }))}
+                publishedPostsCount={posts.filter((p) => p.status === "PUBLISHED").length}
+                totalPostsCount={posts.length}
+                publishedPortfoliosCount={portfolios.filter((p) => p.status === "PUBLISHED").length}
+                totalPortfoliosCount={portfolios.length}
+                publishedServicesCount={services.filter((s) => s.status === "PUBLISHED").length}
+                totalServicesCount={services.length}
                 analytics={analyticsOverview}
-                emergencyOverview={emergencyOverview}
-                onNavigateTab={setActiveTab}
+                emergencyNotice={
+                  emergencyOverview?.site
+                    ? {
+                        isFormLocked: Boolean(emergencyOverview.site.isFormLocked),
+                        isAlertActive: Boolean(emergencyOverview.site.isAlertActive),
+                        alertBanner: emergencyOverview.site.alertBanner,
+                      }
+                    : null
+                }
+                onNavigateTab={(tab, sub) => {
+                  setActiveTab(tab as any);
+                  if (sub) setStructuredSubTab(sub as any);
+                }}
                 onNewPost={() => setActiveTab("posts")}
                 onNewPortfolio={() => setActiveTab("portfolios")}
               />
@@ -314,7 +338,7 @@ export function CmsWorkspace({ currentUser }: CmsWorkspaceProps) {
 
             {/* TAB 6: CRM & CALON KLIEN */}
             {activeTab === "crm" && (
-              <CrmModule
+              <CrmView
                 leads={leads}
                 schedules={schedules}
                 staffUsers={staffUsers}

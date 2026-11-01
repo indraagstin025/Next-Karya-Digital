@@ -193,50 +193,13 @@ export interface CmsEmergencyOverview {
   }[];
 }
 
-export type LeadStatus = "BARU" | "DIHUBUNGI" | "PROPOSAL" | "DEAL" | "BATAL";
-
-export interface CmsLeadItem {
-  id: string;
-  site_id: string;
-  clientName: string;
-  companyName: string | null;
-  whatsappNumber: string;
-  email: string | null;
-  serviceRequested: string;
-  message: string | null;
-  dealValue: number;
-  status: LeadStatus;
-  assignedToId: string | null;
-  nextFollowUpDate: string | null;
-  createdAt: string;
-  updatedAt: string;
-  assignedTo?: {
-    id: string;
-    fullName: string;
-    email?: string;
-  } | null;
-}
-
-export interface CmsScheduleItem {
-  id: string;
-  site_id: string;
-  leadId: string | null;
-  taskName: string;
-  assignedToId: string;
-  startDate: string;
-  endDate: string;
-  status: "PERSIAPAN" | "BERJALAN" | "REVIEW" | "SELESAI";
-  updatedAt: string;
-  assignedTo?: {
-    id: string;
-    fullName: string;
-  } | null;
-  lead?: {
-    id: string;
-    clientName: string;
-    companyName: string | null;
-  } | null;
-}
+export type {
+  LeadStatus,
+  ScheduleStatus,
+  CmsLeadItem,
+  CmsScheduleItem,
+  InteractionNote,
+} from "@/features/crm/types";
 
 export interface CmsAnalyticsOverview {
   site_id: string;
