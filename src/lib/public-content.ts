@@ -8,12 +8,35 @@ import {
   parseContentBlocks,
   resolvePortfolioImage,
   sanitizeInternalHref,
+  validateRedirectTarget,
   type ContentBlock,
   type RedirectStatus,
 } from "@/lib/public-validators";
 
 const QUERY_TIMEOUT_MS = 8_000;
 const REVALIDATE_SECONDS = 300;
+
+export interface PublicSiteStatusDTO {
+  id: string;
+  name: string;
+  domain: string;
+  isActive: boolean;
+  isFormLocked: boolean;
+  alertBanner: string | null;
+  isAlertActive: boolean;
+}
+
+export interface PublicTestimonialDTO {
+  id: string;
+  clientName: string;
+  clientRole: string | null;
+  companyName: string | null;
+  content: string;
+  rating: number;
+  avatarUrl: string | null;
+  portfolioTitle: string | null;
+  portfolioSlug: string | null;
+}
 
 export interface PublicServiceDTO {
   slug: string;
@@ -142,8 +165,12 @@ const readPortfolios = unstable_cache(
       tech: Array.isArray(row.technologies) ? row.technologies : [],
       impact: row.impactSummary || "",
       metric: row.metricResult || "",
-      image: resolvePortfolioImage(row.slug),
-      imageAlt: row.title,
+      image:
+        typeof row.thumbnailUrl === "string" &&
+        row.thumbnailUrl.startsWith("/portfolio/")
+          ? row.thumbnailUrl
+          : resolvePortfolioImage(row.slug),
+      imageAlt: row.thumbnailAlt || row.title,
     }));
   },
   ["public-portfolios"],
@@ -280,6 +307,61 @@ const readPageBySlug = unstable_cache(
   { tags: ["public:pages"], revalidate: REVALIDATE_SECONDS }
 );
 
+const readSiteStatus = unstable_cache(
+  async (): Promise<PublicSiteStatusDTO> => {
+    const data = await fetchApi<any>("/site-status?site_id=nextkarya-main");
+    if (!data) {
+      return {
+        id: "nextkarya-main",
+        name: "Next Karya Digital Solutions",
+        domain: "nextkarya.web.id",
+        isActive: true,
+        isFormLocked: false,
+        alertBanner: null,
+        isAlertActive: false,
+      };
+    }
+    return {
+      id: data.id || "nextkarya-main",
+      name: data.name || "Next Karya Digital Solutions",
+      domain: data.domain || "nextkarya.web.id",
+      isActive: Boolean(data.isActive ?? true),
+      isFormLocked: Boolean(data.isFormLocked ?? false),
+      alertBanner: typeof data.alertBanner === "string" ? cleanText(data.alertBanner, 300) : null,
+      isAlertActive: Boolean(data.isAlertActive ?? false),
+    };
+  },
+  ["public-site-status"],
+  { tags: ["public:site"], revalidate: 60 }
+);
+
+const readTestimonials = unstable_cache(
+  async (): Promise<PublicTestimonialDTO[]> => {
+    const data = await fetchApi<any[]>("/testimonials?site_id=nextkarya-main");
+    if (!data || data.length === 0) return [];
+
+    return data.map((t) => ({
+      id: t.id,
+      clientName: cleanText(t.clientName, 120),
+      clientRole: t.clientRole ? cleanText(t.clientRole, 120) : null,
+      companyName: t.companyName ? cleanText(t.companyName, 120) : null,
+      content: cleanText(t.content, 1000),
+      rating: typeof t.rating === "number" ? Math.min(Math.max(t.rating, 1), 5) : 5,
+      avatarUrl: typeof t.avatarUrl === "string" ? t.avatarUrl : null,
+      portfolioTitle: t.portfolio?.title || null,
+      portfolioSlug: t.portfolio?.slug || null,
+    }));
+  },
+  ["public-testimonials"],
+  { tags: ["public:testimonials"], revalidate: REVALIDATE_SECONDS }
+);
+
+export const getPublicSiteStatus = cache(() =>
+  safeRead("siteStatus", () => readSiteStatus())
+);
+export const getPublicTestimonials = cache(() =>
+  safeRead("testimonials", () => readTestimonials())
+);
 export const getPublicServices = cache(() => safeRead("services", () => readServices()));
 export const getPublicPortfolios = cache(() => safeRead("portfolios", () => readPortfolios()));
 export const getPublicPricing = cache(() => safeRead("pricing", () => readPricing()));
@@ -298,7 +380,18 @@ export const getPublicPage = cache((slug: string) =>
 );
 
 export async function findSafeRedirect(
-  _fromPath: string
+  fromPath: string
 ): Promise<{ to: string; status: RedirectStatus } | null> {
-  return null;
+  try {
+    const encoded = encodeURIComponent(fromPath);
+    const data = await fetchApi<{
+      sourcePath: string;
+      targetPath: string;
+      statusCode: number;
+    }>(`/redirects/lookup?site_id=nextkarya-main&fromPath=${encoded}`);
+    if (!data) return null;
+    return validateRedirectTarget(data.targetPath, data.statusCode);
+  } catch {
+    return null;
+  }
 }

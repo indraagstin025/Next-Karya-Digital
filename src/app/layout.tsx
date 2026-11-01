@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StaffShortcutModal } from "@/components/StaffShortcutModal";
 import "./globals.css";
 
 const siteUrl = "https://nextkarya.web.id";
@@ -138,12 +139,38 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var clean = function() {
+                    var els = document.querySelectorAll('[bis_skin_checked]');
+                    for (var i = 0; i < els.length; i++) {
+                      els[i].removeAttribute('bis_skin_checked');
+                    }
+                  };
+                  clean();
+                  if (typeof MutationObserver !== 'undefined') {
+                    var obs = new MutationObserver(clean);
+                    obs.observe(document.documentElement, {
+                      attributes: true,
+                      subtree: true,
+                      attributeFilter: ['bis_skin_checked']
+                    });
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className="min-h-screen bg-slate-50 text-slate-900 antialiased font-sans flex flex-col"
         suppressHydrationWarning
       >
         {children}
+        <StaffShortcutModal />
       </body>
     </html>
   );

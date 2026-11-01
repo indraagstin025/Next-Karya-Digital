@@ -23,6 +23,32 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [alertBanner, setAlertBanner] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/cms/site-status", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (
+          active &&
+          payload?.success &&
+          payload?.data?.isAlertActive &&
+          typeof payload?.data?.alertBanner === "string" &&
+          payload.data.alertBanner.trim().length > 0
+        ) {
+          setAlertBanner(payload.data.alertBanner.trim());
+        } else if (active) {
+          setAlertBanner(null);
+        }
+      })
+      .catch(() => {
+        // non-blocking
+      });
+    return () => {
+      active = false;
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +84,18 @@ export default function Navbar() {
       }`}
       suppressHydrationWarning
     >
+      {alertBanner && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="bg-[#0B1730] border-b border-[#1E3358] px-4 py-2 text-center text-xs sm:text-[13px] font-medium text-[#F1F5FB]"
+        >
+          <span className="mr-2 inline-flex items-center rounded-md bg-amber-500/20 border border-amber-400/40 px-2 py-0.5 text-[11px] font-bold text-[#FBBF24]">
+            Pemberitahuan Layanan
+          </span>
+          <span>{alertBanner}</span>
+        </div>
+      )}
       <div className="mx-auto flex md:grid md:grid-cols-[1fr_auto_1fr] w-full max-w-[1240px] min-h-[68px] lg:min-h-[76px] items-center justify-between gap-4 px-6 sm:px-9 lg:px-14 py-2">
         <Link
           href="/"

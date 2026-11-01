@@ -115,7 +115,7 @@ export async function submitContactMessage(
       };
     }
 
-    await withServerTimeout(
+    const [leadRes] = await withServerTimeout(
       Promise.all([
         postApi("/leads", {
           site_id: "nextkarya-main",
@@ -131,6 +131,16 @@ export async function submitContactMessage(
       CONTACT_DB_TIMEOUT_MS,
       "saveContactMessage"
     );
+
+    if (!leadRes.success && leadRes.error?.code === "FORM_LOCKED") {
+      return {
+        success: false,
+        errorKind: "locked",
+        message:
+          leadRes.error.message ||
+          "Formulir konsultasi sedang dialihkan sementara ke WhatsApp resmi Next Karya.",
+      };
+    }
 
     return { success: true, message: GENERIC_SUCCESS };
   } catch (error) {

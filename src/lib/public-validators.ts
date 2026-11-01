@@ -86,9 +86,30 @@ const MAX_LIST_ITEMS = 30;
 // shapes is rendered, as plain React text nodes, so stored content can never
 // inject markup or script.
 export function parseContentBlocks(content: unknown): ContentBlock[] {
+  if (typeof content === "string") {
+    return content
+      .split(/\n{2,}/)
+      .map((para) => cleanText(para, 3000))
+      .filter(Boolean)
+      .slice(0, MAX_BLOCKS)
+      .map((text) => ({ type: "paragraph" as const, text }));
+  }
+
   if (typeof content !== "object" || content === null) return [];
-  const rawBlocks = (content as { blocks?: unknown }).blocks;
-  if (!Array.isArray(rawBlocks)) return [];
+
+  let rawBlocks: unknown = Array.isArray(content)
+    ? content
+    : (content as { blocks?: unknown }).blocks;
+
+  if (!Array.isArray(rawBlocks)) {
+    const maybeBody =
+      (content as { body?: unknown; text?: unknown }).body ??
+      (content as { text?: unknown }).text;
+    if (typeof maybeBody === "string") {
+      return parseContentBlocks(maybeBody);
+    }
+    return [];
+  }
 
   const blocks: ContentBlock[] = [];
   for (const raw of rawBlocks.slice(0, MAX_BLOCKS)) {

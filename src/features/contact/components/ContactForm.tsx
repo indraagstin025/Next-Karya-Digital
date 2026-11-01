@@ -24,7 +24,64 @@ function FieldError({ id, messages }: { id: string; messages?: string[] }) {
 export function ContactFormCard({ sourcePage = "/kontak" }: { sourcePage?: string }) {
   const { formData, fieldErrors, formStatus, isOnline, handleChange, handleSubmit } =
     useContactForm(sourcePage);
+  const [isFormLocked, setIsFormLocked] = React.useState(false);
   const sending = formStatus.type === "sending";
+
+  React.useEffect(() => {
+    let active = true;
+    fetch("/api/cms/site-status", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (active && payload?.success && payload?.data?.isFormLocked) {
+          setIsFormLocked(true);
+        }
+      })
+      .catch(() => {
+        // non-blocking
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (isFormLocked) {
+    return (
+      <div
+        id="contact-form-locked"
+        role="region"
+        aria-label="Konsultasi dialihkan ke WhatsApp"
+        className="relative overflow-hidden rounded-[24px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-6 sm:p-8 lg:p-9 shadow-[0_18px_46px_-12px_rgba(10,35,80,0.08)]"
+      >
+        <span className="inline-flex items-center rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-600/40 px-2.5 py-1 text-xs font-bold text-amber-900 dark:text-amber-300">
+          Jalur Cepat Konsultasi Aktif
+        </span>
+        <h3 className="mt-3 text-[18px] sm:text-[20px] font-extrabold text-[#041E42] dark:text-white">
+          Konsultasi Dialihkan ke WhatsApp Resmi
+        </h3>
+        <p className="mt-2 text-[13.5px] leading-[1.7] text-[#4A5D78] dark:text-slate-300">
+          Saat ini formulir web sedang ditutup sementara untuk pemeliharaan antrean prospek.
+          Anda dapat langsung terhubung dengan tim rekayasa Next Karya melalui WhatsApp resmi
+          atau email kami.
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <a
+            href="https://wa.me/6281234567890?text=Halo%20Tim%20Next%20Karya%2C%20saya%20ingin%20berkonsultasi%20mengenai%20pembuatan%20website%2Faplikasi."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-[#005090] hover:bg-[#003E70] px-6 py-3 text-[14px] font-bold text-white shadow-sm transition-colors"
+          >
+            <span>Chat via WhatsApp Resmi</span>
+          </a>
+          <a
+            href="mailto:nextkarya@gmail.com"
+            className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#5B789E] px-5 py-3 text-[13.5px] font-bold text-[#041E42] dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <span>Kirim Email</span>
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form
