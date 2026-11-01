@@ -71,18 +71,12 @@ export function SalesMetricsCard({
   const topPercentage = topSource ? Math.round(topSource.share) : 0;
 
   const totalBars = 24;
-  const filledBars = topPercentage > 0 ? Math.round((topPercentage * totalBars) / 100) : 0;
+  const filledBars = hasSources && topPercentage > 0 ? Math.round((topPercentage * totalBars) / 100) : 0;
 
   const dynamicBarData = Array.from({ length: totalBars }, (_, index) => {
-    const date = new Date(2026, 9, index + 1);
-    const formattedDate = date.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "2-digit",
-    });
-
     return {
-      date: formattedDate,
-      sales: index < filledBars ? 240 : 0.0001,
+      date: String(index + 1),
+      sales: hasSources && index < filledBars ? 100 : 0,
     };
   });
 
@@ -231,11 +225,15 @@ export function SalesMetricsCard({
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="flex items-center gap-2">
                   <ChartNoAxesCombinedIcon className="size-6 text-primary" />
-                  <span className="text-base font-medium">Trafik Alami Google</span>
+                  <span className="text-base font-medium">
+                    {hasSources && sources && sources[0] ? sources[0].label : "Belum Ada Saluran"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CirclePercentIcon className="size-6 text-primary" />
-                  <span className="text-base font-medium">Pengunjung Berkualitas</span>
+                  <span className="text-base font-medium">
+                    {hasSources && sources && sources[1] ? sources[1].label : "Menunggu Sinyal Kunjungan"}
+                  </span>
                 </div>
               </div>
 

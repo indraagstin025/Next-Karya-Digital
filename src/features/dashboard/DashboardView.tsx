@@ -214,8 +214,8 @@ export function DashboardView({
             title="Pengunjung Website"
             value={visitorsCount.toLocaleString("id-ID")}
             changePercentage={
-              visitorsChange !== undefined
-                ? `${visitorsChange >= 0 ? "+" : ""}${visitorsChange.toFixed(1)}%`
+              visitorsChange && visitorsChange !== 0
+                ? `${visitorsChange > 0 ? "+" : ""}${visitorsChange.toFixed(1)}%`
                 : "0%"
             }
             subtitle={`${pageviewsCount.toLocaleString("id-ID")} tayangan (${sessionsCount.toLocaleString("id-ID")} sesi)`}
@@ -226,8 +226,8 @@ export function DashboardView({
             title="Kontak WhatsApp"
             value={`${conversionRate.toFixed(1)}%`}
             changePercentage={
-              conversionRateChange !== undefined
-                ? `${conversionRateChange >= 0 ? "+" : ""}${conversionRateChange.toFixed(2)}%`
+              conversionRateChange && conversionRateChange !== 0
+                ? `${conversionRateChange > 0 ? "+" : ""}${conversionRateChange.toFixed(2)}%`
                 : "0%"
             }
             subtitle={`${whatsappClicks} pesan, ${formSubmits} formulir`}
@@ -241,8 +241,8 @@ export function DashboardView({
                 : "0m 0s"
             }
             changePercentage={
-              averageDurationChange !== undefined
-                ? `${averageDurationChange >= 0 ? "+" : ""}${averageDurationChange.toFixed(1)}%`
+              averageDurationChange && averageDurationChange !== 0
+                ? `${averageDurationChange > 0 ? "+" : ""}${averageDurationChange.toFixed(1)}%`
                 : "0%"
             }
             subtitle={`Pantulan ${bounceRate.toFixed(1)}% (Bounce Rate)`}
