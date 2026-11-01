@@ -268,8 +268,6 @@ export function CmsWorkspace({ currentUser }: CmsWorkspaceProps) {
                   setActiveTab(tab as any);
                   if (sub) setStructuredSubTab(sub as any);
                 }}
-                onNewPost={() => setActiveTab("posts")}
-                onNewPortfolio={() => setActiveTab("portfolios")}
               />
             )}
 
