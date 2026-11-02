@@ -86,6 +86,12 @@ function isLinkActive(
     return true
   }
 
+  if (href === '/cms') {
+    if (pathname !== '/cms') return false
+    const currentTab = searchParams.get('tab')
+    return !currentTab || currentTab === 'dashboard'
+  }
+
   return pathname === href
 }
 

@@ -62,6 +62,8 @@ export function useCmsData() {
 
     if (rawTab && validTabs.includes(rawTab as ActiveTab)) {
       setActiveTabState(rawTab as ActiveTab);
+    } else if (!rawTab) {
+      setActiveTabState("dashboard");
     }
 
     const rawSub = searchParams.get("sub");
@@ -75,11 +77,16 @@ export function useCmsData() {
     (tab: ActiveTab) => {
       setActiveTabState(tab);
       const params = new URLSearchParams(searchParams.toString());
-      params.set("tab", tab);
+      if (tab === "dashboard") {
+        params.delete("tab");
+      } else {
+        params.set("tab", tab);
+      }
       if (tab !== "structured") {
         params.delete("sub");
       }
-      router.replace(`/cms?${params.toString()}`);
+      const queryString = params.toString();
+      router.replace(queryString ? `/cms?${queryString}` : "/cms");
     },
     [router, searchParams]
   );

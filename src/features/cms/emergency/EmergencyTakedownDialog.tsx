@@ -5,7 +5,7 @@ import { AlertTriangleIcon, Loader2Icon, ShieldAlertIcon, XIcon } from "lucide-r
 import { DANGER_BTN_CLASS, SECONDARY_BTN_CLASS } from "../constants";
 
 export interface EmergencyTakedownTarget {
-  entityType: "POST" | "PORTFOLIO";
+  entityType: "POST" | "PORTFOLIO" | "SERVICE" | "PAGE";
   entityId: string;
   title: string;
   slug?: string;
@@ -30,7 +30,14 @@ export function EmergencyTakedownDialog({
 
   if (!open || !target) return null;
 
-  const entityLabel = target.entityType === "POST" ? "Artikel Blog" : "Portofolio Klien";
+  const entityLabel =
+    target.entityType === "POST"
+      ? "Artikel Blog"
+      : target.entityType === "PORTFOLIO"
+      ? "Portofolio Klien"
+      : target.entityType === "SERVICE"
+      ? "Paket Layanan"
+      : "Halaman Statis";
   const isValidReason = reason.trim().length >= 5;
 
   async function handleSubmit(e: React.FormEvent) {

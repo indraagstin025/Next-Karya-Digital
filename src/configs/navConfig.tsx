@@ -49,8 +49,8 @@ export const navItems: NavItem[] = [
     items: [
       {
         icon: 'Package',
-        label: 'Ringkasan Situs',
-        href: '/cms?tab=dashboard'
+        label: 'Dashboard',
+        href: '/cms'
       }
     ]
   },

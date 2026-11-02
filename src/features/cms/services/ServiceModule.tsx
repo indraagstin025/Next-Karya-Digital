@@ -8,6 +8,7 @@ import {
   PencilIcon,
   HistoryIcon,
   XIcon,
+  ShieldAlertIcon,
 } from "lucide-react";
 import type { CmsServiceItem } from "../types";
 import {
@@ -19,6 +20,10 @@ import {
 import { slugifyText } from "../utils";
 import { StatusBadge } from "../components/StatusBadge";
 import { UrlField } from "../components/UrlField";
+import {
+  EmergencyTakedownDialog,
+  type EmergencyTakedownTarget,
+} from "../emergency/EmergencyTakedownDialog";
 
 export interface ServiceModuleProps {
   services: CmsServiceItem[];
@@ -43,6 +48,7 @@ export function ServiceModule({
   const [editorOpen, setEditorOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [takedownTarget, setTakedownTarget] = useState<EmergencyTakedownTarget | null>(null);
 
   // Form states
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -153,6 +159,26 @@ export function ServiceModule({
           action === "publish"
             ? `Layanan "${item.title}" berhasil ditayangkan.`
             : `Layanan "${item.title}" berhasil diarsipkan.`,
+      });
+      await onRefresh();
+    }
+  }
+
+  async function handleEmergencyTakedownConfirm(
+    target: EmergencyTakedownTarget,
+    reason: string
+  ) {
+    const res = await apiMutate("emergency/unpublish", "POST", {
+      targetEntity: target.entityType,
+      targetId: target.entityId,
+      reason,
+    });
+    if (res) {
+      setNotice({
+        type: "success",
+        text:
+          res.message ||
+          `Layanan "${target.title}" berhasil ditarik secara darurat ke status DRAF.`,
       });
       await onRefresh();
     }
@@ -297,13 +323,31 @@ export function ServiceModule({
                     Terbitkan
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleLifecycle(service, "archive")}
-                    className="rounded-md border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/20"
-                  >
-                    Arsipkan
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => handleLifecycle(service, "archive")}
+                      className="rounded-md border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/20 cursor-pointer"
+                    >
+                      Arsipkan
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setTakedownTarget({
+                          entityType: "SERVICE",
+                          entityId: service.id,
+                          title: service.title,
+                          slug: service.slug,
+                        })
+                      }
+                      title="Takedown Darurat Layanan"
+                      className="flex items-center gap-1 rounded-md border border-destructive/40 bg-destructive/15 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/25 transition-colors cursor-pointer"
+                    >
+                      <ShieldAlertIcon className="size-3" />
+                      Takedown
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -477,6 +521,14 @@ export function ServiceModule({
           </div>
         </div>
       )}
+
+      {/* Emergency Takedown Dialog */}
+      <EmergencyTakedownDialog
+        open={Boolean(takedownTarget)}
+        target={takedownTarget}
+        onClose={() => setTakedownTarget(null)}
+        onConfirm={handleEmergencyTakedownConfirm}
+      />
     </div>
   );
 }

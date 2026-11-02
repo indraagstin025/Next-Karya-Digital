@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArchiveIcon, HistoryIcon, PencilIcon } from "lucide-react";
+import { ArchiveIcon, HistoryIcon, PencilIcon, ShieldAlertIcon } from "lucide-react";
 import type {
   CmsFaq,
   CmsPageItem,
@@ -26,6 +26,10 @@ import {
 import { StatusBadge } from "../components/StatusBadge";
 import { UrlField } from "../components/UrlField";
 import { SeoSection } from "../components/SeoSection";
+import {
+  EmergencyTakedownDialog,
+  type EmergencyTakedownTarget,
+} from "../emergency/EmergencyTakedownDialog";
 
 interface StructuredModuleProps {
   subTab: StructuredSubTab;
@@ -89,6 +93,7 @@ export function StructuredModule({
   const [pageSeoTitle, setPageSeoTitle] = useState("");
   const [pageSeoDesc, setPageSeoDesc] = useState("");
   const [pageUpdatedLabel, setPageUpdatedLabel] = useState("Diperbarui Oktober 2026");
+  const [pageTakedownTarget, setPageTakedownTarget] = useState<EmergencyTakedownTarget | null>(null);
   const [pageBodyText, setPageBodyText] = useState("");
 
   // Redirect Form State
@@ -336,6 +341,26 @@ export function StructuredModule({
           action === "publish"
             ? `Halaman "${item.title}" berhasil ditayangkan.`
             : `Halaman "${item.title}" berhasil diarsipkan.`,
+      });
+      await loadWorkspaceData();
+    }
+  }
+
+  async function handleEmergencyTakedownPageConfirm(
+    target: EmergencyTakedownTarget,
+    reason: string
+  ) {
+    const res = await apiMutate("emergency/unpublish", "POST", {
+      targetEntity: target.entityType,
+      targetId: target.entityId,
+      reason,
+    });
+    if (res) {
+      setNotice({
+        type: "success",
+        text:
+          res.message ||
+          `Halaman "${target.title}" berhasil ditarik secara darurat ke status DRAF.`,
       });
       await loadWorkspaceData();
     }
@@ -809,6 +834,26 @@ export function StructuredModule({
                           Tayangkan
                         </button>
                       )}
+                      {pg.status === "PUBLISHED" && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPageTakedownTarget({
+                              entityType: "PAGE",
+                              entityId: pg.id,
+                              title: pg.title,
+                              slug: pg.slug,
+                            })
+                          }
+                          disabled={mutating}
+                          className="flex items-center gap-1 rounded-md border border-destructive/40 bg-destructive/15 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/25 transition-colors cursor-pointer"
+                          aria-label="Takedown Darurat Halaman"
+                          title="Takedown Darurat Halaman"
+                        >
+                          <ShieldAlertIcon className="size-3" aria-hidden="true" />
+                          Takedown
+                        </button>
+                      )}
                       {pg.status !== "ARCHIVED" && (
                         <button
                           type="button"
@@ -1073,6 +1118,14 @@ export function StructuredModule({
           </section>
         </div>
       )}
+
+      {/* Emergency Takedown Dialog for Static Pages */}
+      <EmergencyTakedownDialog
+        open={Boolean(pageTakedownTarget)}
+        target={pageTakedownTarget}
+        onClose={() => setPageTakedownTarget(null)}
+        onConfirm={handleEmergencyTakedownPageConfirm}
+      />
     </div>
   );
 }
