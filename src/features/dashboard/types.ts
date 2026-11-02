@@ -35,6 +35,21 @@ export interface AnalyticsTrafficSource {
   sharePercentage: number;
 }
 
+export interface AnalyticsTimelineItem {
+  date: string;
+  visitors: number;
+  pageviews: number;
+  sessions: number;
+  conversions: number;
+}
+
+export interface AnalyticsDeviceItem {
+  device: string;
+  label: string;
+  visitors: number;
+  sharePercentage: number;
+}
+
 export interface CmsAnalyticsOverview {
   site_id?: string;
   period: {
@@ -44,6 +59,8 @@ export interface CmsAnalyticsOverview {
   metrics: AnalyticsMetrics;
   pages?: AnalyticsPageRank[];
   sources?: AnalyticsTrafficSource[];
+  timeline?: AnalyticsTimelineItem[];
+  devices?: AnalyticsDeviceItem[];
   generatedAt?: string;
 }
 

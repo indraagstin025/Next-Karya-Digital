@@ -1,4 +1,5 @@
 import type {
+  AnalyticsDeviceItem,
   AnalyticsPageRank,
   AnalyticsTrafficSource,
   CmsAnalyticsOverview,
@@ -117,7 +118,36 @@ export const dashboardApi = {
   },
 
   /**
-   * Mengambil paket lengkap analitik (Overview, Pages, Sources) sekaligus.
+   * Mengambil rincian proporsi perangkat (Smartphone, Komputer, Tablet).
+   */
+  getAnalyticsDevices: async (
+    params?: { from?: string; to?: string }
+  ): Promise<AnalyticsDeviceItem[]> => {
+    try {
+      const q = new URLSearchParams();
+      if (params?.from) q.set("from", params.from);
+      if (params?.to) q.set("to", params.to);
+
+      const qs = q.toString() ? `?${q.toString()}` : "";
+      const res = await fetch(`/api/cms/analytics/devices${qs}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`);
+      }
+
+      const json = await res.json();
+      return json?.success && Array.isArray(json?.data) ? json.data : [];
+    } catch (error) {
+      console.error("[dashboardApi] getAnalyticsDevices error:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Mengambil paket lengkap analitik (Overview, Pages, Sources, Devices) sekaligus.
    */
   getFullAnalytics: async (
     period: PeriodFilter = "30d"
@@ -125,10 +155,11 @@ export const dashboardApi = {
     const range = resolveDateRange(period);
 
     try {
-      const [overviewData, pagesData, sourcesData] = await Promise.all([
+      const [overviewData, pagesData, sourcesData, devicesData] = await Promise.all([
         dashboardApi.getAnalyticsOverview(range),
         dashboardApi.getAnalyticsPages(10, range),
         dashboardApi.getAnalyticsSources(range),
+        dashboardApi.getAnalyticsDevices(range),
       ]);
 
       if (!overviewData) return null;
@@ -137,6 +168,7 @@ export const dashboardApi = {
         ...overviewData,
         pages: pagesData,
         sources: sourcesData,
+        devices: devicesData.length > 0 ? devicesData : overviewData.devices,
       };
     } catch (error) {
       console.error("[dashboardApi] getFullAnalytics error:", error);

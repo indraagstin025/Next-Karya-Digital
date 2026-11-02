@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import {
   ClockIcon,
+  GlobeIcon,
   MessageSquareIcon,
   TrendingUpIcon,
   UsersIcon,
@@ -18,6 +19,7 @@ import { StatisticsCard } from "./components/StatisticsCard";
 import { ProductInsightsCard } from "./components/ProductInsightsCard";
 import { TotalEarningCard } from "./components/TotalEarningCard";
 import { SalesMetricsCard } from "./components/SalesMetricsCard";
+import { TrafficTrendChart } from "./components/TrafficTrendChart";
 import { TopPagesTable } from "./components/TopPagesTable";
 import {
   DashboardTransactionTable,
@@ -41,6 +43,9 @@ export interface DashboardViewProps {
   selectedPeriod?: PeriodFilter;
   onPeriodChange?: (period: PeriodFilter) => void;
   onNavigateTab: (tab: string, sub?: string) => void;
+  sites?: { id: string; name: string; domain?: string }[];
+  selectedSiteId?: string;
+  onSiteChange?: (siteId: string) => void;
 }
 
 export function DashboardView({
@@ -59,6 +64,9 @@ export function DashboardView({
   selectedPeriod = "30d",
   onPeriodChange,
   onNavigateTab,
+  sites,
+  selectedSiteId,
+  onSiteChange,
 }: DashboardViewProps) {
   const [internalPeriod, setInternalPeriod] = useState<PeriodFilter>(selectedPeriod);
   const currentPeriod = onPeriodChange ? selectedPeriod : internalPeriod;
@@ -134,6 +142,25 @@ export function DashboardView({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* Site Selector (Option A: only rendered when > 1 site exists) */}
+          {sites && sites.length > 1 && (
+            <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 px-2.5 py-1 text-xs">
+              <GlobeIcon className="size-3.5 text-muted-foreground" />
+              <select
+                value={selectedSiteId || "nextkarya-main"}
+                onChange={(e) => onSiteChange?.(e.target.value)}
+                aria-label="Pilih Situs"
+                className="bg-transparent font-medium text-foreground cursor-pointer focus:outline-none text-xs"
+              >
+                {sites.map((s) => (
+                  <option key={s.id} value={s.id} className="bg-popover text-popover-foreground">
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Period Selector Filter */}
           <div className="inline-flex rounded-lg border border-border bg-muted/40 p-1 text-xs">
             <button
@@ -254,10 +281,16 @@ export function DashboardView({
           completedProjectsValue={`${publishedPortfoliosCount} Portofolio`}
           conversionTrendValue={`${conversionRate.toFixed(1)}%`}
           sources={analytics?.sources}
+          devices={analytics?.devices}
           className="col-span-full *:data-[slot=card-content]:space-y-6 xl:col-span-2"
         />
 
-        {/* Baris 3: Datatable Prospek Klien & Tabel Halaman Terpopuler */}
+        {/* Baris 3: Grafik Garis Tren Harian */}
+        <div className="col-span-full">
+          <TrafficTrendChart timeline={analytics?.timeline} />
+        </div>
+
+        {/* Baris 4: Datatable Prospek Klien & Tabel Halaman Terpopuler */}
         <div className="col-span-full grid gap-6 xl:grid-cols-3">
           <div className="xl:col-span-2">
             <Card className="w-full py-0 h-full">

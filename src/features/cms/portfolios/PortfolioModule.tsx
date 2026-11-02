@@ -11,6 +11,7 @@ import {
   UploadIcon,
   XIcon,
   StarIcon,
+  ShieldAlertIcon,
 } from "lucide-react";
 import type { CmsMediaItem, CmsPortfolio } from "../types";
 import {
@@ -23,6 +24,10 @@ import { slugifyText, formatDateShortId } from "../utils";
 import { StatusBadge } from "../components/StatusBadge";
 import { UrlField } from "../components/UrlField";
 import { MediaPickerModal } from "../components/MediaPickerModal";
+import {
+  EmergencyTakedownDialog,
+  type EmergencyTakedownTarget,
+} from "../emergency/EmergencyTakedownDialog";
 
 export interface PortfolioModuleProps {
   portfolios: CmsPortfolio[];
@@ -48,6 +53,7 @@ export function PortfolioModule({
 }: PortfolioModuleProps) {
   const [editorOpen, setEditorOpen] = useState(false);
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [takedownTarget, setTakedownTarget] = useState<EmergencyTakedownTarget | null>(null);
 
   // Filter States
   const [search, setSearch] = useState("");
@@ -175,6 +181,26 @@ export function PortfolioModule({
           action === "publish"
             ? `Portofolio "${item.title}" berhasil ditayangkan.`
             : `Portofolio "${item.title}" berhasil diarsipkan.`,
+      });
+      await onRefresh();
+    }
+  }
+
+  async function handleEmergencyTakedownConfirm(
+    target: EmergencyTakedownTarget,
+    reason: string
+  ) {
+    const res = await apiMutate("emergency/unpublish", "POST", {
+      targetEntity: target.entityType,
+      targetId: target.entityId,
+      reason,
+    });
+    if (res) {
+      setNotice({
+        type: "success",
+        text:
+          res.message ||
+          `Portofolio "${target.title}" berhasil ditarik secara darurat ke status DRAF.`,
       });
       await onRefresh();
     }
@@ -376,13 +402,31 @@ export function PortfolioModule({
                           Terbitkan
                         </button>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleLifecycle(item, "archive")}
-                          className="rounded-md border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/20"
-                        >
-                          Arsipkan
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleLifecycle(item, "archive")}
+                            className="rounded-md border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/20"
+                          >
+                            Arsipkan
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setTakedownTarget({
+                                entityType: "PORTFOLIO",
+                                entityId: item.id,
+                                title: item.title,
+                                slug: item.slug,
+                              })
+                            }
+                            title="Takedown Darurat Konten"
+                            className="flex items-center gap-1 rounded-md border border-destructive/40 bg-destructive/15 px-2 py-1 text-[11px] font-semibold text-destructive hover:bg-destructive/25 transition-colors cursor-pointer"
+                          >
+                            <ShieldAlertIcon className="size-3" />
+                            Takedown
+                          </button>
+                        </div>
                       )}
                     </div>
                   </td>
@@ -637,6 +681,14 @@ export function PortfolioModule({
           if (!thumbnailAlt.trim()) setThumbnailAlt(item.altText || item.originalName);
         }}
         title="Pilih Thumbnail Portofolio"
+      />
+
+      {/* Emergency Takedown Dialog */}
+      <EmergencyTakedownDialog
+        open={Boolean(takedownTarget)}
+        target={takedownTarget}
+        onClose={() => setTakedownTarget(null)}
+        onConfirm={handleEmergencyTakedownConfirm}
       />
     </div>
   );

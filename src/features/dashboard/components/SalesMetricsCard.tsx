@@ -18,7 +18,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import type { AnalyticsTrafficSource } from "../types";
+import type { AnalyticsTrafficSource, AnalyticsDeviceItem } from "../types";
 
 const defaultColors = [
   "var(--primary)",
@@ -46,6 +46,7 @@ export interface SalesMetricsCardProps {
   dealValue?: string;
   completedProjectsValue?: string;
   sources?: AnalyticsTrafficSource[];
+  devices?: AnalyticsDeviceItem[];
 }
 
 export function SalesMetricsCard({
@@ -55,10 +56,14 @@ export function SalesMetricsCard({
   dealValue = "Rp 0",
   completedProjectsValue = "0 Portofolio",
   sources,
+  devices,
 }: SalesMetricsCardProps) {
-  const hasSources = Boolean(sources && sources.length > 0);
+  const [donutView, setDonutView] = React.useState<"sources" | "devices">("sources");
 
-  const chartPieData = hasSources
+  const hasSources = Boolean(sources && sources.length > 0 && sources.some((s) => s.pageviews > 0));
+  const hasDevices = Boolean(devices && devices.length > 0 && devices.some((d) => d.visitors > 0 || d.sharePercentage > 0));
+
+  const sourcePieData = hasSources
     ? sources!.map((s, idx) => ({
         name: s.label,
         sales: s.pageviews,
@@ -67,16 +72,28 @@ export function SalesMetricsCard({
       }))
     : [{ name: "Belum Ada Rujukan", sales: 1, fill: "color-mix(in oklab, var(--muted) 40%, transparent)", share: 0 }];
 
-  const topSource = hasSources ? chartPieData[0] : null;
-  const topPercentage = topSource ? Math.round(topSource.share) : 0;
+  const devicePieData = hasDevices
+    ? devices!.map((d, idx) => ({
+        name: d.label,
+        sales: d.visitors,
+        fill: defaultColors[idx % defaultColors.length],
+        share: d.sharePercentage,
+      }))
+    : [{ name: "Belum Ada Data", sales: 1, fill: "color-mix(in oklab, var(--muted) 40%, transparent)", share: 0 }];
+
+  const chartPieData = donutView === "sources" ? sourcePieData : devicePieData;
+  const isDataActive = donutView === "sources" ? hasSources : hasDevices;
+
+  const topItem = isDataActive ? chartPieData[0] : null;
+  const topPercentage = topItem ? Math.round(topItem.share) : 0;
 
   const totalBars = 24;
-  const filledBars = hasSources && topPercentage > 0 ? Math.round((topPercentage * totalBars) / 100) : 0;
+  const filledBars = isDataActive && topPercentage > 0 ? Math.round((topPercentage * totalBars) / 100) : 0;
 
   const dynamicBarData = Array.from({ length: totalBars }, (_, index) => {
     return {
       date: String(index + 1),
-      sales: hasSources && index < filledBars ? 100 : 0,
+      sales: isDataActive && index < filledBars ? 100 : 0,
     };
   });
 
@@ -143,8 +160,34 @@ export function SalesMetricsCard({
           </div>
 
           <Card className="ring-foreground/10 justify-between gap-4 shadow-none ring-1 lg:col-span-2">
-            <CardHeader className="gap-1">
-              <CardTitle className="text-lg font-semibold">Saluran Rujukan</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
+              <CardTitle className="text-base font-semibold">
+                {donutView === "sources" ? "Saluran Rujukan" : "Proporsi Perangkat"}
+              </CardTitle>
+              <div className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5 text-xs shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setDonutView("sources")}
+                  className={`px-2.5 py-1 rounded-md font-medium transition cursor-pointer text-xs ${
+                    donutView === "sources"
+                      ? "bg-background text-foreground shadow-xs font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Saluran
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDonutView("devices")}
+                  className={`px-2.5 py-1 rounded-md font-medium transition cursor-pointer text-xs ${
+                    donutView === "devices"
+                      ? "bg-background text-foreground shadow-xs font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Perangkat
+                </button>
+              </div>
             </CardHeader>
 
             <CardContent className="space-y-4">
@@ -183,7 +226,11 @@ export function SalesMetricsCard({
                                 y={(viewBox.cy || 0) + 19}
                                 className="fill-muted-foreground text-xs"
                               >
-                                {hasSources ? "Organik" : "Data Kosong"}
+                                {isDataActive
+                                  ? donutView === "sources"
+                                    ? "Teratas"
+                                    : "Perangkat"
+                                  : "Data Kosong"}
                               </tspan>
                             </text>
                           );
@@ -195,7 +242,7 @@ export function SalesMetricsCard({
               </ChartContainer>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground truncate max-w-[170px]">
-                  {topSource ? topSource.name : "Belum Ada Rujukan"}
+                  {topItem ? topItem.name : donutView === "sources" ? "Belum Ada Rujukan" : "Belum Ada Perangkat"}
                 </span>
                 <span className="text-2xl font-semibold text-primary">{topPercentage}%</span>
               </div>
@@ -208,31 +255,52 @@ export function SalesMetricsCard({
         <Card className="ring-foreground/10 shadow-none ring-1">
           <CardContent className="grid gap-4 lg:grid-cols-5">
             <div className="flex flex-col justify-center gap-6">
-              <span className="text-lg font-semibold">Saluran Teratas</span>
+              <span className="text-lg font-semibold">
+                {donutView === "sources" ? "Saluran Teratas" : "Perangkat Utama"}
+              </span>
               <span className="max-lg:text-5xl text-6xl font-bold">{topPercentage}%</span>
               <span className="text-muted-foreground text-sm">
-                {hasSources
-                  ? "Porsi kontribusi trafik pengunjung dari saluran rujukan teratas"
-                  : "Menunggu kunjungan rujukan pertama dari Google atau tautan luar"}
+                {isDataActive
+                  ? donutView === "sources"
+                    ? "Porsi kontribusi trafik pengunjung dari saluran rujukan teratas"
+                    : "Porsi perangkat dominan yang digunakan pengunjung website"
+                  : donutView === "sources"
+                  ? "Menunggu kunjungan rujukan pertama dari Google atau tautan luar"
+                  : "Menunggu kunjungan pertama dari perangkat publik"}
               </span>
             </div>
             <div className="flex flex-col gap-6 text-lg md:col-span-4">
-              <span className="font-medium">Saluran Pemasaran Digital</span>
+              <span className="font-medium">
+                {donutView === "sources" ? "Saluran Pemasaran Digital" : "Distribusi Perangkat Pengunjung"}
+              </span>
               <span className="text-muted-foreground text-sm text-wrap">
-                Pemantauan rujukan Google, tautan langsung, media sosial, dan mitra bisnis
-                untuk efisiensi akuisisi calon klien.
+                {donutView === "sources"
+                  ? "Pemantauan rujukan Google, tautan langsung, media sosial, dan mitra bisnis untuk efisiensi akuisisi calon klien."
+                  : "Pemantauan persentase pengguna Smartphone, Komputer, dan Tablet untuk memastikan optimasi antarmuka responsif."}
               </span>
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="flex items-center gap-2">
                   <ChartNoAxesCombinedIcon className="size-6 text-primary" />
                   <span className="text-base font-medium">
-                    {hasSources && sources && sources[0] ? sources[0].label : "Belum Ada Saluran"}
+                    {donutView === "sources"
+                      ? hasSources && sources && sources[0]
+                        ? sources[0].label
+                        : "Belum Ada Saluran"
+                      : hasDevices && devices && devices[0]
+                      ? devices[0].label
+                      : "Smartphone (Mobile)"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CirclePercentIcon className="size-6 text-primary" />
                   <span className="text-base font-medium">
-                    {hasSources && sources && sources[1] ? sources[1].label : "Menunggu Sinyal Kunjungan"}
+                    {donutView === "sources"
+                      ? hasSources && sources && sources[1]
+                        ? sources[1].label
+                        : "Menunggu Sinyal Kunjungan"
+                      : hasDevices && devices && devices[1]
+                      ? devices[1].label
+                      : "Komputer (Desktop)"}
                   </span>
                 </div>
               </div>

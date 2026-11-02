@@ -12,6 +12,7 @@ import {
   SearchIcon,
   SendIcon,
   ArchiveIcon,
+  ShieldAlertIcon,
 } from "lucide-react";
 import type { CmsCategory, CmsPost, ContentStatus } from "../../types";
 import { formatDateShortId } from "../../utils";
@@ -49,6 +50,7 @@ export interface PostDatatableProps {
   onStartEdit: (post: CmsPost) => void;
   onLifecycle: (post: CmsPost, action: "publish" | "archive") => Promise<void>;
   onOpenSnapshot: (post: CmsPost) => void;
+  onEmergencyTakedown?: (post: CmsPost) => void;
 }
 
 export function PostDatatable({
@@ -57,6 +59,7 @@ export function PostDatatable({
   onStartEdit,
   onLifecycle,
   onOpenSnapshot,
+  onEmergencyTakedown,
 }: PostDatatableProps) {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -285,12 +288,23 @@ export function PostDatatable({
                                 <span>Terbitkan Sekarang</span>
                               </DropdownMenuItem>
                             ) : (
-                              <DropdownMenuItem
-                                onClick={() => onLifecycle(post, "archive")}
-                              >
-                                <ArchiveIcon className="size-4 mr-2 text-rose-500" />
-                                <span>Arsipkan Artikel</span>
-                              </DropdownMenuItem>
+                              <>
+                                <DropdownMenuItem
+                                  onClick={() => onLifecycle(post, "archive")}
+                                >
+                                  <ArchiveIcon className="size-4 mr-2 text-rose-500" />
+                                  <span>Arsipkan Artikel</span>
+                                </DropdownMenuItem>
+                                {onEmergencyTakedown && (
+                                  <DropdownMenuItem
+                                    onClick={() => onEmergencyTakedown(post)}
+                                    className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+                                  >
+                                    <ShieldAlertIcon className="size-4 mr-2 text-destructive" />
+                                    <span>Takedown Darurat</span>
+                                  </DropdownMenuItem>
+                                )}
+                              </>
                             )}
                           </DropdownMenuGroup>
                         </DropdownMenuContent>

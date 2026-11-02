@@ -13,6 +13,10 @@ import { MediaPickerModal } from "../components/MediaPickerModal";
 import { PostDatatable } from "./components/PostDatatable";
 import { PostEditorModal } from "./components/PostEditorModal";
 import { CategoryManagerModal } from "./components/CategoryManagerModal";
+import {
+  EmergencyTakedownDialog,
+  type EmergencyTakedownTarget,
+} from "../emergency/EmergencyTakedownDialog";
 
 export interface PostModuleProps {
   posts: CmsPost[];
@@ -42,6 +46,7 @@ export function PostModule({
   const [editorOpen, setEditorOpen] = useState(false);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [takedownTarget, setTakedownTarget] = useState<EmergencyTakedownTarget | null>(null);
 
   // Editor Form States
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -234,6 +239,26 @@ export function PostModule({
     }
   }
 
+  async function handleEmergencyTakedownConfirm(
+    target: EmergencyTakedownTarget,
+    reason: string
+  ) {
+    const res = await apiMutate("emergency/unpublish", "POST", {
+      targetEntity: target.entityType,
+      targetId: target.entityId,
+      reason,
+    });
+    if (res) {
+      setNotice({
+        type: "success",
+        text:
+          res.message ||
+          `Artikel "${target.title}" berhasil ditarik secara darurat ke status DRAF.`,
+      });
+      await onRefresh();
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* 1. Header Toolbar */}
@@ -276,6 +301,14 @@ export function PostModule({
         onStartEdit={startEdit}
         onLifecycle={handleLifecycle}
         onOpenSnapshot={(post) => openSnapshotModal("POST", post.id, post.title)}
+        onEmergencyTakedown={(post) =>
+          setTakedownTarget({
+            entityType: "POST",
+            entityId: post.id,
+            title: post.title,
+            slug: post.slug,
+          })
+        }
       />
 
       {/* 3. Post Editor Modal */}
@@ -337,6 +370,14 @@ export function PostModule({
           }
           setMediaPickerOpen(false);
         }}
+      />
+
+      {/* 6. Emergency Takedown Dialog */}
+      <EmergencyTakedownDialog
+        open={Boolean(takedownTarget)}
+        target={takedownTarget}
+        onClose={() => setTakedownTarget(null)}
+        onConfirm={handleEmergencyTakedownConfirm}
       />
     </div>
   );
