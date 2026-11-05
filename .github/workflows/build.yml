@@ -1,5 +1,6 @@
 name: Build frontend image
 
+# Dijalankan saat push ke main atau manual dari tab Actions.
 on:
   push:
     branches: [main]
