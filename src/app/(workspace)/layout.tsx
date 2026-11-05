@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthenticatedCmsUser } from "@/lib/cms-server";
-import { AdminWorkspace } from "@/features/cms/AdminWorkspace";
+import { WorkspaceShellLoader } from "@/features/cms/WorkspaceShellLoader";
 import { WorkspaceUnavailable } from "@/features/cms/WorkspaceUnavailable";
 
 export const metadata: Metadata = {
@@ -27,5 +27,7 @@ export default async function WorkspaceLayout({
     return <WorkspaceUnavailable message={auth.message} retryHref="/dashboard" />;
   }
 
-  return <AdminWorkspace currentUser={auth.user}>{children}</AdminWorkspace>;
+  return (
+    <WorkspaceShellLoader currentUser={auth.user}>{children}</WorkspaceShellLoader>
+  );
 }
