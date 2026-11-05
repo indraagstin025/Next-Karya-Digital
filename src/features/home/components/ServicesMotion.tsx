@@ -9,6 +9,27 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const TILT_LIMIT_DEG = 4;
 
+type FloatConfig = {
+  y: number;
+  rotation: number;
+  duration: number;
+  delay?: number;
+  origin: string;
+};
+
+/**
+ * Amplitudo memakai satuan user space SVG, bukan piksel layar. Nilai origin
+ * mengikuti titik tengah tiap ikon agar rotasi tidak mengayun dari pojok.
+ */
+const FLOAT_ICONS: Record<string, FloatConfig> = {
+  "mobile-android": { y: -5, rotation: -2, duration: 2.8, origin: "28 120" },
+  "mobile-apple": { y: -6, rotation: 2, duration: 3.2, delay: 0.35, origin: "212 190" },
+  "website-plus": { y: -4, rotation: -3, duration: 3.0, origin: "12 115" },
+  "website-arrow": { y: -5, rotation: 2, duration: 3.4, origin: "282 156" },
+  "website-window": { y: -4, rotation: 0, duration: 2.6, origin: "279 59" },
+  "website-chart": { y: -3, rotation: 0, duration: 3.1, origin: "40 190" },
+};
+
 /**
  * Entrance card Layanan Utama lewat ScrollTrigger.batch, lalu tilt 3D dan
  * spotlight kursor hanya di perangkat dengan pointer presisi. Tidak ada
@@ -44,6 +65,49 @@ export function ServicesMotion({ children }: { children: React.ReactNode }) {
               overwrite: true,
             }),
         });
+      });
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const icons = gsap.utils.toArray<SVGGElement>(
+          "[data-service-float]",
+          scope.current
+        );
+        const tweens: gsap.core.Tween[] = [];
+        const triggers: ScrollTrigger[] = [];
+
+        icons.forEach((icon) => {
+          const config = FLOAT_ICONS[icon.dataset.serviceFloat ?? ""];
+          if (!config) return;
+
+          const tween = gsap.to(icon, {
+            y: config.y,
+            rotation: config.rotation,
+            duration: config.duration,
+            delay: config.delay ?? 0,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            svgOrigin: config.origin,
+            paused: true,
+          });
+
+          const trigger = ScrollTrigger.create({
+            trigger: icon,
+            start: "top bottom",
+            end: "bottom top",
+            onToggle: (self) => (self.isActive ? tween.play() : tween.pause()),
+          });
+
+          if (trigger.isActive) tween.play();
+
+          tweens.push(tween);
+          triggers.push(trigger);
+        });
+
+        return () => {
+          triggers.forEach((trigger) => trigger.kill());
+          tweens.forEach((tween) => tween.kill());
+        };
       });
 
       mm.add(
