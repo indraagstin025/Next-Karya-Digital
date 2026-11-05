@@ -127,7 +127,7 @@ export function AdminWorkspace({ currentUser, children }: AdminWorkspaceProps) {
         handleLogout,
       }}
     >
-      <CmsShell>
+      <CmsShell isAdmin={Boolean(currentUser.isAdmin)}>
         <div className="min-w-0 space-y-6">
           {bannerNotice && (
             <div

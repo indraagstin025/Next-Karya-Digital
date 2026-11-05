@@ -10,6 +10,7 @@ export type MenuLeafSubItem = {
   badge?: string
   badgeClassName?: string
   target?: '_blank' | '_self' | '_parent' | '_top'
+  adminOnly?: boolean
 }
 
 export type MenuGroupSubItem = {
@@ -22,6 +23,7 @@ export type MenuSubItem = MenuLeafSubItem | MenuGroupSubItem
 export type MenuItem = {
   icon: IconName
   label: string
+  adminOnly?: boolean
 } & (
   | {
       href: string
@@ -125,6 +127,12 @@ export const navItems: NavItem[] = [
         icon: 'ShieldAlert',
         label: 'Penanganan Darurat',
         href: '/pengaturan/darurat'
+      },
+      {
+        icon: 'UserCog',
+        label: 'Anggota Tim',
+        href: '/pengaturan/anggota',
+        adminOnly: true
       },
       {
         icon: 'UserCheck',

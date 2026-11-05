@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { HERO_HIGHLIGHTS } from "../data/homeData";
+import { HeroMotion } from "./HeroMotion";
 
 export function HeroSection() {
   return (
@@ -53,27 +54,36 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14 py-10 sm:py-14 lg:py-12">
+        <HeroMotion>
         <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-8">
           <div className="max-w-[530px]">
-            <div className="nk-hero-enter inline-flex items-center gap-2 rounded-full border border-[#005090]/25 bg-[#005090]/8 dark:bg-[#0986C8]/15 px-3.5 py-1 text-[11px] sm:text-xs font-bold text-[#005090] dark:text-[#76c2eb] mb-3.5">
-              <span className="h-2 w-2 rounded-full bg-[#005090] dark:bg-[#0986C8] animate-pulse" />
-              <span>Next Karya Digital Solutions • Software House & Jasa Website</span>
-            </div>
-
-            <h1 className="nk-hero-enter text-[31px] sm:text-[38px] lg:text-[44px] xl:text-[48px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[#041E42] dark:text-[#f4f8ff]">
-              Bangun Website Profesional
-              <br />
-              untuk Bisnis Anda yang{" "}
-              <span className="text-[#005090] dark:text-[#0986C8]">
-                Lebih Dipercaya.
+            <h1 className="text-[31px] sm:text-[38px] lg:text-[44px] xl:text-[48px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[#041E42] dark:text-[#f4f8ff]">
+              <span className="block overflow-hidden">
+                <span data-hero-line className="block pb-[0.08em]">
+                  Bangun Website Profesional
+                </span>
+              </span>
+              <span className="block overflow-hidden">
+                <span data-hero-line className="block pb-[0.08em]">
+                  untuk Bisnis Anda yang{" "}
+                  <span className="text-[#005090] dark:text-[#0986C8]">
+                    Lebih Dipercaya.
+                  </span>
+                </span>
               </span>
             </h1>
 
-            <p className="nk-hero-enter nk-hero-delay-1 mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal">
+            <p
+              data-hero-fade
+              className="mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal"
+            >
               Tingkatkan kredibilitas dan jangkauan pasar bisnis Anda. Next Karya Digital Solutions merancang website modern berkecepatan tinggi, sistem web kustom, dan aplikasi mobile yang ramah SEO serta mudah dihubungi oleh calon pelanggan.
             </p>
 
-            <div className="nk-hero-enter nk-hero-delay-2 mt-6 flex flex-wrap items-center gap-3.5">
+            <div
+              data-hero-fade
+              className="mt-6 flex flex-wrap items-center gap-3.5"
+            >
               <Link
                 href="#layanan"
                 className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#005090] hover:bg-[#003E70] px-6 py-3 text-[13.5px] font-semibold text-white shadow-[0_10px_25px_-5px_rgba(0,80,144,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-5px_rgba(0,80,144,0.55)] active:scale-[0.98]"
@@ -89,7 +99,10 @@ export function HeroSection() {
               </Link>
             </div>
 
-            <div className="nk-hero-enter nk-hero-delay-3 mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5">
+            <div
+              data-hero-fade
+              className="mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5"
+            >
               {HERO_HIGHLIGHTS.map((item, index) => (
                 <React.Fragment key={item.label}>
                   {index > 0 && (
@@ -109,7 +122,10 @@ export function HeroSection() {
           </div>
 
           {/* Right Column: 3D Stage with Logo Gabungan */}
-          <div className="nk-hero-enter nk-hero-delay-2 group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]">
+          <div
+            data-hero-visual
+            className="group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]"
+          >
             <svg
               viewBox="0 0 700 540"
               fill="none"
@@ -216,6 +232,7 @@ export function HeroSection() {
             </div>
           </div>
         </div>
+        </HeroMotion>
       </div>
     </section>
   );

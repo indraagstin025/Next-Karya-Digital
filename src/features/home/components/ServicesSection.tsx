@@ -9,6 +9,7 @@ import {
   CheckIcon,
 } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ServicesMotion } from "./ServicesMotion";
 import type { PublicServiceDTO } from "@/lib/public-content";
 import { pickServiceCopy } from "@/lib/live-content-adapters";
 
@@ -55,7 +56,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-0 h-[190px] w-[190px] sm:h-[240px] sm:w-[240px] -z-10"
+        className="pointer-events-none absolute top-0 right-0 h-[190px] w-[190px] sm:h-[240px] sm:w-[240px] -scale-x-100 -z-10"
       >
         <circle
           cx="15"
@@ -80,7 +81,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 right-0 h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] -z-10"
+        className="pointer-events-none absolute bottom-0 left-0 h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] -scale-x-100 -z-10"
       >
         <circle
           cx="250"
@@ -121,10 +122,12 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
           </p>
         </ScrollReveal>
 
+        <ServicesMotion>
         <div className="mt-12 sm:mt-14 space-y-6 lg:space-y-7">
           <div className="grid gap-6 lg:gap-7 lg:grid-cols-12 items-stretch">
-            <ScrollReveal className="lg:col-span-7 h-full">
-              <article className="h-full flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border-2 border-[#005090] dark:border-blue-500/70 p-7 sm:p-9 shadow-[0_16px_40px_-10px_rgba(0,80,144,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.22)] hover:border-[#005090] group">
+            <div className="lg:col-span-7 h-full">
+              <article data-service-card className="relative overflow-hidden h-full flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border-2 border-[#005090] dark:border-blue-500/70 p-7 sm:p-9 shadow-[0_16px_40px_-10px_rgba(0,80,144,0.08)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.22)] hover:border-[#005090] group">
+                <div className="nk-service-spotlight" aria-hidden="true" />
                 <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] items-center">
                   <div>
                     <div className="flex items-center gap-3 mb-5">
@@ -257,10 +260,11 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                   </div>
                 </div>
               </article>
-            </ScrollReveal>
+            </div>
 
-            <ScrollReveal delayMs={90} className="lg:col-span-5 h-full">
-              <article className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+            <div className="lg:col-span-5 h-full">
+              <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+                <div className="nk-service-spotlight" aria-hidden="true" />
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#005090] text-white shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:rotate-45">
@@ -300,12 +304,13 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                   </Link>
                 </div>
               </article>
-            </ScrollReveal>
+            </div>
           </div>
 
           <div className="grid gap-6 lg:gap-7 lg:grid-cols-12 items-stretch">
-            <ScrollReveal delayMs={60} className="lg:col-span-5 h-full">
-              <article className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+            <div className="lg:col-span-5 h-full">
+              <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+                <div className="nk-service-spotlight" aria-hidden="true" />
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#005090] text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
@@ -361,10 +366,11 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                   </div>
                 </div>
               </article>
-            </ScrollReveal>
+            </div>
 
-            <ScrollReveal delayMs={150} className="lg:col-span-7 h-full">
-              <article className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-gradient-to-br from-[#005090] via-[#003E70] to-[#002857] p-7 sm:p-9 shadow-[0_18px_48px_-10px_rgba(0,80,144,0.38)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_-10px_rgba(0,80,144,0.52)] group">
+            <div className="lg:col-span-7 h-full">
+              <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-gradient-to-br from-[#005090] via-[#003E70] to-[#002857] p-7 sm:p-9 shadow-[0_18px_48px_-10px_rgba(0,80,144,0.38)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_26px_60px_-10px_rgba(0,80,144,0.52)] group">
+                <div className="nk-service-spotlight" aria-hidden="true" />
                 <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] items-center">
                   <div>
                     <div className="flex items-center gap-3 mb-5">
@@ -478,14 +484,15 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                   </div>
                 </div>
               </article>
-            </ScrollReveal>
+            </div>
           </div>
 
           {extraServices.length > 0 && (
             <div className="grid gap-6 lg:gap-7 md:grid-cols-2 items-stretch">
-              {extraServices.map((extra, idx) => (
-                <ScrollReveal key={extra.slug} delayMs={60 * (idx + 1)} className="h-full">
-                  <article className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+              {extraServices.map((extra) => (
+                <div key={extra.slug} className="h-full">
+                  <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+                    <div className="nk-service-spotlight" aria-hidden="true" />
                     <div>
                       <div className="flex items-center justify-between mb-5">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#005090] text-white shadow-sm transition-transform duration-300 group-hover:scale-105">
@@ -527,11 +534,12 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                       </Link>
                     </div>
                   </article>
-                </ScrollReveal>
+                </div>
               ))}
             </div>
           )}
         </div>
+        </ServicesMotion>
       </div>
     </section>
   );

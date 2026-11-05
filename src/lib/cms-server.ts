@@ -11,6 +11,7 @@ export interface CmsStaffUser {
   role: "STAFF";
   jobTitle: string;
   avatarUrl: string | null;
+  isAdmin: boolean;
 }
 
 export type CmsAuthResult =

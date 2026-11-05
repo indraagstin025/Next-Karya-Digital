@@ -415,9 +415,21 @@ const SidebarGroupedMenuItems = ({
   )
 }
 
-const SidebarLayout = () => {
+const SidebarLayout = ({ isAdmin = false }: { isAdmin?: boolean }) => {
   const pathname = usePathname()
   const { state, isMobile } = useSidebar()
+
+  // Menu bertanda adminOnly hanya dirender untuk akun yang masuk daftar admin.
+  const visibleNavItems = useMemo(
+    () =>
+      navItems
+        .map(group => ({
+          ...group,
+          items: group.items.filter(item => !item.adminOnly || isAdmin)
+        }))
+        .filter(group => group.items.length > 0),
+    [isAdmin]
+  )
 
   // Branches the user has explicitly opened or closed, keyed by label. It lives here rather
   // than inside each Collapsible so it survives the swap between the inline sub-menu and the
@@ -426,8 +438,8 @@ const SidebarLayout = () => {
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({})
 
   const activeBranchKeys = useMemo(
-    () => getActiveBranchKeys(navItems, pathname),
-    [pathname]
+    () => getActiveBranchKeys(visibleNavItems, pathname),
+    [visibleNavItems, pathname]
   )
 
   // A user toggle wins; otherwise the branch mirrors whether it holds the active route.
@@ -464,7 +476,7 @@ const SidebarLayout = () => {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className='group-data-[collapsible=icon]:overflow-y-auto'>
-        {navItems.map((navItem, index) => {
+        {visibleNavItems.map((navItem, index) => {
           return (
             <SidebarGroupedMenuItems
               key={navItem.groupLabel || index}

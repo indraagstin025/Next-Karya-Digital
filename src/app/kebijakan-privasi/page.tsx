@@ -5,6 +5,8 @@ import { getPublicPage } from "@/lib/public-content";
 
 const SLUG = "kebijakan-privasi";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPublicPage(SLUG);
   return {

@@ -12,6 +12,8 @@ import { ServiceModule } from "./services/ServiceModule";
 import { MediaModule } from "./media/MediaModule";
 import { StructuredModule } from "./structured/StructuredModule";
 import { EmergencyModule } from "./emergency/EmergencyModule";
+import { TeamModule } from "./team/TeamModule";
+import { PasswordCard } from "./profile/PasswordCard";
 import { useWorkspace } from "./WorkspaceContext";
 import { DANGER_BTN_CLASS } from "./constants";
 
@@ -28,6 +30,7 @@ export type WorkspaceSectionId =
   | "crm-leads"
   | "crm-schedules"
   | "emergency"
+  | "team"
   | "profile";
 
 export interface WorkspaceSectionProps {
@@ -60,6 +63,7 @@ const workspacePaths: Record<string, string> = {
   media: "/cms/media",
   crm: "/crm/calon-klien",
   emergency: "/pengaturan/darurat",
+  team: "/pengaturan/anggota",
   profile: "/pengaturan/profil",
 };
 
@@ -274,6 +278,10 @@ export function WorkspaceSection({ section }: WorkspaceSectionProps) {
     );
   }
 
+  if (section === "team") {
+    return <TeamModule />;
+  }
+
   if (section === "profile") {
     return (
       <div className="space-y-6">
@@ -300,7 +308,7 @@ export function WorkspaceSection({ section }: WorkspaceSectionProps) {
                   {currentUser.jobTitle || "Internal Staff"}
                 </p>
                 <span className="mt-1 inline-flex rounded-md border border-emerald-500/40 bg-emerald-950/60 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  {currentUser.role}
+                  {currentUser.isAdmin ? "ADMIN" : currentUser.role}
                 </span>
               </div>
             </div>
@@ -325,6 +333,8 @@ export function WorkspaceSection({ section }: WorkspaceSectionProps) {
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Sesi Anda dilindungi token otentikasi JWT dengan pembatasan rotasi dan pencabutan real-time via Redis.
+                {!currentUser.isAdmin &&
+                  " Kata sandi akun Anda dikelola terpusat oleh admin."}
               </p>
             </div>
 
@@ -337,6 +347,8 @@ export function WorkspaceSection({ section }: WorkspaceSectionProps) {
               Keluar dari Sesi CMS
             </button>
           </div>
+
+          {currentUser.isAdmin && <PasswordCard />}
         </div>
       </div>
     );

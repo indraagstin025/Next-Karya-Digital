@@ -7,12 +7,18 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { SidebarInset } from "@/components/ui/sidebar";
 
-export function CmsShell({ children }: { children: React.ReactNode }) {
+export function CmsShell({
+  children,
+  isAdmin = false,
+}: {
+  children: React.ReactNode;
+  isAdmin?: boolean;
+}) {
   return (
     <Providers sidebarDefaultOpen={false}>
       <div className="flex min-h-screen w-full min-w-0 bg-background text-foreground antialiased">
         <Suspense>
-          <Sidebar />
+          <Sidebar isAdmin={isAdmin} />
         </Suspense>
         <SidebarInset className="flex flex-1 flex-col [zoom:0.9]" style={{ zoom: 0.9 }}>
           <Header />

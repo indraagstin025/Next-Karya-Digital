@@ -945,6 +945,26 @@ body {
   animation: nkCardFilterEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Spotlight card layanan: posisi mengikuti kursor lewat --mx/--my dari GSAP. */
+.nk-service-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(9, 134, 200, 0.16),
+    transparent 65%
+  );
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-service-card]:hover .nk-service-spotlight {
+    opacity: 1;
+  }
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,

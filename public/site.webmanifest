@@ -1,0 +1,26 @@
+{
+  "name": "Next Karya Digital Solutions",
+  "short_name": "Next Karya",
+  "description": "Software house dan mitra rekayasa perangkat lunak untuk website bisnis, sistem web kustom, dan aplikasi mobile.",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#005090",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

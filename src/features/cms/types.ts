@@ -7,6 +7,7 @@ export interface CmsStaffMember {
   role: "STAFF";
   jobTitle: string;
   avatarUrl: string | null;
+  isAdmin: boolean;
   isActive?: boolean;
   tokenVersion?: number;
   updatedAt?: string;
