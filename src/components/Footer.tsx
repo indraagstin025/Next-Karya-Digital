@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   SewingPinIcon,
@@ -18,11 +17,15 @@ export default function Footer() {
               href="/"
               className="inline-block transition-transform duration-200 hover:scale-[1.02]"
             >
-              <Image
-                src="/logo/logo-gabungan.png"
-                alt="Next Karya Digital Solutions"
+              <img
+                src="/logo/logo-gabungan-480.webp"
+                srcSet="/logo/logo-gabungan-480.webp 480w, /logo/logo-gabungan-720.webp 720w"
+                sizes="120px"
                 width={260}
                 height={82}
+                alt="Next Karya Digital Solutions"
+                loading="lazy"
+                decoding="async"
                 className="h-[36px] sm:h-[40px] w-auto object-contain"
               />
             </Link>

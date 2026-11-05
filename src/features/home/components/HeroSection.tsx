@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { HERO_HIGHLIGHTS } from "../data/homeData";
@@ -94,6 +93,7 @@ export function HeroSection() {
               </Link>
               <Link
                 href="/portofolio"
+                prefetch={false}
                 className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-[#005090] bg-white hover:bg-[#005090] hover:text-white px-6 py-3 text-[13.5px] font-semibold text-[#005090] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] dark:bg-slate-900 dark:border-slate-700 dark:text-[#0986C8] dark:hover:bg-[#005090] dark:hover:text-white"
               >
                 Lihat Portofolio
@@ -222,14 +222,15 @@ export function HeroSection() {
 
             {/* Logo Gabungan inside Stage */}
             <div className="relative z-10 w-[72%] sm:w-[75%] max-w-[390px] transition-transform duration-500 ease-out group-hover:scale-[1.03] group-hover:-translate-y-1">
-              <Image
-                src="/logo/logo-gabungan.png"
-                alt="Next Karya Digital Solutions - Mengakselerasi Inovasi, Mewujudkan Karya Digital"
+              <img
+                src="/logo/logo-gabungan-960.webp"
+                srcSet="/logo/logo-gabungan-480.webp 480w, /logo/logo-gabungan-720.webp 720w, /logo/logo-gabungan-960.webp 960w"
+                sizes="(max-width: 640px) 72vw, 390px"
                 width={960}
                 height={304}
-                sizes="(max-width: 640px) 72vw, 390px"
-                preload
+                alt="Next Karya Digital Solutions - Mengakselerasi Inovasi, Mewujudkan Karya Digital"
                 fetchPriority="high"
+                decoding="async"
                 className="w-full h-auto object-contain"
               />
             </div>

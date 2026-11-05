@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -169,17 +168,20 @@ export default function Navbar() {
       <div className="mx-auto flex md:grid md:grid-cols-[1fr_auto_1fr] w-full max-w-[1240px] min-h-[68px] lg:min-h-[76px] items-center justify-between gap-4 px-6 sm:px-9 lg:px-14 py-2">
         <Link
           href="/"
+          prefetch={false}
           className="flex min-w-0 items-center justify-self-start transition-transform hover:opacity-95 active:scale-[0.98] group shrink-0"
           aria-label="Next Karya Digital Solutions, kembali ke beranda"
         >
           <div className="relative shrink-0 transition-transform duration-300 group-hover:scale-[1.04]">
-            <Image
-              src="/logo/single-logo.png"
-              alt="Next Karya Digital Solutions"
-              width={120}
-              height={92}
+            <img
+              src="/logo/single-logo-128.webp"
+              srcSet="/logo/single-logo-64.webp 64w, /logo/single-logo-128.webp 128w, /logo/single-logo-256.webp 256w"
               sizes="60px"
+              width={128}
+              height={98}
+              alt="Next Karya Digital Solutions"
               loading="eager"
+              decoding="async"
               className="h-[34px] sm:h-[38px] md:h-[42px] w-auto object-contain"
             />
           </div>
@@ -195,6 +197,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={item.href === "/" ? false : undefined}
                 className={`canva-link relative py-1.5 text-[13px] lg:text-[13.5px] transition-colors after:content-[''] after:absolute after:-bottom-1 after:left-0 after:right-0 after:h-[2px] after:rounded-full after:bg-[#005090] after:transition-transform after:duration-200 ${
                   active
                     ? "font-semibold text-[#005090] after:scale-x-100"
@@ -251,6 +254,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={item.href === "/" ? false : undefined}
                   onClick={() => setIsMenuOpen(false)}
                   className={`canva-link flex min-h-11 items-center rounded-xl px-3 text-base transition-colors ${
                     active
