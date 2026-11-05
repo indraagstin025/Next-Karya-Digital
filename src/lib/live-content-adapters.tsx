@@ -61,6 +61,7 @@ export function toPortfolioCases(
   if (!items) return PORTFOLIO_CASES;
   return items.map((item) => ({
     id: item.id,
+    slug: item.slug,
     category: item.category,
     categorySlug: item.categorySlug,
     clientSector: item.clientSector,

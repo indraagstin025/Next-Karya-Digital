@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isWorkspacePath } from "@/lib/workspace-paths";
 
 const CMS_COOKIE_NAME = "nk_cms_token";
 
@@ -25,10 +26,13 @@ async function verifyStaffJwtToken(token: string): Promise<boolean> {
     );
     if (headerJson?.alg !== "HS256") return false;
 
-    const secret =
-      process.env.JWT_SECRET ||
-      process.env.AUTH_SECRET ||
-      "643953b4eed1ecddbf0d36da9c7f6a6b7ba9877464cff315ff435802aa82465b";
+    const secret = process.env.JWT_SECRET || process.env.AUTH_SECRET;
+    if (!secret) {
+      console.error(
+        "[proxy] JWT secret is not configured. CMS access is denied until JWT_SECRET or AUTH_SECRET is set."
+      );
+      return false;
+    }
 
     const encoder = new TextEncoder();
     const key = await crypto.subtle.importKey(
@@ -55,6 +59,10 @@ async function verifyStaffJwtToken(token: string): Promise<boolean> {
     );
 
     if (!payload || typeof payload.userId !== "string" || payload.role !== "STAFF") {
+      return false;
+    }
+
+    if (payload.iss !== "nextkarya-api" || payload.aud !== "nextkarya-cms") {
       return false;
     }
 
@@ -86,21 +94,21 @@ export async function proxy(request: NextRequest) {
     return res;
   }
 
-  // Protect /admin and /cms routes at the Proxy (Middleware) boundary
+  // Protect the whole staff workspace at the Proxy (Middleware) boundary.
   const isAdminPath = lowerPath === "/admin" || lowerPath.startsWith("/admin/");
-  const isCmsPath = lowerPath === "/cms" || lowerPath.startsWith("/cms/");
+  const isWorkspace = isWorkspacePath(lowerPath);
 
-  if (isAdminPath || isCmsPath) {
+  if (isAdminPath || isWorkspace) {
     const token = request.cookies.get(CMS_COOKIE_NAME)?.value;
     if (!token) {
-      const res = NextResponse.redirect(new URL("/", request.url));
+      const res = NextResponse.redirect(new URL("/?sesi=berakhir", request.url));
       res.headers.set("Cache-Control", "no-store");
       return res;
     }
 
     const isAuthorized = await verifyStaffJwtToken(token);
     if (!isAuthorized) {
-      const res = NextResponse.redirect(new URL("/", request.url));
+      const res = NextResponse.redirect(new URL("/?sesi=berakhir", request.url));
       res.cookies.delete(CMS_COOKIE_NAME);
       res.headers.set("Cache-Control", "no-store");
       return res;
@@ -124,5 +132,16 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/cms", "/cms/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/dashboard",
+    "/dashboard/:path*",
+    "/cms",
+    "/cms/:path*",
+    "/crm",
+    "/crm/:path*",
+    "/pengaturan",
+    "/pengaturan/:path*",
+  ],
 };

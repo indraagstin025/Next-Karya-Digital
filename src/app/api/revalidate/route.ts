@@ -22,11 +22,16 @@ const revalidatePayloadSchema = z
 
 function verifyWebhookSecret(providedSecret: string | null): boolean {
   const configuredSecret =
-    process.env.WEBHOOK_SECRET ||
-    process.env.REVALIDATION_SECRET ||
-    "nextkarya-webhook-secret-key-32-chars-live";
+    process.env.WEBHOOK_SECRET || process.env.REVALIDATION_SECRET;
 
-  if (!providedSecret || !configuredSecret) {
+  if (!configuredSecret) {
+    console.error(
+      "[revalidate] WEBHOOK_SECRET is not configured. Rejecting webhook requests."
+    );
+    return false;
+  }
+
+  if (!providedSecret) {
     return false;
   }
 
@@ -50,7 +55,7 @@ export async function POST(request: NextRequest) {
         meta: null,
         error: {
           code: "UNAUTHORIZED_WEBHOOK",
-          message: "Tanda tangan webhook revalidasi tidak sah.",
+          message: "Permintaan pembaruan konten ditolak. Kunci aksesnya tidak cocok.",
         },
       },
       { status: 401 }
@@ -68,7 +73,7 @@ export async function POST(request: NextRequest) {
         meta: null,
         error: {
           code: "INVALID_JSON",
-          message: "Format JSON webhook tidak valid.",
+          message: "Data pembaruan konten tidak terbaca.",
         },
       },
       { status: 400 }
@@ -84,7 +89,7 @@ export async function POST(request: NextRequest) {
         meta: null,
         error: {
           code: "VALIDATION_ERROR",
-          message: "Tag revalidasi tidak dikenali.",
+          message: "Bagian konten yang ingin diperbarui tidak dikenali.",
           details: parsed.error.issues.map((issue) => ({
             field: issue.path.join("."),
             message: issue.message,

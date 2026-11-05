@@ -33,6 +33,7 @@ export interface CmsPost {
   coverAlt: string | null;
   tags: string[];
   readingTimeMinutes: number;
+  relatedPostIds: string[];
   seoTitle: string | null;
   seoDescription: string | null;
   status: ContentStatus;
@@ -237,17 +238,6 @@ export interface CmsAnalyticsPage {
   conversions: number;
   conversionRate: number;
 }
-
-export type ActiveTab =
-  | "dashboard"
-  | "posts"
-  | "portfolios"
-  | "services"
-  | "structured"
-  | "media"
-  | "crm"
-  | "emergency"
-  | "profile";
 
 export type StructuredSubTab = "faqs" | "testimonials" | "pages" | "redirects";
 

@@ -20,6 +20,10 @@ npm install
 Salin berkas `.env.example` menjadi `.env.local`:
 ```env
 NEXT_PUBLIC_API_URL="http://localhost:5000/api/v1"
+BACKEND_API_URL="http://localhost:5000/api/v1"
+JWT_SECRET="sama-dengan-JWT_SECRET-backend"
+WEBHOOK_SECRET="sama-dengan-WEBHOOK_SECRET-backend"
+CONTACT_IP_HASH_SECRET="kunci-hash-ip-minimal-32-karakter"
 ```
 
 3. Menjalankan Server Pengembangan:
@@ -32,4 +36,10 @@ Akses aplikasi melalui peramban di `http://localhost:3000`.
 ```bash
 npm run build
 npm start
+```
+
+## 3. Test
+
+```bash
+npm test
 ```

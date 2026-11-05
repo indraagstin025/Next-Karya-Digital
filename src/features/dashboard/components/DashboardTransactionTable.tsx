@@ -43,9 +43,9 @@ export type TransactionItem = {
   avatarFallback: string;
   name: string;
   email: string;
-  amount: number;
+  dealValue: number;
+  serviceRequested: string;
   status: "pending" | "processing" | "paid" | "failed";
-  paidBy: "mastercard" | "visa";
 };
 
 function RowActions() {
@@ -97,15 +97,20 @@ export const columns: ColumnDef<TransactionItem>[] = [
     ),
   },
   {
-    accessorKey: "amount",
-    header: "Estimasi Nilai",
+    accessorKey: "dealValue",
+    header: "Nilai Deal",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
+      const dealValue = row.original.dealValue;
+
+      if (dealValue <= 0) {
+        return <span className="text-xs text-muted-foreground">Belum ditentukan</span>;
+      }
+
       const formatted = new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
         maximumFractionDigits: 0,
-      }).format(amount);
+      }).format(dealValue);
 
       return <span className="font-semibold text-sm">{formatted}</span>;
     },
@@ -146,16 +151,13 @@ export const columns: ColumnDef<TransactionItem>[] = [
     },
   },
   {
-    accessorKey: "paidBy",
-    header: () => <span className="w-fit">Tahap Pengerjaan</span>,
-    cell: ({ row }) => {
-      const isTermin = row.getValue("paidBy") === "visa";
-      return (
-        <span className="text-xs text-muted-foreground font-medium">
-          {isTermin ? "Termin Pengerjaan" : "Kesepakatan Awal"}
-        </span>
-      );
-    },
+    accessorKey: "serviceRequested",
+    header: "Layanan",
+    cell: ({ row }) => (
+      <span className="text-xs text-muted-foreground font-medium">
+        {row.original.serviceRequested}
+      </span>
+    ),
   },
   {
     id: "actions",

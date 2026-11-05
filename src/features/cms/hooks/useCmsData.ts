@@ -1,10 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { dashboardApi, type PeriodFilter } from "@/features/dashboard";
 import type {
-  ActiveTab,
   CmsAnalyticsOverview,
   CmsCategory,
   CmsEmergencyOverview,
@@ -19,17 +18,13 @@ import type {
   CmsServiceItem,
   CmsStaffMember,
   CmsTestimonial,
-  StructuredSubTab,
 } from "../types";
 
 export function useCmsData() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const [activeTab, setActiveTabState] = useState<ActiveTab>("dashboard");
-  const [subTab, setSubTabState] = useState<StructuredSubTab>("faqs");
 
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [categories, setCategories] = useState<CmsCategory[]>([]);
   const [posts, setPosts] = useState<CmsPost[]>([]);
   const [portfolios, setPortfolios] = useState<CmsPortfolio[]>([]);
@@ -45,65 +40,10 @@ export function useCmsData() {
   const [analyticsOverview, setAnalyticsOverview] = useState<CmsAnalyticsOverview | null>(null);
   const [emergencyOverview, setEmergencyOverview] = useState<CmsEmergencyOverview | null>(null);
 
-  // Sync tab with URL query parameter
-  useEffect(() => {
-    const rawTab = searchParams.get("tab");
-    const validTabs: ActiveTab[] = [
-      "dashboard",
-      "posts",
-      "portfolios",
-      "services",
-      "structured",
-      "media",
-      "crm",
-      "emergency",
-      "profile",
-    ];
-
-    if (rawTab && validTabs.includes(rawTab as ActiveTab)) {
-      setActiveTabState(rawTab as ActiveTab);
-    } else if (!rawTab) {
-      setActiveTabState("dashboard");
-    }
-
-    const rawSub = searchParams.get("sub");
-    const validSubs: StructuredSubTab[] = ["faqs", "testimonials", "pages", "redirects"];
-    if (rawSub && validSubs.includes(rawSub as StructuredSubTab)) {
-      setSubTabState(rawSub as StructuredSubTab);
-    }
-  }, [searchParams]);
-
-  const setActiveTab = useCallback(
-    (tab: ActiveTab) => {
-      setActiveTabState(tab);
-      const params = new URLSearchParams(searchParams.toString());
-      if (tab === "dashboard") {
-        params.delete("tab");
-      } else {
-        params.set("tab", tab);
-      }
-      if (tab !== "structured") {
-        params.delete("sub");
-      }
-      const queryString = params.toString();
-      router.replace(queryString ? `/cms?${queryString}` : "/cms");
-    },
-    [router, searchParams]
-  );
-
-  const setStructuredSubTab = useCallback(
-    (sub: StructuredSubTab) => {
-      setSubTabState(sub);
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("tab", "structured");
-      params.set("sub", sub);
-      router.replace(`/cms?${params.toString()}`);
-    },
-    [router, searchParams]
-  );
-
-  const loadWorkspaceData = useCallback(async () => {
-    setLoading(true);
+  const loadWorkspaceData = useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent === true;
+    if (!silent) setLoading(true);
+    setLoadError(null);
     try {
       const [
         catRes,
@@ -142,7 +82,7 @@ export function useCmsData() {
       ]);
 
       if (catRes.status === 401 || postRes.status === 401) {
-        router.push("/");
+        router.push("/?sesi=berakhir");
         return;
       }
 
@@ -203,9 +143,11 @@ export function useCmsData() {
       }
       if (emJson?.success && emJson.data) setEmergencyOverview(emJson.data);
     } catch {
-      // Error is caught gracefully
+      setLoadError(
+        "Data workspace belum bisa dimuat. Periksa koneksi ke server, lalu coba lagi."
+      );
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [router]);
 
@@ -235,11 +177,8 @@ export function useCmsData() {
   };
 
   return {
-    activeTab,
-    setActiveTab,
-    subTab,
-    setStructuredSubTab,
     loading,
+    loadError,
     refreshAll: loadWorkspaceData,
     loadWorkspaceData,
     counts,

@@ -28,6 +28,8 @@ type SidebarContextProps = {
   state: 'expanded' | 'collapsed'
   open: boolean
   setOpen: (open: boolean) => void
+  hoverOpen: boolean
+  setHoverOpen: React.Dispatch<React.SetStateAction<boolean>>
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
@@ -61,6 +63,7 @@ function SidebarProvider({
 }) {
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
+  const [hoverOpen, setHoverOpen] = React.useState(false)
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -104,19 +107,21 @@ function SidebarProvider({
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
-  const state = open ? 'expanded' : 'collapsed'
+  const state = open || hoverOpen ? 'expanded' : 'collapsed'
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
       open,
       setOpen,
+      hoverOpen,
+      setHoverOpen,
       isMobile,
       openMobile,
       setOpenMobile,
       toggleSidebar
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+    [state, open, setOpen, hoverOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
   )
 
   return (
@@ -152,7 +157,7 @@ function Sidebar({
   variant?: 'sidebar' | 'floating' | 'inset'
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  const { isMobile, state, openMobile, setOpenMobile, setHoverOpen } = useSidebar()
 
   if (collapsible === 'none') {
     return (
@@ -200,24 +205,36 @@ function Sidebar({
       data-variant={variant}
       data-side={side}
       data-slot='sidebar'
+      onMouseEnter={() => setHoverOpen(true)}
+      onMouseLeave={() => setHoverOpen(false)}
+      onFocusCapture={() => setHoverOpen(true)}
+      onBlurCapture={event => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setHoverOpen(false)
+        }
+      }}
     >
-      {/* This is what handles the sidebar gap on desktop */}
+      {/* This is what handles the sidebar gap on desktop. It follows the expanded state,
+          including hover, so the page resizes instead of being covered. */}
       <div
         data-slot='sidebar-gap'
         className={cn(
-          'relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear',
+          'relative bg-transparent transition-[width] duration-200 ease-linear',
+          state === 'expanded'
+            ? 'w-(--sidebar-width)'
+            : variant === 'floating' || variant === 'inset'
+              ? 'w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
+              : 'w-(--sidebar-width-icon)',
           'group-data-[collapsible=offcanvas]:w-0',
-          'group-data-[side=right]:rotate-180',
-          variant === 'floating' || variant === 'inset'
-            ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)'
+          'group-data-[side=right]:rotate-180'
         )}
       />
       <div
         data-slot='sidebar-container'
         data-side={side}
         className={cn(
-          'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex',
+          'fixed inset-y-0 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex',
+          'z-10',
 
           // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'

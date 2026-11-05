@@ -119,11 +119,11 @@ const ProfileDropdown = () => {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem render={<Link href='/cms?tab=profile' />}>
+          <DropdownMenuItem render={<Link href='/pengaturan/profil' />}>
             <UserIcon className='size-4' />
             <span>Profil Akun</span>
           </DropdownMenuItem>
-          <DropdownMenuItem render={<Link href='/cms?tab=emergency' />}>
+          <DropdownMenuItem render={<Link href='/pengaturan/darurat' />}>
             <ShieldAlertIcon className='size-4' />
             <span>Emergency Recovery</span>
           </DropdownMenuItem>

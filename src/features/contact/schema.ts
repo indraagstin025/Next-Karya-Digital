@@ -27,7 +27,7 @@ const cleanString = (label: string) =>
     .string({ error: `${label} wajib diisi.` })
     .transform((val) => val.normalize("NFKC").trim())
     .refine((val) => !CONTROL_CHAR_REGEX.test(val), {
-      error: `${label} mengandung karakter yang tidak diizinkan.`,
+      error: `${label} memuat karakter yang tidak bisa dipakai.`,
     });
 
 export const contactMessageSchema = z.object({
@@ -42,10 +42,21 @@ export const contactMessageSchema = z.object({
       .string()
       .min(1, { error: "Email wajib diisi." })
       .max(120, { error: "Email maksimal 120 karakter." })
-      .pipe(z.email({ error: "Format email tidak valid." }))
+      .pipe(z.email({ error: "Alamat email belum benar. Contoh: nama@email.com." }))
       .transform((val) => val.toLowerCase())
   ),
-  service: z.enum(CONTACT_SERVICES, { error: "Pilih kebutuhan layanan yang tersedia." }),
+  service: z.enum(CONTACT_SERVICES, { error: "Pilih salah satu layanan yang tersedia." }),
+  whatsapp: cleanString("Nomor WhatsApp")
+    .transform((val) => val.replace(/[\s-]/g, ""))
+    .pipe(
+      z
+        .string()
+        .min(10, { error: "Nomor WhatsApp minimal 10 digit." })
+        .max(15, { error: "Nomor WhatsApp maksimal 15 digit." })
+        .regex(/^(\+62|62|0)8[1-9][0-9]{6,11}$/, {
+          error: "Nomor WhatsApp belum benar. Contoh: 081234567890.",
+        })
+    ),
   message: cleanString("Pesan").pipe(
     z
       .string()
@@ -63,6 +74,7 @@ export interface ContactMessageInput {
   name: string;
   email: string;
   service: string;
+  whatsapp: string;
   message: string;
   sourcePage?: string;
   websiteUrl?: string;
@@ -79,6 +91,7 @@ export interface ContactFieldErrors {
   name?: string[];
   email?: string[];
   service?: string[];
+  whatsapp?: string[];
   message?: string[];
 }
 
@@ -96,7 +109,7 @@ export function extractContactFieldErrors(
   const fieldErrors: ContactFieldErrors = {};
   for (const issue of issues) {
     const field = issue.path[0];
-    if (field === "name" || field === "email" || field === "service" || field === "message") {
+    if (field === "name" || field === "email" || field === "service" || field === "whatsapp" || field === "message") {
       fieldErrors[field] = [...(fieldErrors[field] ?? []), issue.message];
     }
   }

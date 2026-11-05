@@ -7,21 +7,37 @@ import type {
 
 export type PeriodFilter = "today" | "7d" | "30d";
 
-function resolveDateRange(period: PeriodFilter): { from: string; to: string } {
-  const now = new Date();
-  const to = now.toISOString().slice(0, 10);
-  let fromDate = new Date();
+const JAKARTA_TIME_ZONE = "Asia/Jakarta";
+const DAY_MS = 24 * 60 * 60 * 1000;
+const jakartaDateFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: JAKARTA_TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 
-  if (period === "today") {
-    fromDate = now;
-  } else if (period === "7d") {
-    fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  } else {
-    fromDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+export function formatDateInJakarta(date: Date): string {
+  const parts = jakartaDateFormatter.formatToParts(date);
+
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  if (!year || !month || !day) {
+    return date.toISOString().slice(0, 10);
   }
 
-  const from = fromDate.toISOString().slice(0, 10);
-  return { from, to };
+  return `${year}-${month}-${day}`;
+}
+
+function resolveDateRange(period: PeriodFilter): { from: string; to: string } {
+  const now = new Date();
+  const daysBack = period === "today" ? 0 : period === "7d" ? 6 : 29;
+
+  return {
+    from: formatDateInJakarta(new Date(now.getTime() - daysBack * DAY_MS)),
+    to: formatDateInJakarta(now),
+  };
 }
 
 /**

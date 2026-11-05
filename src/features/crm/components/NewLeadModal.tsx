@@ -34,17 +34,52 @@ export function NewLeadModal({ isOpen, onClose, onSubmit }: NewLeadModalProps) {
   const [dealValue, setDealValue] = useState(0);
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
+  function validateForm(): string | null {
+    if (clientName.trim().length < 2) {
+      return "Nama klien minimal 2 karakter.";
+    }
+
+    const normalizedWhatsapp = whatsapp.trim().replace(/[\s-]/g, "");
+    if (!/^(\+62|62|0)8[1-9][0-9]{6,11}$/.test(normalizedWhatsapp)) {
+      return "Nomor WhatsApp belum benar. Contoh: 081234567890.";
+    }
+
+    const trimmedEmail = email.trim();
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      return "Alamat email belum benar. Contoh: nama@email.com.";
+    }
+
+    if (!service.trim()) {
+      return "Isi layanan yang diminati klien.";
+    }
+
+    if (Number(dealValue) < 0) {
+      return "Nilai deal tidak boleh kurang dari 0.";
+    }
+
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const validationError = validateForm();
+    if (validationError) {
+      setFormError(validationError);
+      return;
+    }
+
+    setFormError(null);
     setSubmitting(true);
     try {
       await onSubmit({
         clientName: clientName.trim(),
         companyName: companyName.trim() || null,
-        whatsappNumber: whatsapp.trim(),
+        whatsappNumber: whatsapp.trim().replace(/[\s-]/g, ""),
         email: email.trim() || null,
         serviceRequested: service.trim(),
         dealValue: Number(dealValue) || 0,
@@ -88,7 +123,15 @@ export function NewLeadModal({ isOpen, onClose, onSubmit }: NewLeadModalProps) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="my-4 space-y-4 overflow-y-auto pr-1">
+        <form onSubmit={handleSubmit} noValidate className="my-4 space-y-4 overflow-y-auto pr-1">
+          {formError && (
+            <p
+              role="alert"
+              className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-700 dark:text-rose-300"
+            >
+              {formError}
+            </p>
+          )}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="lead-name" className={LABEL_CLASS}>

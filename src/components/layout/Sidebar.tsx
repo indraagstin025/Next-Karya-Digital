@@ -3,11 +3,11 @@
 // React Imports
 import { type ComponentType } from 'react'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 // Next Imports
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 // Third-party Imports
 import * as Icon from 'lucide-react'
@@ -65,31 +65,10 @@ const subGroupKey = (itemLabel: string, subItemLabel: string) => `${itemLabel}::
 function isLinkActive(
   href: string,
   activePath: string | undefined,
-  pathname: string,
-  searchParams: Pick<URLSearchParams, 'get'>
+  pathname: string
 ): boolean {
   if (activePath) {
-    return pathname.startsWith(activePath)
-  }
-
-  if (href.includes('?')) {
-    const [hrefPath, hrefQuery] = href.split('?')
-
-    if (pathname !== hrefPath) return false
-
-    const hrefParams = new URLSearchParams(hrefQuery)
-
-    for (const [key, value] of hrefParams.entries()) {
-      if (searchParams.get(key) !== value) return false
-    }
-
-    return true
-  }
-
-  if (href === '/cms') {
-    if (pathname !== '/cms') return false
-    const currentTab = searchParams.get('tab')
-    return !currentTab || currentTab === 'dashboard'
+    return pathname === activePath || pathname.startsWith(`${activePath}/`)
   }
 
   return pathname === href
@@ -98,22 +77,18 @@ function isLinkActive(
 // Keys of every branch (top-level item, plus nested sub-group) that contains the active
 // route. Branches the user has never toggled fall back to this, so the tree opens itself
 // on first render and follows the route on every navigation.
-function getActiveBranchKeys(
-  groups: NavItem[],
-  pathname: string,
-  searchParams: Pick<URLSearchParams, 'get'>
-): Set<string> {
+function getActiveBranchKeys(groups: NavItem[], pathname: string): Set<string> {
   const keys = new Set<string>()
 
   groups.forEach(group => {
     group.items.forEach(item => {
       item.childItems?.forEach(subItem => {
         if (isSubGroup(subItem)) {
-          if (subItem.childItems.some(leaf => isLinkActive(leaf.href, leaf.activePath, pathname, searchParams))) {
+          if (subItem.childItems.some(leaf => isLinkActive(leaf.href, leaf.activePath, pathname))) {
             keys.add(item.label)
             keys.add(subGroupKey(item.label, subItem.label))
           }
-        } else if (isLinkActive(subItem.href, subItem.activePath, pathname, searchParams)) {
+        } else if (isLinkActive(subItem.href, subItem.activePath, pathname)) {
           keys.add(item.label)
         }
       })
@@ -148,14 +123,12 @@ const FlyoutMenuItem = ({
   item,
   childItems,
   isChildActive,
-  pathname,
-  searchParams
+  pathname
 }: {
   item: MenuItem
   childItems: MenuSubItem[]
   isChildActive: boolean
   pathname: string
-  searchParams: Pick<URLSearchParams, 'get'>
 }) => {
   const Tag = item.icon ? (Icon[item.icon] as ComponentType) : null
 
@@ -187,7 +160,7 @@ const FlyoutMenuItem = ({
                   <DropdownMenuSubTrigger
                     className={cn(
                       subItem.childItems.some(leaf =>
-                        isLinkActive(leaf.href, leaf.activePath, pathname, searchParams)
+                        isLinkActive(leaf.href, leaf.activePath, pathname)
                       ) && 'bg-primary/10 text-accent-foreground font-medium'
                     )}
                   >
@@ -198,7 +171,7 @@ const FlyoutMenuItem = ({
                       <FlyoutMenuLink
                         key={leaf.label}
                         item={leaf}
-                        isActive={isLinkActive(leaf.href, leaf.activePath, pathname, searchParams)}
+                        isActive={isLinkActive(leaf.href, leaf.activePath, pathname)}
                       />
                     ))}
                   </DropdownMenuSubContent>
@@ -207,7 +180,7 @@ const FlyoutMenuItem = ({
                 <FlyoutMenuLink
                   key={subItem.label}
                   item={subItem}
-                  isActive={isLinkActive(subItem.href, subItem.activePath, pathname, searchParams)}
+                  isActive={isLinkActive(subItem.href, subItem.activePath, pathname)}
                 />
               )
             )}
@@ -222,7 +195,6 @@ const SidebarGroupedMenuItems = ({
   data,
   groupLabel,
   pathname,
-  searchParams,
   isIconMode,
   isBranchOpen,
   setOpenItem
@@ -230,7 +202,6 @@ const SidebarGroupedMenuItems = ({
   data: MenuItem[]
   groupLabel?: string
   pathname: string
-  searchParams: Pick<URLSearchParams, 'get'>
   isIconMode: boolean
   isBranchOpen: (key: string) => boolean
   setOpenItem: (key: string, open: boolean) => void
@@ -250,8 +221,8 @@ const SidebarGroupedMenuItems = ({
             const isChildActive =
               item.childItems?.some(subItem =>
                 isSubGroup(subItem)
-                  ? subItem.childItems.some(leaf => isLinkActive(leaf.href, leaf.activePath, pathname, searchParams))
-                  : isLinkActive(subItem.href, subItem.activePath, pathname, searchParams)
+                  ? subItem.childItems.some(leaf => isLinkActive(leaf.href, leaf.activePath, pathname))
+                  : isLinkActive(subItem.href, subItem.activePath, pathname)
               ) ?? false
 
             if (item.childItems && isIconMode) {
@@ -262,7 +233,6 @@ const SidebarGroupedMenuItems = ({
                   childItems={item.childItems}
                   isChildActive={isChildActive}
                   pathname={pathname}
-                  searchParams={searchParams}
                 />
               )
             }
@@ -315,7 +285,7 @@ const SidebarGroupedMenuItems = ({
                                   <SidebarMenuSubButton
                                     className='data-active:bg-primary/10! justify-between'
                                     isActive={subItem.childItems.some(leaf =>
-                                      isLinkActive(leaf.href, leaf.activePath, pathname, searchParams)
+                                      isLinkActive(leaf.href, leaf.activePath, pathname)
                                     )}
                                   />
                                 }
@@ -330,7 +300,7 @@ const SidebarGroupedMenuItems = ({
                                       <SidebarMenuSubButton
                                         className='data-active:bg-primary/10! justify-between'
                                         render={<Link href={leaf.href} target={leaf.target} />}
-                                        isActive={isLinkActive(leaf.href, leaf.activePath, pathname, searchParams)}
+                                        isActive={isLinkActive(leaf.href, leaf.activePath, pathname)}
                                       >
                                         <span
                                           className={cn(
@@ -368,7 +338,7 @@ const SidebarGroupedMenuItems = ({
                             <SidebarMenuSubButton
                               className='data-active:bg-primary/10! justify-between'
                               render={<Link href={subItem.href} target={subItem.target} />}
-                              isActive={isLinkActive(subItem.href, subItem.activePath, pathname, searchParams)}
+                              isActive={isLinkActive(subItem.href, subItem.activePath, pathname)}
                             >
                               <span
                                 className={cn(
@@ -407,7 +377,7 @@ const SidebarGroupedMenuItems = ({
                 <SidebarMenuButton
                   tooltip={item.label}
                   render={<Link href={item.href} target={item.target} />}
-                  isActive={pathname === item.href}
+                  isActive={isLinkActive(item.href, item.activePath, pathname)}
                   className='data-active:bg-primary/10!'
                 >
                   {Tag && <Tag />}
@@ -447,7 +417,6 @@ const SidebarGroupedMenuItems = ({
 
 const SidebarLayout = () => {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const { state, isMobile } = useSidebar()
 
   // Branches the user has explicitly opened or closed, keyed by label. It lives here rather
@@ -457,8 +426,8 @@ const SidebarLayout = () => {
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({})
 
   const activeBranchKeys = useMemo(
-    () => getActiveBranchKeys(navItems, pathname, searchParams),
-    [pathname, searchParams]
+    () => getActiveBranchKeys(navItems, pathname),
+    [pathname]
   )
 
   // A user toggle wins; otherwise the branch mirrors whether it holds the active route.
@@ -502,7 +471,6 @@ const SidebarLayout = () => {
               data={navItem.items}
               groupLabel={navItem.groupLabel}
               pathname={pathname}
-              searchParams={searchParams}
               isIconMode={isIconMode}
               isBranchOpen={isBranchOpen}
               setOpenItem={setOpenItem}

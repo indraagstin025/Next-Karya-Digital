@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getPublicArticles } from "@/lib/public-content";
+import { getPublicArticles, getPublicPortfolios } from "@/lib/public-content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://nextkarya.web.id";
@@ -48,18 +48,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    {
+      url: `${baseUrl}/syarat-ketentuan`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   try {
-    const articles = (await getPublicArticles(50)) ?? [];
-    const articleRoutes: MetadataRoute.Sitemap = articles.map((article) => ({
+    const [articles, portfolios] = await Promise.all([
+      getPublicArticles(50),
+      getPublicPortfolios(),
+    ]);
+
+    const articleRoutes: MetadataRoute.Sitemap = (articles ?? []).map((article) => ({
       url: `${baseUrl}/blog/${article.slug}`,
       lastModified: article.publishedAt ? new Date(article.publishedAt) : now,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));
 
-    return [...staticRoutes, ...articleRoutes];
+    const portfolioRoutes: MetadataRoute.Sitemap = (portfolios ?? []).map((portfolio) => ({
+      url: `${baseUrl}/portofolio/${portfolio.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+
+    return [...staticRoutes, ...articleRoutes, ...portfolioRoutes];
   } catch {
     return staticRoutes;
   }

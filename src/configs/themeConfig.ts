@@ -1,6 +1,6 @@
 const themeConfig = {
   templateName: 'Next Karya',
-  homePageUrl: '/cms'
+  homePageUrl: '/dashboard'
 } as const
 
 export default themeConfig

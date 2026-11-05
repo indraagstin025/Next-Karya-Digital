@@ -54,7 +54,7 @@ export function useCmsMutation() {
       const payload = await res.json();
 
       if (res.status === 401) {
-        router.push("/");
+        router.push("/?sesi=berakhir");
         return null;
       }
 
@@ -73,7 +73,7 @@ export function useCmsMutation() {
         setBannerNotice({
           type: "error",
           text: detailMsg
-            ? `${payload?.error?.message || "Validasi gagal"} (${detailMsg})`
+            ? `${payload?.error?.message || "Ada isian yang belum sesuai"} (${detailMsg})`
             : payload?.error?.message || "Perubahan gagal disimpan. Silakan periksa kembali.",
         });
         return null;
@@ -83,7 +83,7 @@ export function useCmsMutation() {
     } catch {
       setBannerNotice({
         type: "error",
-        text: "Terjadi gangguan jaringan saat menghubungi server. Silakan coba kembali.",
+        text: "Koneksi sedang bermasalah. Silakan coba lagi.",
       });
       return null;
     } finally {

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import type { PublicPortfolioDTO } from "@/lib/public-content";
@@ -62,7 +63,7 @@ export function PortfolioCaseStudies({
         {filteredItems.map((item, idx) => (
           <ScrollReveal key={`${activeCategory}-${item.id}`} delayMs={idx * 75} className="h-full">
             <article
-              className="nk-card-enter h-full flex flex-col justify-between overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group"
+              className="nk-card-enter relative h-full flex flex-col justify-between overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group"
             >
               <div>
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-b border-[#E2E8F0] dark:border-slate-800">
@@ -92,7 +93,12 @@ export function PortfolioCaseStudies({
                   </p>
 
                   <h2 className="mt-1.5 text-[17px] sm:text-[18px] font-extrabold tracking-[-0.015em] text-[#041E42] dark:text-white leading-snug transition-colors duration-200 group-hover:text-[#005090] dark:group-hover:text-[#0986C8]">
-                    {item.title}
+                    <Link
+                      href={`/portofolio/${item.slug ?? item.id}`}
+                      className="after:absolute after:inset-0 after:content-['']"
+                    >
+                      {item.title}
+                    </Link>
                   </h2>
                   <p className="mt-2.5 text-[13px] sm:text-[13.5px] leading-[1.68] text-[#4A5D78] dark:text-slate-300">
                     {item.description}

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { sendAnalyticsBeacon } from "@/lib/analytics-beacon";
+import { isWorkspacePath } from "@/lib/workspace-paths";
 
 export function AnalyticsTracker() {
   const pathname = usePathname();
@@ -10,7 +11,7 @@ export function AnalyticsTracker() {
 
   // Track pageview on route change
   useEffect(() => {
-    if (!pathname || pathname.startsWith("/cms")) return;
+    if (!pathname || isWorkspacePath(pathname)) return;
 
     startTimeRef.current = Date.now();
     sendAnalyticsBeacon({
@@ -42,7 +43,7 @@ export function AnalyticsTracker() {
     }
 
     function handleBeforeUnload() {
-      if (window.location.pathname.startsWith("/cms")) return;
+      if (isWorkspacePath(window.location.pathname)) return;
 
       const durationSec = Math.max(
         0,

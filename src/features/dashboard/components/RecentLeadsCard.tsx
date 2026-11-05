@@ -8,6 +8,7 @@ export interface DashboardLeadPreview {
   companyName?: string | null;
   serviceRequested: string;
   whatsappNumber: string;
+  dealValue: number;
   status: string;
 }
 

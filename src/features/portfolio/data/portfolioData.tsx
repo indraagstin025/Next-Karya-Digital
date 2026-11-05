@@ -3,6 +3,7 @@ import { LayersIcon, GlobeIcon, MobileIcon, DesktopIcon } from "@radix-ui/react-
 
 export interface PortfolioProject {
   id: string;
+  slug?: string;
   category: string;
   categorySlug: "all" | "webapp" | "website" | "mobile";
   clientSector: string;

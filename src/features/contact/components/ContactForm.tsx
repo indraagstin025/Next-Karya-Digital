@@ -7,7 +7,7 @@ import { useContactForm } from "../hooks/useContactForm";
 import { CONTACT_SERVICES, CONTACT_SERVICE_LABELS } from "../schema";
 
 const FIELD_CLASS =
-  "w-full rounded-xl border bg-[#F8FAFC] dark:bg-slate-800 px-4 py-3 text-[13.5px] text-[#041E42] dark:text-white placeholder:text-[#647896] transition-all duration-200 focus:border-[#005090] focus:bg-white dark:focus:bg-slate-900";
+  "w-full rounded-xl border bg-[#F8FAFC] dark:bg-slate-800 px-4 py-3 text-[13.5px] text-[#041E42] dark:text-white placeholder:text-[#5B6E8C] dark:placeholder:text-slate-400 transition-all duration-200 focus:border-[#005090] focus:bg-white dark:focus:bg-slate-900";
 const FIELD_OK = "border-[#5B789E] dark:border-slate-600";
 const FIELD_ERR = "border-rose-700 dark:border-rose-400";
 const LABEL_CLASS = "mb-2 block text-[13px] font-bold text-[#041E42] dark:text-slate-200";
@@ -152,25 +152,48 @@ export function ContactFormCard({ sourcePage = "/kontak" }: { sourcePage?: strin
         </div>
       </div>
 
-      <div className="mt-5">
-        <label className={LABEL_CLASS} htmlFor="contact-service">
-          Kebutuhan Layanan
-        </label>
-        <select
-          id="contact-service"
-          name="service"
-          value={formData.service}
-          onChange={handleChange}
-          aria-invalid={Boolean(fieldErrors.service)}
-          className={`${FIELD_CLASS} ${fieldErrors.service ? FIELD_ERR : FIELD_OK}`}
-        >
-          {CONTACT_SERVICES.map((value) => (
-            <option key={value} value={value} className="text-slate-900 bg-white">
-              {CONTACT_SERVICE_LABELS[value]}
-            </option>
-          ))}
-        </select>
-        <FieldError id="contact-service-error" messages={fieldErrors.service} />
+      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className={LABEL_CLASS} htmlFor="contact-whatsapp">
+            Nomor WhatsApp
+          </label>
+          <input
+            id="contact-whatsapp"
+            name="whatsapp"
+            type="tel"
+            inputMode="tel"
+            value={formData.whatsapp}
+            onChange={handleChange}
+            autoComplete="tel"
+            placeholder="0812 3456 7890"
+            required
+            maxLength={20}
+            aria-invalid={Boolean(fieldErrors.whatsapp)}
+            aria-describedby={fieldErrors.whatsapp ? "contact-whatsapp-error" : undefined}
+            className={`${FIELD_CLASS} ${fieldErrors.whatsapp ? FIELD_ERR : FIELD_OK}`}
+          />
+          <FieldError id="contact-whatsapp-error" messages={fieldErrors.whatsapp} />
+        </div>
+        <div>
+          <label className={LABEL_CLASS} htmlFor="contact-service">
+            Kebutuhan Layanan
+          </label>
+          <select
+            id="contact-service"
+            name="service"
+            value={formData.service}
+            onChange={handleChange}
+            aria-invalid={Boolean(fieldErrors.service)}
+            className={`${FIELD_CLASS} ${fieldErrors.service ? FIELD_ERR : FIELD_OK}`}
+          >
+            {CONTACT_SERVICES.map((value) => (
+              <option key={value} value={value} className="text-slate-900 bg-white">
+                {CONTACT_SERVICE_LABELS[value]}
+              </option>
+            ))}
+          </select>
+          <FieldError id="contact-service-error" messages={fieldErrors.service} />
+        </div>
       </div>
 
       <div className="mt-5">

@@ -73,11 +73,21 @@ export function cleanText(value: unknown, maxLength: number): string {
   return value.replace(CONTROL_CHARS, " ").trim().slice(0, maxLength);
 }
 
+// Code blocks keep line breaks and tabs; only the control characters that
+// cannot appear in rendered text are removed.
+const CODE_CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
+
+export function cleanCodeText(value: unknown, maxLength: number): string {
+  if (typeof value !== "string") return "";
+  return value.replace(CODE_CONTROL_CHARS, "").replace(/\r\n/g, "\n").trim().slice(0, maxLength);
+}
+
 export type ContentBlock =
   | { type: "paragraph"; text: string }
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "list"; items: string[] }
-  | { type: "callout"; title: string; text: string };
+  | { type: "callout"; title: string; text: string }
+  | { type: "code"; language: string; code: string };
 
 const MAX_BLOCKS = 80;
 const MAX_LIST_ITEMS = 30;
@@ -137,6 +147,15 @@ export function parseContentBlocks(content: unknown): ContentBlock[] {
           type: "callout",
           title: cleanText(block.title, 120),
           text,
+        });
+      }
+    } else if (block.type === "code") {
+      const code = cleanCodeText(block.code, 20000);
+      if (code) {
+        blocks.push({
+          type: "code",
+          language: cleanText(block.language, 20).toLowerCase(),
+          code,
         });
       }
     }

@@ -50,6 +50,7 @@ export interface PublicServiceDTO {
 
 export interface PublicPortfolioDTO {
   id: string;
+  slug: string;
   category: string;
   categorySlug: "webapp" | "website" | "mobile";
   clientSector: string;
@@ -60,6 +61,16 @@ export interface PublicPortfolioDTO {
   metric: string;
   image: string | null;
   imageAlt: string;
+}
+
+export interface PublicPortfolioGalleryItem {
+  url: string;
+  alt: string;
+}
+
+export interface PublicPortfolioDetailDTO extends PublicPortfolioDTO {
+  projectUrl: string | null;
+  gallery: PublicPortfolioGalleryItem[];
 }
 
 export interface PublicPricingPlanDTO {
@@ -97,8 +108,11 @@ export interface PublicArticleDetailDTO extends PublicArticleSummaryDTO {
   seoDescription: string | null;
   categoryId: string;
   authorName: string;
+  coverUrl: string | null;
+  coverAlt: string | null;
   tags: { name: string; slug: string }[];
   blocks: ContentBlock[];
+  relatedPosts: PublicArticleSummaryDTO[];
 }
 
 export interface PublicPageDTO {
@@ -131,10 +145,54 @@ function toPortfolioCategory(category: string): PublicPortfolioDTO["categorySlug
   return "website";
 }
 
+function isSafeImageUrl(url: unknown): url is string {
+  return (
+    typeof url === "string" &&
+    (url.startsWith("/portfolio/") ||
+      url.startsWith("/uploads/") ||
+      url.startsWith("https://"))
+  );
+}
+
+function resolvePortfolioThumbnail(row: any): string | null {
+  return isSafeImageUrl(row.thumbnailUrl)
+    ? row.thumbnailUrl
+    : resolvePortfolioImage(row.slug);
+}
+
+function sanitizeProjectUrl(url: unknown): string | null {
+  if (typeof url !== "string") return null;
+  if (url.startsWith("https://") || url.startsWith("http://") || url.startsWith("/")) {
+    return url.slice(0, 500);
+  }
+  return null;
+}
+
+function parsePortfolioGallery(content: unknown): PublicPortfolioGalleryItem[] {
+  if (typeof content !== "object" || content === null) return [];
+  const raw = (content as { gallery?: unknown }).gallery;
+  if (!Array.isArray(raw)) return [];
+
+  const gallery: PublicPortfolioGalleryItem[] = [];
+  for (const item of (raw as unknown[]).slice(0, 24)) {
+    if (typeof item !== "object" || item === null) continue;
+    const url = (item as { url?: unknown }).url;
+    if (!isSafeImageUrl(url)) continue;
+    gallery.push({
+      url: url.slice(0, 500),
+      alt: cleanText((item as { alt?: unknown }).alt, 255),
+    });
+  }
+  return gallery;
+}
+
 const readServices = unstable_cache(
   async (): Promise<PublicServiceDTO[]> => {
     const data = await fetchApi<any[]>("/services?site_id=nextkarya-main");
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((item) => ({
       slug: item.slug,
@@ -153,10 +211,14 @@ const readServices = unstable_cache(
 const readPortfolios = unstable_cache(
   async (): Promise<PublicPortfolioDTO[]> => {
     const data = await fetchApi<any[]>("/portfolios?site_id=nextkarya-main&limit=60");
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((row) => ({
       id: row.id,
+      slug: typeof row.slug === "string" && row.slug ? row.slug : row.id,
       category: row.serviceCategory || "Website",
       categorySlug: toPortfolioCategory(row.serviceCategory || "Website"),
       clientSector: row.clientName,
@@ -165,11 +227,7 @@ const readPortfolios = unstable_cache(
       tech: Array.isArray(row.technologies) ? row.technologies : [],
       impact: row.impactSummary || "",
       metric: row.metricResult || "",
-      image:
-        typeof row.thumbnailUrl === "string" &&
-        row.thumbnailUrl.startsWith("/portfolio/")
-          ? row.thumbnailUrl
-          : resolvePortfolioImage(row.slug),
+      image: resolvePortfolioThumbnail(row),
       imageAlt: row.thumbnailAlt || row.title,
     }));
   },
@@ -177,10 +235,41 @@ const readPortfolios = unstable_cache(
   { tags: ["public:portfolios"], revalidate: REVALIDATE_SECONDS }
 );
 
+const readPortfolioBySlug = unstable_cache(
+  async (slug: string): Promise<PublicPortfolioDetailDTO | "missing"> => {
+    const row = await fetchApi<any>(
+      `/portfolios/${encodeURIComponent(slug)}?site_id=nextkarya-main`
+    );
+    if (!row) return "missing";
+
+    return {
+      id: row.id,
+      slug: row.slug,
+      category: row.serviceCategory || "Website",
+      categorySlug: toPortfolioCategory(row.serviceCategory || "Website"),
+      clientSector: row.clientName,
+      title: row.title,
+      description: row.summary,
+      tech: Array.isArray(row.technologies) ? row.technologies : [],
+      impact: row.impactSummary || "",
+      metric: row.metricResult || "",
+      image: resolvePortfolioThumbnail(row),
+      imageAlt: row.thumbnailAlt || row.title,
+      projectUrl: sanitizeProjectUrl(row.projectUrl),
+      gallery: parsePortfolioGallery(row.content),
+    };
+  },
+  ["public-portfolio-by-slug"],
+  { tags: ["public:portfolios"], revalidate: REVALIDATE_SECONDS }
+);
+
 const readPricing = unstable_cache(
   async (): Promise<PublicPricingPlanDTO[]> => {
     const data = await fetchApi<any[]>("/services?site_id=nextkarya-main");
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((item) => ({
       id: item.id,
@@ -202,7 +291,10 @@ const readPricing = unstable_cache(
 const readFaqs = unstable_cache(
   async (): Promise<PublicFaqDTO[]> => {
     const data = await fetchApi<any[]>("/faqs?site_id=nextkarya-main");
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((f) => ({
       id: f.id,
@@ -217,7 +309,10 @@ const readFaqs = unstable_cache(
 const readArticles = unstable_cache(
   async (limit: number): Promise<PublicArticleSummaryDTO[]> => {
     const data = await fetchApi<any[]>(`/articles?site_id=nextkarya-main&limit=${limit}`);
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((a) => ({
       id: a.id,
@@ -252,10 +347,53 @@ const readArticleBySlug = unstable_cache(
       seoDescription: data.seoDescription || data.excerpt,
       categoryId: data.category?.id || "cat1",
       authorName: data.author?.fullName || "Tim Next Karya",
+      coverUrl: typeof data.coverUrl === "string" ? data.coverUrl : null,
+      coverAlt: typeof data.coverAlt === "string" ? data.coverAlt : null,
       tags: Array.isArray(data.tags)
         ? data.tags.map((t: string) => ({ name: cleanText(t, 60), slug: cleanText(t, 80) }))
         : [],
       blocks: parseContentBlocks(data.content),
+      relatedPosts: Array.isArray(data.relatedPosts)
+        ? data.relatedPosts
+            .filter(
+              (item: unknown): item is {
+                id: string;
+                title: string;
+                slug: string;
+                excerpt?: string;
+                readingTimeMinutes?: number;
+                publishedAt?: string;
+                category?: { name?: string; slug?: string };
+              } =>
+                typeof item === "object" &&
+                item !== null &&
+                typeof (item as { id?: unknown }).id === "string" &&
+                typeof (item as { title?: unknown }).title === "string" &&
+                typeof (item as { slug?: unknown }).slug === "string"
+            )
+            .map(
+              (item: {
+                id: string;
+                title: string;
+                slug: string;
+                excerpt?: string;
+                readingTimeMinutes?: number;
+                publishedAt?: string;
+                category?: { name?: string; slug?: string };
+              }) => ({
+              id: item.id,
+              slug: cleanText(item.slug, 255),
+              title: cleanText(item.title, 255),
+              excerpt: cleanText(item.excerpt, 1000),
+              readingTime: item.readingTimeMinutes || 3,
+              publishedAt: item.publishedAt
+                ? new Date(item.publishedAt).toISOString()
+                : null,
+              categoryName: item.category?.name || "Teknologi",
+              categorySlug: item.category?.slug || "teknologi",
+            }))
+            .filter((item: { title: string; slug: string }) => item.title && item.slug)
+        : [],
     };
   },
   ["public-article-by-slug"],
@@ -265,7 +403,10 @@ const readArticleBySlug = unstable_cache(
 const readRelatedArticles = unstable_cache(
   async (_articleId: string, _categoryId: string): Promise<PublicArticleSummaryDTO[]> => {
     const data = await fetchApi<any[]>("/articles?site_id=nextkarya-main&limit=3");
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((a) => ({
       id: a.id,
@@ -338,7 +479,10 @@ const readSiteStatus = unstable_cache(
 const readTestimonials = unstable_cache(
   async (): Promise<PublicTestimonialDTO[]> => {
     const data = await fetchApi<any[]>("/testimonials?site_id=nextkarya-main");
-    if (!data || data.length === 0) return [];
+    if (data === null) {
+      throw new Error("Public content API returned no response.");
+    }
+    if (data.length === 0) return [];
 
     return data.map((t) => ({
       id: t.id,
@@ -364,6 +508,9 @@ export const getPublicTestimonials = cache(() =>
 );
 export const getPublicServices = cache(() => safeRead("services", () => readServices()));
 export const getPublicPortfolios = cache(() => safeRead("portfolios", () => readPortfolios()));
+export const getPublicPortfolioBySlug = cache((slug: string) =>
+  safeRead("portfolio", () => readPortfolioBySlug(slug))
+);
 export const getPublicPricing = cache(() => safeRead("pricing", () => readPricing()));
 export const getPublicFaqs = cache(() => safeRead("faqs", () => readFaqs()));
 export const getPublicArticles = cache((limit = 24) =>

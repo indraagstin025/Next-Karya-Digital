@@ -1,4 +1,5 @@
 const API_BASE_URL =
+  process.env.BACKEND_API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
   (process.env.NODE_ENV === "production"
     ? "https://nextkarya.web.id/api/v1"
@@ -32,8 +33,10 @@ export async function fetchApi<T>(
         "Content-Type": "application/json",
         ...options?.headers,
       },
-      next: { revalidate: 300 },
-      signal: AbortSignal.timeout(3000),
+      // Caching is handled by unstable_cache in public-content. A second
+      // fetch-level cache would keep stale content after a revalidation tag.
+      cache: "no-store",
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!res.ok) {
@@ -64,14 +67,14 @@ export async function postApi<T>(
     });
 
     return await res.json();
-  } catch (err: any) {
+  } catch {
     return {
       success: false,
       data: null,
       meta: null,
       error: {
         code: "NETWORK_ERROR",
-        message: err?.message || "Gagal menghubungi server API.",
+        message: "Tidak bisa menghubungi layanan kami. Periksa koneksi lalu coba lagi.",
       },
     };
   }

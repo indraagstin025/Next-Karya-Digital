@@ -12,6 +12,12 @@ type Props = { params: Promise<{ slug: string }> };
 
 const SITE_NAME = "Next Karya Digital Solutions";
 
+function toShareImage(url: string | null): string | null {
+  if (!url) return null;
+  if (url.startsWith("/") || url.startsWith("https://")) return url;
+  return null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = parsePublicSlug((await params).slug);
   if (!slug) return { title: `Artikel tidak ditemukan - ${SITE_NAME}`, robots: { index: false } };
@@ -24,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = article.seoTitle || `${article.title} - ${SITE_NAME}`;
   const description = article.seoDescription || article.excerpt;
   const canonical = `/blog/${article.slug}`;
+  const shareImage = toShareImage(article.coverUrl);
 
   return {
     title,
@@ -37,6 +44,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: article.publishedAt ?? undefined,
       section: article.categoryName,
       tags: article.tags.map((tag) => tag.name),
+      ...(shareImage
+        ? { images: [{ url: shareImage, alt: article.coverAlt || article.title }] }
+        : {}),
+    },
+    twitter: {
+      card: shareImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(shareImage ? { images: [shareImage] } : {}),
     },
   };
 }
@@ -69,7 +85,10 @@ export default async function Page({ params }: Props) {
     permanentRedirect(`/blog/${article.slug}`);
   }
 
-  const related = await getRelatedArticles(article.id, article.categoryId);
+  const related =
+    article.relatedPosts.length > 0
+      ? article.relatedPosts
+      : await getRelatedArticles(article.id, article.categoryId);
 
   return <BlogDetailPage article={article} related={related} />;
 }

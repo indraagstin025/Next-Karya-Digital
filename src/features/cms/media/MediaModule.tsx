@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import {
-  ImageIcon,
   UploadIcon,
   SearchIcon,
   Trash2Icon,
   CopyIcon,
   CheckIcon,
   FileIcon,
+  PencilIcon,
 } from "lucide-react";
 import type { CmsMediaItem } from "../types";
 import {
@@ -18,6 +18,7 @@ import {
   SECONDARY_BTN_CLASS,
 } from "../constants";
 import { formatBytes, formatDateShortId } from "../utils";
+import { MediaUploadError, uploadMediaFile } from "./uploadMediaFile";
 
 export interface MediaModuleProps {
   mediaItems: CmsMediaItem[];
@@ -42,7 +43,11 @@ export function MediaModule({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [altText, setAltText] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingAlt, setEditingAlt] = useState("");
+  const [savingAlt, setSavingAlt] = useState(false);
 
   async function handleUpload(e: React.FormEvent) {
     e.preventDefault();
@@ -65,27 +70,61 @@ export function MediaModule({
     }
 
     setUploading(true);
+    setUploadProgress(0);
     try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      if (altText.trim()) {
-        formData.append("altText", altText.trim());
-      }
+      const { media, isDuplicate } = await uploadMediaFile({
+        file: selectedFile,
+        altText,
+        onProgress: setUploadProgress,
+      });
 
-      const created = await apiMutate("media", "POST", formData);
-      if (created) {
+      setNotice({
+        type: "success",
+        text: isDuplicate
+          ? "Berkas identik sudah ada di Pustaka Media. Menggunakan berkas yang telah tersimpan."
+          : `Berkas "${media.originalName}" berhasil diunggah ke Pustaka Media.`,
+      });
+      setSelectedFile(null);
+      setAltText("");
+      await onRefresh();
+    } catch (err) {
+      if (err instanceof MediaUploadError && err.code === "AUTHENTICATION_REQUIRED") {
+        return;
+      }
+      setNotice({
+        type: "error",
+        text:
+          err instanceof Error
+            ? err.message
+            : "Berkas gagal diunggah. Silakan coba lagi.",
+      });
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  }
+
+  function startEditAlt(item: CmsMediaItem) {
+    setEditingId(item.id);
+    setEditingAlt(item.altText || "");
+  }
+
+  async function saveAlt(item: CmsMediaItem) {
+    setSavingAlt(true);
+    try {
+      const updated = await apiMutate(`media/${item.id}`, "PATCH", {
+        altText: editingAlt.trim() || null,
+      });
+      if (updated) {
         setNotice({
           type: "success",
-          text: created.isDuplicate
-            ? "Berkas identik sudah ada di Pustaka Media. Menggunakan berkas yang telah tersimpan."
-            : `Berkas "${created.originalName}" berhasil diunggah ke Pustaka Media.`,
+          text: `Teks alternatif "${item.originalName}" berhasil diperbarui.`,
         });
-        setSelectedFile(null);
-        setAltText("");
+        setEditingId(null);
         await onRefresh();
       }
     } finally {
-      setUploading(false);
+      setSavingAlt(false);
     }
   }
 
@@ -169,7 +208,11 @@ export function MediaModule({
               className={`${PRIMARY_BTN_CLASS} w-full`}
             >
               <UploadIcon className="size-4 mr-1.5" />
-              {uploading ? "Mengunggah..." : "Unggah ke Pustaka"}
+              {uploading
+                ? uploadProgress > 0
+                  ? `Mengunggah... ${uploadProgress}%`
+                  : "Mengunggah..."
+                : "Unggah ke Pustaka"}
             </button>
           </div>
         </form>
@@ -234,20 +277,65 @@ export function MediaModule({
               <p className="text-[10px] text-muted-foreground">
                 {formatDateShortId(item.createdAt)}
               </p>
+              <p className="mt-1 line-clamp-2 text-[10px] text-muted-foreground">
+                {item.altText || "Belum ada teks alternatif"}
+              </p>
+
+              {editingId === item.id && (
+                <div className="mt-2 space-y-1.5">
+                  <input
+                    type="text"
+                    value={editingAlt}
+                    onChange={(e) => setEditingAlt(e.target.value)}
+                    maxLength={255}
+                    disabled={savingAlt}
+                    placeholder="Teks alternatif..."
+                    className={`${INPUT_CLASS} text-xs`}
+                  />
+                  <div className="flex gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => saveAlt(item)}
+                      disabled={savingAlt}
+                      className={`${SECONDARY_BTN_CLASS} flex-1 px-2 py-1 text-[10px]`}
+                    >
+                      {savingAlt ? "Menyimpan..." : "Simpan"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(null)}
+                      disabled={savingAlt}
+                      className="rounded-md border border-border px-2 py-1 text-[10px] text-muted-foreground hover:bg-muted"
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-3 flex items-center justify-between border-t border-border pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleCopyUrl(item)}
-                  title="Salin Tautan Berkas"
-                  className="rounded-md border border-border p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  {copiedId === item.id ? (
-                    <CheckIcon className="size-3.5 text-emerald-500" />
-                  ) : (
-                    <CopyIcon className="size-3.5" />
-                  )}
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handleCopyUrl(item)}
+                    title="Salin Tautan Berkas"
+                    className="rounded-md border border-border p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    {copiedId === item.id ? (
+                      <CheckIcon className="size-3.5 text-emerald-500" />
+                    ) : (
+                      <CopyIcon className="size-3.5" />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => startEditAlt(item)}
+                    title="Ubah Teks Alternatif"
+                    className="rounded-md border border-border p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    <PencilIcon className="size-3.5" />
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={() => handleDelete(item)}

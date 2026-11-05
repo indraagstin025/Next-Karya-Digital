@@ -1,5 +1,7 @@
 "use client";
 
+import { isWorkspacePath } from "./workspace-paths";
+
 const SESSION_KEY = "nk_analytics_sid";
 
 function generateSessionId(): string {
@@ -70,7 +72,7 @@ export function sendAnalyticsBeacon(payload: AnalyticsBeaconPayload): boolean {
   if (typeof window === "undefined") return false;
 
   const path = payload.path || window.location.pathname;
-  if (path.startsWith("/cms")) return false; // Ignore internal staff workspace
+  if (isWorkspacePath(path)) return false; // Ignore internal staff workspace
 
   const body = JSON.stringify({
     site_id: payload.site_id || "nextkarya-main",

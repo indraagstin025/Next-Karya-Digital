@@ -50,6 +50,10 @@ export function extractBodyTextFromBlocks(content: any): string {
     return blocks
       .map((b: any) => {
         if (b?.type === "heading") return `## ${b.text || ""}`;
+        if (b?.type === "code") {
+          const language = typeof b.language === "string" ? b.language : "";
+          return `\`\`\`${language}\n${b.code || ""}\n\`\`\``;
+        }
         if (b?.type === "list" && Array.isArray(b.items)) {
           return b.items.map((it: string) => `- ${it}`).join("\n");
         }
@@ -63,27 +67,51 @@ export function extractBodyTextFromBlocks(content: any): string {
 }
 
 export function buildBlocksFromBodyText(rawText: string, updatedLabel?: string) {
-  const chunks = rawText
-    .split(/\n{2,}/)
-    .map((c) => c.trim())
-    .filter(Boolean);
+  const blocks: any[] = [];
 
-  const blocks = chunks.map((chunk) => {
-    if (chunk.startsWith("## ")) {
-      return { type: "heading", level: 2, text: chunk.replace(/^##\s+/, "").trim() };
+  function pushTextChunks(text: string) {
+    const chunks = text
+      .split(/\n{2,}/)
+      .map((c) => c.trim())
+      .filter(Boolean);
+
+    for (const chunk of chunks) {
+      if (chunk.startsWith("### ")) {
+        blocks.push({ type: "heading", level: 3, text: chunk.replace(/^###\s+/, "").trim() });
+        continue;
+      }
+      if (chunk.startsWith("## ")) {
+        blocks.push({ type: "heading", level: 2, text: chunk.replace(/^##\s+/, "").trim() });
+        continue;
+      }
+      const lines = chunk.split("\n").map((l) => l.trim());
+      if (lines.every((l) => l.startsWith("- "))) {
+        blocks.push({
+          type: "list",
+          items: lines.map((l) => l.replace(/^-\s+/, "").trim()).filter(Boolean),
+        });
+        continue;
+      }
+      blocks.push({ type: "paragraph", text: chunk });
     }
-    if (chunk.startsWith("### ")) {
-      return { type: "heading", level: 3, text: chunk.replace(/^###\s+/, "").trim() };
+  }
+
+  // Fenced code blocks are parsed first so blank lines inside code never split
+  // the snippet into paragraphs.
+  const fencePattern = /```([a-zA-Z0-9+#._-]{0,20})[ \t]*\r?\n([\s\S]*?)```/g;
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = fencePattern.exec(rawText)) !== null) {
+    pushTextChunks(rawText.slice(cursor, match.index));
+    const code = match[2].replace(/\r\n/g, "\n").replace(/\s+$/, "");
+    if (code.trim()) {
+      blocks.push({ type: "code", language: match[1] || "", code });
     }
-    const lines = chunk.split("\n").map((l) => l.trim());
-    if (lines.every((l) => l.startsWith("- "))) {
-      return {
-        type: "list",
-        items: lines.map((l) => l.replace(/^-\s+/, "").trim()).filter(Boolean),
-      };
-    }
-    return { type: "paragraph", text: chunk };
-  });
+    cursor = match.index + match[0].length;
+  }
+
+  pushTextChunks(rawText.slice(cursor));
 
   if (updatedLabel) {
     return { updatedLabel, blocks };

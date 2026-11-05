@@ -41,7 +41,7 @@ export async function submitContactMessage(
     return {
       success: false,
       errorKind: "validation",
-      message: "Format pengiriman formulir tidak valid.",
+      message: "Data yang dikirim belum sesuai.",
     };
   }
 
@@ -97,7 +97,7 @@ export async function submitContactMessage(
       };
     }
 
-    const { name, email, service, message, sourcePage } = parsed.data;
+    const { name, email, whatsapp, service, message, sourcePage } = parsed.data;
     const emailKey = `contact:email:${email}`;
 
     const emailCheck = await withServerTimeout(
@@ -121,7 +121,7 @@ export async function submitContactMessage(
           site_id: "nextkarya-main",
           clientName: name,
           email: email,
-          whatsappNumber: "081234567890",
+          whatsappNumber: whatsapp,
           serviceRequested: service,
           message: `${message} (Sumber: ${sourcePage || "Form Kontak"})`,
         }),
@@ -132,13 +132,44 @@ export async function submitContactMessage(
       "saveContactMessage"
     );
 
-    if (!leadRes.success && leadRes.error?.code === "FORM_LOCKED") {
+    if (!leadRes.success) {
+      const errorCode = leadRes.error?.code;
+
+      if (errorCode === "FORM_LOCKED") {
+        return {
+          success: false,
+          errorKind: "locked",
+          message:
+            leadRes.error?.message ||
+            "Formulir konsultasi sedang dialihkan sementara ke WhatsApp resmi Next Karya.",
+        };
+      }
+
+      if (errorCode === "RATE_LIMIT_EXCEEDED") {
+        return {
+          success: false,
+          errorKind: "locked",
+          retryAfterSeconds: 900,
+          message:
+            "Terlalu banyak pengiriman dari jaringan ini. Coba kembali dalam 15 menit.",
+        };
+      }
+
+      if (errorCode === "VALIDATION_ERROR" || errorCode === "BAD_REQUEST") {
+        return {
+          success: false,
+          errorKind: "validation",
+          message:
+            leadRes.error?.message ||
+            "Periksa kembali isian formulir Anda, lalu coba kirim ulang.",
+        };
+      }
+
       return {
         success: false,
-        errorKind: "locked",
+        errorKind: "server",
         message:
-          leadRes.error.message ||
-          "Formulir konsultasi sedang dialihkan sementara ke WhatsApp resmi Next Karya.",
+          "Mohon maaf, pesan belum dapat disimpan. Silakan coba lagi sesaat lagi atau hubungi kami lewat email resmi.",
       };
     }
 
@@ -155,7 +186,7 @@ export async function submitContactMessage(
         success: false,
         errorKind: "timeout",
         message:
-          "Koneksi ke server sedang melambat. Isian Anda tetap tersimpan di formulir, silakan kirim ulang beberapa detik lagi.",
+          "Koneksi sedang melambat. Isian Anda tetap tersimpan di formulir, silakan kirim ulang beberapa detik lagi.",
       };
     }
 

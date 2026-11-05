@@ -93,7 +93,7 @@ async function handleProxy(
         meta: null,
         error: {
           code: "FORBIDDEN_ENDPOINT",
-          message: "Endpoint CMS tidak diizinkan.",
+          message: "Bagian ini tidak bisa diakses dari halaman CMS.",
         },
       },
       { status: 403 }
@@ -127,7 +127,8 @@ async function handleProxy(
           meta: null,
           error: {
             code: "CSRF_REJECTED",
-            message: "Permintaan mutasi ditolak karena asal halaman tidak sah.",
+            message:
+              "Perubahan ditolak karena halaman asal tidak dikenali. Muat ulang halaman lalu coba lagi.",
           },
         },
         { status: 403 }
@@ -173,7 +174,7 @@ async function handleProxy(
             meta: null,
             error: {
               code: "INVALID_JSON",
-              message: "Format body JSON tidak valid.",
+              message: "Data yang dikirim tidak terbaca. Muat ulang halaman lalu coba lagi.",
             },
           },
           { status: 400 }
@@ -192,7 +193,7 @@ async function handleProxy(
             meta: null,
             error: {
               code: "TENANT_ACCESS_DENIED",
-              message: "Akses ditolak: site_id tidak sesuai otorisasi.",
+              message: "Anda tidak punya akses ke data situs ini.",
             },
           },
           { status: 403 }

@@ -46,6 +46,19 @@ export function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
                 <p className={block.title ? "mt-1.5" : ""}>{block.text}</p>
               </aside>
             );
+          case "code":
+            return (
+              <figure key={index} className="mt-8 overflow-hidden rounded-2xl border border-[#1E3350] bg-[#0B1B33]">
+                {block.language && (
+                  <figcaption className="border-b border-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    {block.language}
+                  </figcaption>
+                )}
+                <pre className="overflow-x-auto p-4 text-[13px] leading-[1.65] text-slate-100">
+                  <code>{block.code}</code>
+                </pre>
+              </figure>
+            );
           default:
             return (
               <p key={index} className="mt-4 first:mt-0">

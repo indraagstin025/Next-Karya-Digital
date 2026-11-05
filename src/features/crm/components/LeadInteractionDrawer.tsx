@@ -24,13 +24,20 @@ export function LeadInteractionDrawer({
 }: LeadInteractionDrawerProps) {
   const [noteText, setNoteText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   if (!lead) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!noteText.trim() || !lead) return;
+    if (!lead) return;
 
+    if (noteText.trim().length < 3) {
+      setFormError("Tulis catatan minimal 3 karakter.");
+      return;
+    }
+
+    setFormError(null);
     setSubmitting(true);
     try {
       await onSubmitNote(lead.id, noteText.trim());
@@ -100,7 +107,7 @@ export function LeadInteractionDrawer({
         </div>
 
         {/* Form Add Note */}
-        <form onSubmit={handleSubmit} className="border-t border-border pt-4 space-y-3">
+        <form onSubmit={handleSubmit} noValidate className="border-t border-border pt-4 space-y-3">
           <label htmlFor="crm-note-input" className="block text-xs font-semibold text-foreground">
             Tambah Catatan Baru
           </label>
@@ -113,6 +120,11 @@ export function LeadInteractionDrawer({
             placeholder="Contoh: Klien setuju dengan penawaran Paket Business. Menunggu pengiriman proposal resmi via WhatsApp besok."
             className={`${INPUT_CLASS} h-auto leading-relaxed`}
           />
+          {formError && (
+            <p role="alert" className="text-xs font-semibold text-rose-700 dark:text-rose-300">
+              {formError}
+            </p>
+          )}
           <div className="flex justify-end gap-2">
             <button type="button" onClick={onClose} className={SECONDARY_BTN_CLASS}>
               Tutup

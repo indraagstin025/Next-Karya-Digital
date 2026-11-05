@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { submitContactMessage } from "../actions";
+import { sendAnalyticsBeacon } from "@/lib/analytics-beacon";
 import {
   contactMessageSchema,
   extractContactFieldErrors,
@@ -12,6 +13,7 @@ export interface ContactFormData {
   name: string;
   email: string;
   service: string;
+  whatsapp: string;
   message: string;
   websiteUrl: string;
 }
@@ -25,6 +27,7 @@ const INITIAL_STATE: ContactFormData = {
   name: "",
   email: "",
   service: "website",
+  whatsapp: "",
   message: "",
   websiteUrl: "",
 };
@@ -127,6 +130,12 @@ export function useContactForm(sourcePage: string = "/kontak") {
         );
 
         if (result.success) {
+          if (!formData.websiteUrl.trim()) {
+            sendAnalyticsBeacon({
+              eventName: "form_submit",
+              path: sourcePage || "/kontak",
+            });
+          }
           setFormStatus({ type: "success", message: result.message });
           resetForm();
         } else {
@@ -135,13 +144,13 @@ export function useContactForm(sourcePage: string = "/kontak") {
         }
       } catch (error) {
         let message =
-          "Terjadi kendala jaringan saat menghubungi server. Isian Anda tetap tersimpan, silakan coba lagi.";
+          "Koneksi sedang bermasalah. Isian Anda tetap tersimpan, silakan coba lagi.";
         if (error instanceof ClientSubmitAbort && error.reason === "offline") {
           message =
             "Koneksi internet terputus saat mengirim. Pesan mungkin belum terkirim, kirim ulang setelah koneksi pulih.";
         } else if (error instanceof ClientSubmitAbort && error.reason === "timeout") {
           message =
-            "Server tidak merespons dalam 15 detik. Isian Anda tetap tersimpan, silakan coba lagi.";
+            "Koneksi terlalu lama. Isian Anda tetap tersimpan, silakan coba lagi.";
         }
         setFormStatus({ type: "error", message });
       } finally {

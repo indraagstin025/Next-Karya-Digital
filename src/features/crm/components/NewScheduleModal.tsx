@@ -37,23 +37,58 @@ export function NewScheduleModal({
   const [leadId, setLeadId] = useState("");
   const [assignedToId, setAssignedToId] = useState(staffUsers[0]?.id || "");
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 10));
-  const [endDate, setEndDate] = useState(
-    new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10)
-  );
+  const [endDate, setEndDate] = useState(() => {
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    return nextWeek.toISOString().slice(0, 10);
+  });
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
+  function validateForm(): string | null {
+    if (taskName.trim().length < 2) {
+      return "Nama tugas minimal 2 karakter.";
+    }
+
+    if (!assignedToId) {
+      return "Pilih staf yang bertanggung jawab.";
+    }
+
+    if (!startDate) {
+      return "Tanggal mulai wajib diisi.";
+    }
+
+    if (!endDate) {
+      return "Tanggal selesai wajib diisi.";
+    }
+
+    if (endDate < startDate) {
+      return "Tanggal selesai tidak boleh lebih awal dari tanggal mulai.";
+    }
+
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const validationError = validateForm();
+    if (validationError) {
+      setFormError(validationError);
+      return;
+    }
+
+    setFormError(null);
     setSubmitting(true);
     try {
       await onSubmit({
         taskName: taskName.trim(),
         leadId: leadId || null,
-        assignedToId: assignedToId || null,
-        startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString(),
+        assignedToId,
+        startDate,
+        endDate,
       });
       onClose();
     } finally {
@@ -93,7 +128,15 @@ export function NewScheduleModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="my-4 space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="my-4 space-y-4">
+          {formError && (
+            <p
+              role="alert"
+              className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-700 dark:text-rose-300"
+            >
+              {formError}
+            </p>
+          )}
           <div>
             <label htmlFor="sched-name" className={LABEL_CLASS}>
               Nama Milestone / Tugas<span className="text-destructive">*</span>
@@ -136,8 +179,12 @@ export function NewScheduleModal({
                 id="sched-pic"
                 value={assignedToId}
                 onChange={(e) => setAssignedToId(e.target.value)}
+                required
                 className={INPUT_CLASS}
               >
+                {staffUsers.length === 0 && (
+                  <option value="">Belum ada staf aktif</option>
+                )}
                 {staffUsers.map((st) => (
                   <option key={st.id} value={st.id}>
                     {st.fullName} ({st.jobTitle || "Staf"})
@@ -182,7 +229,7 @@ export function NewScheduleModal({
             </button>
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || !assignedToId}
               className={PRIMARY_BTN_CLASS}
             >
               {submitting ? "Menyimpan..." : "Simpan Agenda"}

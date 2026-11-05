@@ -45,7 +45,7 @@ export function EmergencyTakedownDialog({
     if (!target) return;
 
     if (!isValidReason) {
-      setError("Alasan takedown darurat wajib diisi minimal 5 karakter.");
+      setError("Isi alasan penurunan konten, minimal 5 karakter.");
       return;
     }
 
@@ -56,7 +56,7 @@ export function EmergencyTakedownDialog({
       setReason("");
       onClose();
     } catch (err: any) {
-      setError(err?.message || "Gagal melakukan takedown darurat. Silakan coba kembali.");
+      setError(err?.message || "Konten belum berhasil ditarik. Silakan coba lagi.");
     } finally {
       setSubmitting(false);
     }

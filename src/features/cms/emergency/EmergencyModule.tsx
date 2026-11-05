@@ -73,7 +73,7 @@ export function EmergencyModule({
     if (emFormReason.trim().length < 5) {
       setNotice({
         type: "error",
-        text: "Alasan tindakan darurat wajib diisi minimal 5 karakter.",
+        text: "Isi alasan tindakan darurat, minimal 5 karakter.",
       });
       return;
     }
@@ -95,7 +95,7 @@ export function EmergencyModule({
     if (emBannerReason.trim().length < 5) {
       setNotice({
         type: "error",
-        text: "Alasan perubahan banner darurat wajib diisi minimal 5 karakter.",
+        text: "Isi alasan perubahan pengumuman, minimal 5 karakter.",
       });
       return;
     }
@@ -119,7 +119,7 @@ export function EmergencyModule({
     if (!emUnpublishTargetId.trim() || emUnpublishReason.trim().length < 5) {
       setNotice({
         type: "error",
-        text: "Pilih konten target dan isi alasan darurat minimal 5 karakter.",
+        text: "Pilih konten yang ingin ditarik, lalu isi alasannya minimal 5 karakter.",
       });
       return;
     }
@@ -143,7 +143,7 @@ export function EmergencyModule({
     if (emRevokeReason.trim().length < 5) {
       setNotice({
         type: "error",
-        text: "Isi alasan pencabutan sesi minimal 5 karakter pada kolom alasan keamanan.",
+        text: "Isi alasan mengeluarkan akun ini, minimal 5 karakter.",
       });
       return;
     }

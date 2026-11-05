@@ -30,14 +30,9 @@ import type { DashboardLeadPreview } from "./components/RecentLeadsCard";
 export interface DashboardViewProps {
   totalLeadsCount: number;
   newLeadsCount: number;
-  dealLeadsCount: number;
   leadsPreview: DashboardLeadPreview[];
   publishedPostsCount: number;
-  totalPostsCount: number;
   publishedPortfoliosCount: number;
-  totalPortfoliosCount: number;
-  publishedServicesCount: number;
-  totalServicesCount: number;
   analytics?: CmsAnalyticsOverview | null;
   emergencyNotice?: DashboardEmergencyNotice | null;
   selectedPeriod?: PeriodFilter;
@@ -51,14 +46,9 @@ export interface DashboardViewProps {
 export function DashboardView({
   totalLeadsCount,
   newLeadsCount,
-  dealLeadsCount,
   leadsPreview,
   publishedPostsCount,
-  totalPostsCount,
   publishedPortfoliosCount,
-  totalPortfoliosCount,
-  publishedServicesCount,
-  totalServicesCount,
   analytics,
   emergencyNotice,
   selectedPeriod = "30d",
@@ -91,7 +81,6 @@ export function DashboardView({
   const conversionRateChange = analytics?.metrics?.conversionRateChange;
   const averageDurationChange = analytics?.metrics?.averageDurationChange;
 
-  // Map real leads to datatable items if available, or keep array empty (no dummy fallback)
   const tableData: TransactionItem[] =
     leadsPreview && leadsPreview.length > 0
       ? leadsPreview.map((lead, index) => {
@@ -110,17 +99,17 @@ export function DashboardView({
             email: lead.companyName
               ? `${lead.companyName} (${lead.whatsappNumber})`
               : lead.whatsappNumber,
-            amount: 5000000 + (index % 5) * 2500000,
+            dealValue: lead.dealValue,
+            serviceRequested: lead.serviceRequested,
             status: itemStatus,
-            paidBy: index % 2 === 0 ? "mastercard" : "visa",
           };
         })
       : [];
 
-  const totalPipelineValue =
-    dealLeadsCount > 0
-      ? (dealLeadsCount * 8500000).toLocaleString("id-ID")
-      : "0";
+  const totalPipelineValue = leadsPreview
+    .filter((lead) => lead.status === "DEAL")
+    .reduce((total, lead) => total + lead.dealValue, 0)
+    .toLocaleString("id-ID");
 
   return (
     <div className="space-y-6">
@@ -230,7 +219,7 @@ export function DashboardView({
             value={`${conversionRate.toFixed(1)}%`}
             changePercentage={
               conversionRateChange && conversionRateChange !== 0
-                ? `${conversionRateChange > 0 ? "+" : ""}${conversionRateChange.toFixed(2)}%`
+                ? `${conversionRateChange > 0 ? "+" : ""}${conversionRateChange.toFixed(1)}%`
                 : "0%"
             }
             subtitle={`${whatsappClicks} pesan, ${formSubmits} formulir`}
@@ -266,8 +255,6 @@ export function DashboardView({
           <TotalEarningCard
             title="Estimasi Nilai Proyek"
             earning={totalPipelineValue}
-            trend="up"
-            percentage={dealLeadsCount > 0 ? 100 : undefined}
             comparisonText="Akumulasi nilai dari proyek yang telah disepakati"
             earningData={[]}
             className="justify-between gap-5 sm:min-w-0"

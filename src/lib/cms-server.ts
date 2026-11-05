@@ -13,6 +13,11 @@ export interface CmsStaffUser {
   avatarUrl: string | null;
 }
 
+export type CmsAuthResult =
+  | { status: "authenticated"; user: CmsStaffUser }
+  | { status: "unauthenticated" }
+  | { status: "unavailable"; message: string };
+
 export interface BackendEnvelope<T = any> {
   success: boolean;
   data: T | null;
@@ -87,35 +92,47 @@ export async function forwardToCmsBackend<T = any>(
           code: "BACKEND_UNREACHABLE",
           message:
             err?.name === "TimeoutError"
-              ? "Server API tidak merespons dalam batas waktu 10 detik."
-              : "Tidak dapat terhubung ke server API backend.",
+              ? "Layanan kami sedang tidak merespons. Coba lagi beberapa saat lagi."
+              : "Tidak bisa terhubung ke layanan kami. Periksa koneksi lalu coba lagi.",
         },
       },
     };
   }
 }
 
-export async function getAuthenticatedCmsUser(): Promise<CmsStaffUser | null> {
+export async function getAuthenticatedCmsUser(): Promise<CmsAuthResult> {
   const token = await getCmsTokenFromCookies();
-  if (!token) return null;
+  if (!token) return { status: "unauthenticated" };
 
   const { status, body } = await forwardToCmsBackend<
     CmsStaffUser | { user: CmsStaffUser }
   >("/auth/me", {
     method: "GET",
     token,
-    timeoutMs: 6_000,
+    timeoutMs: 10_000,
   });
 
+  if (status === 401 || status === 403) {
+    return { status: "unauthenticated" };
+  }
+
   if (status !== 200 || !body.success || !body.data) {
-    return null;
+    return {
+      status: "unavailable",
+      message:
+        body.error?.message ||
+        "Layanan autentikasi sedang tidak merespons. Coba lagi beberapa saat lagi.",
+    };
   }
 
   const rawData = body.data as any;
   const user: CmsStaffUser | null = rawData?.user ?? rawData;
   if (!user || typeof user.id !== "string") {
-    return null;
+    return {
+      status: "unavailable",
+      message: "Data sesi staf belum bisa dibaca. Coba muat ulang halaman ini.",
+    };
   }
 
-  return user;
+  return { status: "authenticated", user };
 }

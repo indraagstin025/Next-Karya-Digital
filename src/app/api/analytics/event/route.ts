@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") || "http://localhost:5000/api/v1";
+  process.env.BACKEND_API_URL?.replace(/\/+$/, "") ||
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ||
+  "http://localhost:5000/api/v1";
 
 export async function POST(request: NextRequest) {
   try {
     const bodyText = await request.text();
     if (!bodyText || bodyText.length > 2048) {
       return NextResponse.json(
-        { success: false, error: { message: "Ukuran payload tidak valid" } },
+        { success: false, error: { message: "Data kunjungan tidak bisa diproses." } },
         { status: 400 }
       );
     }
@@ -35,7 +37,7 @@ export async function POST(request: NextRequest) {
   } catch {
     // Non-blocking fallback for analytics telemetry
     return NextResponse.json(
-      { success: false, message: "Telemetry buffer accepted" },
+      { success: false, message: "Data kunjungan belum bisa dicatat." },
       { status: 202 }
     );
   }

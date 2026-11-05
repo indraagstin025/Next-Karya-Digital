@@ -3,20 +3,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon, KeyRoundIcon, ShieldCheckIcon, XIcon } from "lucide-react";
+import { isWorkspacePath } from "@/lib/workspace-paths";
 
 const STAFF_QUICK_ACCOUNTS = [
   {
-    label: "Login Programmer",
+    label: "Programmer",
     email: "programmer@nextkarya.web.id",
     role: "Full-Stack Developer",
   },
   {
-    label: "Login Desainer",
+    label: "Desainer",
     email: "designer@nextkarya.web.id",
     role: "UI/UX & Visual Designer",
   },
   {
-    label: "Login Project Lead",
+    label: "Project Lead",
     email: "lead@nextkarya.web.id",
     role: "Project Lead & Client Relations",
   },
@@ -31,7 +32,27 @@ export function StaffShortcutModal() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [infoMsg, setInfoMsg] = useState<string | null>(null);
   const emailInputRef = useRef<HTMLInputElement | null>(null);
+  const passwordInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sesi") === "berakhir") {
+      setInfoMsg("Sesi Anda sudah berakhir. Silakan masuk lagi untuk melanjutkan.");
+      setIsOpen(true);
+
+      params.delete("sesi");
+      const query = params.toString();
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -42,7 +63,7 @@ export function StaffShortcutModal() {
         event.preventDefault();
         event.stopPropagation();
 
-        if (pathname?.startsWith("/cms") || pathname?.startsWith("/admin")) {
+        if (isWorkspacePath(pathname)) {
           return;
         }
 
@@ -78,12 +99,13 @@ export function StaffShortcutModal() {
 
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail || !password) {
-      setErrorMsg("Email staf dan kata sandi wajib diisi sebelum melanjutkan.");
+      setErrorMsg("Email dan kata sandi perlu diisi sebelum melanjutkan.");
       return;
     }
 
     setLoading(true);
     setErrorMsg(null);
+    setInfoMsg(null);
 
     try {
       const res = await fetch("/api/cms/auth/login", {
@@ -96,18 +118,18 @@ export function StaffShortcutModal() {
       if (!res.ok || !payload.success) {
         setErrorMsg(
           payload?.error?.message ||
-            "Kredensial tidak valid. Periksa kembali email staf dan kata sandi Anda."
+            "Email atau kata sandi tidak sesuai. Periksa lagi."
         );
         return;
       }
 
       setIsOpen(false);
       setPassword("");
-      router.push("/cms");
+      router.push("/dashboard");
       router.refresh();
     } catch {
       setErrorMsg(
-        "Tidak dapat menghubungi server autentikasi. Pastikan server backend aktif di port 5000."
+        "Tidak bisa menghubungi layanan kami. Periksa koneksi internet, lalu coba lagi."
       );
     } finally {
       setLoading(false);
@@ -123,6 +145,7 @@ export function StaffShortcutModal() {
       onClick={(e) => {
         if (e.target === e.currentTarget && !loading) {
           setIsOpen(false);
+          setInfoMsg(null);
         }
       }}
     >
@@ -169,7 +192,10 @@ export function StaffShortcutModal() {
 
           <button
             type="button"
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              setIsOpen(false);
+              setInfoMsg(null);
+            }}
             disabled={loading}
             aria-label="Tutup modal login"
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-[#2A436E] bg-[#12213F] hover:bg-[#1E3358] text-[#F1F5FB] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38BDF8] cursor-pointer"
@@ -194,7 +220,7 @@ export function StaffShortcutModal() {
         {/* Quick Login Buttons (Admin Template style) */}
         <div className="mt-5">
           <p className="mb-2 text-xs font-semibold text-[#94A7C4]">
-            Pilih Cepat Akun Staf Internal:
+            Pilih Akun Staf Internal:
           </p>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {STAFF_QUICK_ACCOUNTS.map((acc) => {
@@ -205,8 +231,10 @@ export function StaffShortcutModal() {
                   type="button"
                   onClick={() => {
                     setEmail(acc.email);
-                    setPassword("NextKarya2026!");
+                    setPassword("");
                     setErrorMsg(null);
+                    setInfoMsg(null);
+                    setTimeout(() => passwordInputRef.current?.focus(), 0);
                   }}
                   className={`flex min-h-11 flex-col items-start justify-center rounded-lg border px-3 py-2 text-left text-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38BDF8] cursor-pointer ${
                     isSelected
@@ -224,13 +252,22 @@ export function StaffShortcutModal() {
           </div>
         </div>
 
+        {infoMsg && (
+          <div
+            role="status"
+            className="mt-4 rounded-xl border border-sky-500/40 bg-sky-950/60 p-3.5 text-xs leading-relaxed text-sky-200"
+          >
+            {infoMsg}
+          </div>
+        )}
+
         {errorMsg && (
           <div
             id="modal-cms-login-error"
             role="alert"
             className="mt-4 rounded-xl border border-rose-500/50 bg-rose-950/70 p-3.5 text-xs leading-relaxed text-[#F87171]"
           >
-            <p className="font-bold text-rose-200">Otorisasi Ditolak</p>
+            <p className="font-bold text-rose-200">Belum Bisa Masuk</p>
             <p className="mt-0.5">{errorMsg}</p>
           </div>
         )}
@@ -269,6 +306,7 @@ export function StaffShortcutModal() {
             </label>
             <div className="relative flex items-center">
               <input
+                ref={passwordInputRef}
                 id="modal-cms-password"
                 name="password"
                 type={showPassword ? "text" : "password"}
@@ -303,14 +341,14 @@ export function StaffShortcutModal() {
             disabled={loading}
             className="min-h-11 w-full rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-60 px-4 py-2.5 text-sm font-bold text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38BDF8] cursor-pointer"
           >
-            {loading ? "Memverifikasi Sesi..." : "Masuk ke Next Karya Studio"}
+            {loading ? "Sedang masuk..." : "Masuk ke Next Karya Studio"}
           </button>
         </form>
 
         <div className="mt-5 flex items-center justify-between border-t border-[#1E3358] pt-4 text-xs text-[#94A7C4]">
           <span className="inline-flex items-center gap-1.5">
             <ShieldCheckIcon className="size-4 text-[#34D399]" />
-            Dilindungi Middleware Proxy &amp; Cookie HttpOnly
+            Koneksi login dilindungi
           </span>
           <span className="font-mono text-[11px] text-[#38BDF8]">
             site: nextkarya-main

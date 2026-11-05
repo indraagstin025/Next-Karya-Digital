@@ -14,6 +14,8 @@ const PRIMARY_BTN_CLASS =
   "inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer min-h-11";
 
 export interface CrmViewProps {
+  activeSubView: "leads" | "schedules";
+  onSubViewChange: (view: "leads" | "schedules") => void;
   leads: CmsLeadItem[];
   schedules: CmsScheduleItem[];
   staffUsers: CmsStaffMember[];
@@ -28,6 +30,8 @@ export interface CrmViewProps {
 }
 
 export function CrmView({
+  activeSubView,
+  onSubViewChange,
   leads,
   schedules,
   staffUsers,
@@ -36,8 +40,6 @@ export function CrmView({
   setNotice,
 }: CrmViewProps) {
   const {
-    activeSubView,
-    setActiveSubView,
     newLeadModalOpen,
     setNewLeadModalOpen,
     selectedLeadForNotes,
@@ -99,7 +101,8 @@ export function CrmView({
 
   async function handleAddLeadNote(leadId: string, noteText: string) {
     const res = await apiMutate(`crm/leads/${leadId}/notes`, "POST", {
-      note: noteText,
+      notes: noteText,
+      channel: "INTERNAL_NOTE",
     });
     if (res) {
       setNotice({
@@ -182,7 +185,7 @@ export function CrmView({
       <div className="flex items-center gap-2 border-b border-border pb-2">
         <button
           type="button"
-          onClick={() => setActiveSubView("leads")}
+          onClick={() => onSubViewChange("leads")}
           className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer min-h-11 ${
             activeSubView === "leads"
               ? "bg-primary text-primary-foreground shadow-xs"
@@ -193,7 +196,7 @@ export function CrmView({
         </button>
         <button
           type="button"
-          onClick={() => setActiveSubView("schedules")}
+          onClick={() => onSubViewChange("schedules")}
           className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer min-h-11 ${
             activeSubView === "schedules"
               ? "bg-primary text-primary-foreground shadow-xs"

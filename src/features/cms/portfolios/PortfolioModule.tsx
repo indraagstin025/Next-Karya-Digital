@@ -24,6 +24,7 @@ import { slugifyText, formatDateShortId } from "../utils";
 import { StatusBadge } from "../components/StatusBadge";
 import { UrlField } from "../components/UrlField";
 import { MediaPickerModal } from "../components/MediaPickerModal";
+import { MediaUploadError, uploadMediaFile } from "../media/uploadMediaFile";
 import {
   EmergencyTakedownDialog,
   type EmergencyTakedownTarget,
@@ -53,6 +54,7 @@ export function PortfolioModule({
 }: PortfolioModuleProps) {
   const [editorOpen, setEditorOpen] = useState(false);
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
   const [takedownTarget, setTakedownTarget] = useState<EmergencyTakedownTarget | null>(null);
 
   // Filter States
@@ -75,6 +77,7 @@ export function PortfolioModule({
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [thumbnailAlt, setThumbnailAlt] = useState("");
   const [projectUrl, setProjectUrl] = useState("");
+  const [gallery, setGallery] = useState<{ url: string; alt: string }[]>([]);
   const [isFeatured, setIsFeatured] = useState(false);
   const [sortOrder, setSortOrder] = useState(1);
   const [uploadingThumb, setUploadingThumb] = useState(false);
@@ -94,6 +97,7 @@ export function PortfolioModule({
     setThumbnailUrl("");
     setThumbnailAlt("");
     setProjectUrl("");
+    setGallery([]);
     setIsFeatured(false);
     setSortOrder(1);
     setUploadingThumb(false);
@@ -113,6 +117,21 @@ export function PortfolioModule({
     setThumbnailUrl(item.thumbnailUrl || "");
     setThumbnailAlt(item.thumbnailAlt || "");
     setProjectUrl(item.projectUrl || "");
+    setGallery(
+      Array.isArray(item.content?.gallery)
+        ? item.content.gallery
+            .filter(
+              (image: any) =>
+                image &&
+                typeof image.url === "string" &&
+                (image.url.startsWith("/") || image.url.startsWith("https://"))
+            )
+            .map((image: any) => ({
+              url: image.url,
+              alt: typeof image.alt === "string" ? image.alt : "",
+            }))
+        : []
+    );
     setIsFeatured(Boolean(item.isFeatured));
     setSortOrder(item.sortOrder || 1);
     setEditorOpen(true);
@@ -137,7 +156,16 @@ export function PortfolioModule({
       thumbnailUrl: thumbnailUrl.trim() || null,
       thumbnailAlt: thumbnailAlt.trim() || title.trim(),
       projectUrl: projectUrl.trim() || null,
-      content: { description: summary.trim() },
+      content: {
+        description: summary.trim(),
+        gallery: gallery
+          .filter((image) => image.url.trim())
+          .slice(0, 24)
+          .map((image) => ({
+            url: image.url.trim(),
+            alt: image.alt.trim() || title.trim(),
+          })),
+      },
       isFeatured,
       sortOrder: Number(sortOrder) || 1,
     };
@@ -215,7 +243,7 @@ export function PortfolioModule({
     if (!allowed.includes(file.type)) {
       setNotice({
         type: "error",
-        text: "Format berkas tidak didukung. Harap pilih gambar WebP, PNG, atau JPEG.",
+        text: "Berkas ini belum didukung. Pilih gambar berformat WebP, PNG, atau JPEG.",
       });
       return;
     }
@@ -227,25 +255,35 @@ export function PortfolioModule({
 
     setUploadingThumb(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
       const generatedAlt = title.trim()
         ? `Thumbnail portofolio: ${title.trim()}`
         : file.name.replace(/\.[^/.]+$/, "");
-      formData.append("altText", generatedAlt);
 
-      const created = await apiMutate("media", "POST", formData);
-      if (created) {
-        setThumbnailUrl(created.url);
-        if (!thumbnailAlt.trim()) setThumbnailAlt(created.altText || generatedAlt);
-        setNotice({
-          type: "success",
-          text: created.isDuplicate
-            ? "Gambar identik sudah ada di Pustaka Media."
-            : "Thumbnail portofolio berhasil diunggah.",
-        });
-        await onRefresh();
+      const { media: created, isDuplicate } = await uploadMediaFile({
+        file,
+        altText: generatedAlt,
+      });
+
+      setThumbnailUrl(created.url);
+      if (!thumbnailAlt.trim()) setThumbnailAlt(created.altText || generatedAlt);
+      setNotice({
+        type: "success",
+        text: isDuplicate
+          ? "Gambar identik sudah ada di Pustaka Media."
+          : "Thumbnail portofolio berhasil diunggah.",
+      });
+      await onRefresh();
+    } catch (err) {
+      if (err instanceof MediaUploadError && err.code === "AUTHENTICATION_REQUIRED") {
+        return;
       }
+      setNotice({
+        type: "error",
+        text:
+          err instanceof Error
+            ? err.message
+            : "Thumbnail portofolio gagal diunggah. Silakan coba lagi.",
+      });
     } finally {
       setUploadingThumb(false);
     }
@@ -646,6 +684,72 @@ export function PortfolioModule({
                 </div>
               </div>
 
+              {/* Gallery */}
+              <div className="rounded-xl border border-border bg-muted/20 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <label className={LABEL_CLASS}>Galeri Gambar Proyek</label>
+                    <p className="text-[11px] text-muted-foreground">
+                      Maksimal 24 gambar. Tampil di halaman detail portofolio.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setGalleryPickerOpen(true)}
+                    className={SECONDARY_BTN_CLASS}
+                  >
+                    <ImageIcon className="size-4 mr-1.5" />
+                    Tambah dari Pustaka
+                  </button>
+                </div>
+
+                {gallery.length === 0 ? (
+                  <p className="mt-3 rounded-lg border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground">
+                    Belum ada gambar galeri.
+                  </p>
+                ) : (
+                  <ul className="mt-3 space-y-2">
+                    {gallery.map((image, index) => (
+                      <li
+                        key={`${image.url}-${index}`}
+                        className="flex items-center gap-3 rounded-lg border border-border bg-card p-2"
+                      >
+                        <img
+                          src={image.url}
+                          alt={image.alt || `Gambar galeri ${index + 1}`}
+                          className="size-14 shrink-0 rounded-md border border-border object-cover"
+                        />
+                        <input
+                          type="text"
+                          value={image.alt}
+                          onChange={(e) =>
+                            setGallery((previous) =>
+                              previous.map((item, itemIndex) =>
+                                itemIndex === index ? { ...item, alt: e.target.value } : item
+                              )
+                            )
+                          }
+                          placeholder="Teks alternatif gambar..."
+                          className={INPUT_CLASS}
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setGallery((previous) =>
+                              previous.filter((_, itemIndex) => itemIndex !== index)
+                            )
+                          }
+                          title="Hapus gambar galeri"
+                          className="shrink-0 rounded-md border border-destructive/30 p-2 text-destructive hover:bg-destructive/10"
+                        >
+                          <XIcon className="size-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -681,6 +785,22 @@ export function PortfolioModule({
           if (!thumbnailAlt.trim()) setThumbnailAlt(item.altText || item.originalName);
         }}
         title="Pilih Thumbnail Portofolio"
+      />
+
+      <MediaPickerModal
+        isOpen={galleryPickerOpen}
+        onClose={() => setGalleryPickerOpen(false)}
+        mediaItems={mediaItems}
+        onSelect={(item) => {
+          setGallery((previous) =>
+            previous.some((image) => image.url === item.url) ||
+            previous.length >= 24
+              ? previous
+              : [...previous, { url: item.url, alt: item.altText || item.originalName }]
+          );
+          setGalleryPickerOpen(false);
+        }}
+        title="Pilih Gambar Galeri"
       />
 
       {/* Emergency Takedown Dialog */}

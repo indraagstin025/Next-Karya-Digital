@@ -1,10 +1,9 @@
 import "server-only";
 import { createHmac, hkdfSync } from "node:crypto";
 import { headers } from "next/headers";
-import { getValidatedAuthSecret } from "@/lib/session-crypto";
 
-const HKDF_SALT = "naykon-auth-hkdf-salt-v1";
-const HKDF_IP_INFO = "naykon:ratelimit:ip-hmac:v1";
+const HKDF_SALT = "nextkarya-ratelimit-hkdf-salt-v1";
+const HKDF_IP_INFO = "nextkarya:ratelimit:ip-hmac:v1";
 
 interface MemoryLimitEntry {
   count: number;
@@ -14,7 +13,12 @@ interface MemoryLimitEntry {
 const memoryRateLimitStore = new Map<string, MemoryLimitEntry>();
 
 function deriveIpHmacKey(): Buffer {
-  const secret = getValidatedAuthSecret();
+  const secret = process.env.CONTACT_IP_HASH_SECRET || process.env.AUTH_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      "CONTACT_IP_HASH_SECRET (atau AUTH_SECRET) minimal 32 karakter wajib diset untuk hashing IP formulir kontak."
+    );
+  }
   return Buffer.from(hkdfSync("sha256", secret, HKDF_SALT, HKDF_IP_INFO, 32));
 }
 

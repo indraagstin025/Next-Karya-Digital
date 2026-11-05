@@ -8,10 +8,12 @@ import {
 } from "@/lib/cms-server";
 import { verifySameOriginMutation } from "@/lib/request-security";
 
+const STAFF_SESSION_SECONDS = 7 * 24 * 60 * 60;
+
 const loginBodySchema = z
   .object({
-    email: z.string().trim().email("Format email tidak valid").max(255),
-    password: z.string().min(6, "Kata sandi minimal 6 karakter").max(128),
+    email: z.string().trim().email("Alamat email belum benar. Contoh: nama@email.com").max(255, "Alamat email maksimal 255 karakter"),
+    password: z.string().min(6, "Kata sandi minimal 6 karakter").max(128, "Kata sandi maksimal 128 karakter"),
   })
   .strict();
 
@@ -25,7 +27,7 @@ export async function POST(request: NextRequest) {
         meta: null,
         error: {
           code: "CSRF_REJECTED",
-          message: "Permintaan ditolak karena asal halaman tidak sah.",
+          message: "Permintaan ditolak karena halaman asal tidak dikenali. Muat ulang halaman lalu coba lagi.",
         },
       },
       { status: 403 }
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
         meta: null,
         error: {
           code: "INVALID_JSON",
-          message: "Format permintaan login tidak valid.",
+          message: "Data login belum lengkap atau tidak sesuai.",
         },
       },
       { status: 400 }
@@ -59,7 +61,7 @@ export async function POST(request: NextRequest) {
         meta: null,
         error: {
           code: "VALIDATION_ERROR",
-          message: parsed.error.issues[0]?.message || "Input login tidak valid.",
+          message: parsed.error.issues[0]?.message || "Email atau kata sandi belum sesuai.",
         },
       },
       { status: 400 }
@@ -86,13 +88,13 @@ export async function POST(request: NextRequest) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: body.data.expiresIn || 28800,
+    maxAge: body.data.expiresIn || STAFF_SESSION_SECONDS,
   });
 
   return NextResponse.json({
     success: true,
     data: {
-      expiresIn: body.data.expiresIn || 28800,
+      expiresIn: body.data.expiresIn || STAFF_SESSION_SECONDS,
       user: body.data.user,
     },
     meta: null,

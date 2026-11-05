@@ -25,6 +25,7 @@ export type MenuItem = {
 } & (
   | {
       href: string
+      activePath?: string
       badge?: string
       badgeClassName?: string
       childItems?: never
@@ -50,7 +51,7 @@ export const navItems: NavItem[] = [
       {
         icon: 'Package',
         label: 'Dashboard',
-        href: '/cms'
+        href: '/dashboard'
       }
     ]
   },
@@ -60,32 +61,23 @@ export const navItems: NavItem[] = [
       {
         icon: 'FileText',
         label: 'Artikel Blog',
-        href: '/cms?tab=posts'
+        href: '/cms/artikel',
+        activePath: '/cms/artikel'
       },
       {
         icon: 'Briefcase',
         label: 'Portofolio Klien',
-        href: '/cms?tab=portfolios'
+        href: '/cms/portofolio'
       },
       {
         icon: 'Sparkles',
         label: 'Layanan',
-        href: '/cms?tab=services'
+        href: '/cms/layanan'
       },
       {
         icon: 'Image',
         label: 'Gambar & Berkas',
-        href: '/cms?tab=media'
-      }
-    ]
-  },
-  {
-    groupLabel: 'Calon Klien & Pelengkap',
-    items: [
-      {
-        icon: 'Users',
-        label: 'Calon Klien Masuk',
-        href: '/cms?tab=crm'
+        href: '/cms/media'
       },
       {
         icon: 'Layers',
@@ -93,21 +85,36 @@ export const navItems: NavItem[] = [
         childItems: [
           {
             label: 'Testimonial Klien',
-            href: '/cms?tab=structured&sub=testimonials'
+            href: '/cms/konten-pendukung/testimoni'
           },
           {
             label: 'Tanya Jawab (FAQ)',
-            href: '/cms?tab=structured&sub=faqs'
+            href: '/cms/konten-pendukung/faq'
           },
           {
             label: 'Halaman Statis',
-            href: '/cms?tab=structured&sub=pages'
+            href: '/cms/konten-pendukung/halaman'
           },
           {
             label: 'Pengalihan Alamat',
-            href: '/cms?tab=structured&sub=redirects'
+            href: '/cms/konten-pendukung/pengalihan'
           }
         ]
+      }
+    ]
+  },
+  {
+    groupLabel: 'CRM',
+    items: [
+      {
+        icon: 'Users',
+        label: 'Calon Klien Masuk',
+        href: '/crm/calon-klien'
+      },
+      {
+        icon: 'CalendarClock',
+        label: 'Jadwal & Agenda',
+        href: '/crm/jadwal'
       }
     ]
   },
@@ -117,12 +124,12 @@ export const navItems: NavItem[] = [
       {
         icon: 'ShieldAlert',
         label: 'Penanganan Darurat',
-        href: '/cms?tab=emergency'
+        href: '/pengaturan/darurat'
       },
       {
         icon: 'UserCheck',
         label: 'Profil Saya',
-        href: '/cms?tab=profile'
+        href: '/pengaturan/profil'
       }
     ]
   }

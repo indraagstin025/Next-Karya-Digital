@@ -160,6 +160,15 @@ export default function Footer() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-5 font-medium">
             <Link
+              href="/syarat-ketentuan"
+              className="inline-flex min-h-11 items-center font-semibold text-[#003E70] underline-offset-2 hover:underline dark:text-[#0986C8]"
+            >
+              Syarat &amp; Ketentuan
+            </Link>
+            <span className="hidden sm:inline text-[#B8D0F0] dark:text-slate-700">
+              &bull;
+            </span>
+            <Link
               href="/kebijakan-privasi"
               className="inline-flex min-h-11 items-center font-semibold text-[#003E70] underline-offset-2 hover:underline dark:text-[#0986C8]"
             >
