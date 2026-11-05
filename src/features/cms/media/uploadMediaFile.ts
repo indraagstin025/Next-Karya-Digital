@@ -37,7 +37,7 @@ export class MediaUploadError extends Error {
 
 function redirectToExpiredSession() {
   if (typeof window !== "undefined") {
-    window.location.assign("/?sesi=berakhir");
+    window.location.assign("/");
   }
 }
 

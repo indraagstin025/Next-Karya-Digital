@@ -37,24 +37,6 @@ export function StaffShortcutModal() {
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("sesi") === "berakhir") {
-      setInfoMsg("Sesi Anda sudah berakhir. Silakan masuk lagi untuk melanjutkan.");
-      setIsOpen(true);
-
-      params.delete("sesi");
-      const query = params.toString();
-      window.history.replaceState(
-        {},
-        "",
-        `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`
-      );
-    }
-  }, []);
-
-  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const isCtrlOrMeta = event.ctrlKey || event.metaKey;
       const isSKey = event.key.toLowerCase() === "s" || event.code === "KeyS";

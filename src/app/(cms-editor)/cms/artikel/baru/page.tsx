@@ -33,7 +33,7 @@ export default async function NewPostPage() {
     mediaResult.status === 401 ||
     postsResult.status === 401
   ) {
-    redirect("/?sesi=berakhir");
+    redirect("/");
   }
 
   const categories =

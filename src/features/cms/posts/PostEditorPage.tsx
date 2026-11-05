@@ -216,7 +216,7 @@ export function PostEditorPage({
       const result = await response.json().catch(() => null);
 
       if (response.status === 401) {
-        router.push("/?sesi=berakhir");
+        router.push("/");
         return;
       }
 

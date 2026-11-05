@@ -54,7 +54,7 @@ export function useCmsMutation() {
       const payload = await res.json();
 
       if (res.status === 401) {
-        router.push("/?sesi=berakhir");
+        router.push("/");
         return null;
       }
 

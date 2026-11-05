@@ -20,7 +20,7 @@ export default async function WorkspaceLayout({
   const auth = await getAuthenticatedCmsUser();
 
   if (auth.status === "unauthenticated") {
-    redirect("/?sesi=berakhir");
+    redirect("/");
   }
 
   if (auth.status === "unavailable") {

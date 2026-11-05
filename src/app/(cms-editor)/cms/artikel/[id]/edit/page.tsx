@@ -48,7 +48,7 @@ export default async function EditPostPage({
     mediaResult.status === 401 ||
     postsResult.status === 401
   ) {
-    redirect("/?sesi=berakhir");
+    redirect("/");
   }
 
   if (!postResult.body.success || !postResult.body.data) {

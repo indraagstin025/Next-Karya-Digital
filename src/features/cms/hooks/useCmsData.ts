@@ -82,7 +82,7 @@ export function useCmsData() {
       ]);
 
       if (catRes.status === 401 || postRes.status === 401) {
-        router.push("/?sesi=berakhir");
+        router.push("/");
         return;
       }
 

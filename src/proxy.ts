@@ -101,14 +101,14 @@ export async function proxy(request: NextRequest) {
   if (isAdminPath || isWorkspace) {
     const token = request.cookies.get(CMS_COOKIE_NAME)?.value;
     if (!token) {
-      const res = NextResponse.redirect(new URL("/?sesi=berakhir", request.url));
+      const res = NextResponse.redirect(new URL("/", request.url));
       res.headers.set("Cache-Control", "no-store");
       return res;
     }
 
     const isAuthorized = await verifyStaffJwtToken(token);
     if (!isAuthorized) {
-      const res = NextResponse.redirect(new URL("/?sesi=berakhir", request.url));
+      const res = NextResponse.redirect(new URL("/", request.url));
       res.cookies.delete(CMS_COOKIE_NAME);
       res.headers.set("Cache-Control", "no-store");
       return res;
