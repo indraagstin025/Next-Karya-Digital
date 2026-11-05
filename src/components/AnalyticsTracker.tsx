@@ -7,17 +7,33 @@ import { isWorkspacePath } from "@/lib/workspace-paths";
 
 export function AnalyticsTracker() {
   const pathname = usePathname();
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number>(0);
 
-  // Track pageview on route change
+  // Track pageview on route change, tanpa menahan tugas penting saat load.
   useEffect(() => {
     if (!pathname || isWorkspacePath(pathname)) return;
 
     startTimeRef.current = Date.now();
-    sendAnalyticsBeacon({
-      eventName: "pageview",
-      path: pathname,
-    });
+
+    const sendPageview = () => {
+      sendAnalyticsBeacon({
+        eventName: "pageview",
+        path: pathname,
+      });
+    };
+
+    const handle =
+      typeof window.requestIdleCallback === "function"
+        ? window.requestIdleCallback(sendPageview, { timeout: 2500 })
+        : window.setTimeout(sendPageview, 1500);
+
+    return () => {
+      if (typeof window.cancelIdleCallback === "function") {
+        window.cancelIdleCallback(handle);
+      } else {
+        window.clearTimeout(handle);
+      }
+    };
   }, [pathname]);
 
   // Track WhatsApp clicks and time spent on page

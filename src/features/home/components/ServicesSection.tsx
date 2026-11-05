@@ -9,7 +9,6 @@ import {
   CheckIcon,
 } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { ServicesMotion } from "./ServicesMotion";
 import type { PublicServiceDTO } from "@/lib/public-content";
 import { pickServiceCopy } from "@/lib/live-content-adapters";
 
@@ -122,11 +121,10 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
           </p>
         </ScrollReveal>
 
-        <ServicesMotion>
         <div className="mt-12 sm:mt-14 space-y-6 lg:space-y-7">
           <div className="grid gap-6 lg:gap-7 lg:grid-cols-12 items-stretch">
             <div className="lg:col-span-7 h-full">
-              <article data-service-card className="relative overflow-hidden h-full flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border-2 border-[#005090] dark:border-blue-500/70 p-7 sm:p-9 shadow-[0_16px_40px_-10px_rgba(0,80,144,0.08)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.22)] hover:border-[#005090] group">
+              <article data-service-card data-nk-reveal="up" className="relative overflow-hidden h-full flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border-2 border-[#005090] dark:border-blue-500/70 p-7 sm:p-9 shadow-[0_16px_40px_-10px_rgba(0,80,144,0.08)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.22)] hover:border-[#005090] group">
                 <div className="nk-service-spotlight" aria-hidden="true" />
                 <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] items-center">
                   <div>
@@ -271,7 +269,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
             </div>
 
             <div className="lg:col-span-5 h-full">
-              <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+              <article data-service-card data-nk-reveal="up" className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
                 <div className="nk-service-spotlight" aria-hidden="true" />
                 <div>
                   <div className="flex items-center justify-between mb-5">
@@ -317,7 +315,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
           <div className="grid gap-6 lg:gap-7 lg:grid-cols-12 items-stretch">
             <div className="lg:col-span-5 h-full">
-              <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+              <article data-service-card data-nk-reveal="up" className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
                 <div className="nk-service-spotlight" aria-hidden="true" />
                 <div>
                   <div className="flex items-center justify-between mb-5">
@@ -377,7 +375,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
             </div>
 
             <div className="lg:col-span-7 h-full">
-              <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-gradient-to-br from-[#005090] via-[#003E70] to-[#002857] p-7 sm:p-9 shadow-[0_18px_48px_-10px_rgba(0,80,144,0.38)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_26px_60px_-10px_rgba(0,80,144,0.52)] group">
+              <article data-service-card data-nk-reveal="up" className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-gradient-to-br from-[#005090] via-[#003E70] to-[#002857] p-7 sm:p-9 shadow-[0_18px_48px_-10px_rgba(0,80,144,0.38)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_26px_60px_-10px_rgba(0,80,144,0.52)] group">
                 <div className="nk-service-spotlight" aria-hidden="true" />
                 <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] items-center">
                   <div>
@@ -503,7 +501,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
             <div className="grid gap-6 lg:gap-7 md:grid-cols-2 items-stretch">
               {extraServices.map((extra) => (
                 <div key={extra.slug} className="h-full">
-                  <article data-service-card className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
+                  <article data-service-card data-nk-reveal="up" className="h-full relative overflow-hidden flex flex-col justify-between rounded-[30px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-[box-shadow,border-color] duration-300 hover:shadow-[0_22px_45px_-10px_rgba(0,80,144,0.15)] hover:border-[#005090] group">
                     <div className="nk-service-spotlight" aria-hidden="true" />
                     <div>
                       <div className="flex items-center justify-between mb-5">
@@ -551,7 +549,6 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
             </div>
           )}
         </div>
-        </ServicesMotion>
       </div>
     </section>
   );

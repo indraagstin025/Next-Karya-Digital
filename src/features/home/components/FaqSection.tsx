@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { PlusIcon, MinusIcon, ArrowRightIcon, ChatBubbleIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -9,11 +7,6 @@ import { toFaqItems } from "@/lib/live-content-adapters";
 
 export function FaqSection({ faqs }: { faqs?: PublicFaqDTO[] | null }) {
   const FAQ_ITEMS = toFaqItems(faqs);
-  const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
-
-  const toggleItem = (id: string) => {
-    setOpenId((prev) => (prev === id ? null : id));
-  };
 
   return (
     <section
@@ -64,64 +57,31 @@ export function FaqSection({ faqs }: { faqs?: PublicFaqDTO[] | null }) {
         </ScrollReveal>
 
         <div className="mt-12 space-y-3.5">
-          {FAQ_ITEMS.map((item, idx) => {
-            const isOpen = openId === item.id;
-            const panelId = `faq-panel-${item.id}`;
-            return (
-              <ScrollReveal key={item.id} delayMs={idx * 55}>
-                <div
-                  className={`overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border shadow-[0_8px_24px_-8px_rgba(10,35,80,0.05)] transition-all duration-300 ${
-                    isOpen
-                      ? "border-[#005090] shadow-[0_14px_34px_-10px_rgba(0,80,144,0.14)]"
-                      : "border-[#E2E8F0] dark:border-slate-800 hover:border-[#005090] dark:hover:border-blue-500"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => toggleItem(item.id)}
-                    aria-expanded={isOpen}
-                    aria-controls={panelId}
-                    className="group flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer"
-                  >
-                    <span
-                      className={`text-[15px] sm:text-[16px] font-bold transition-colors ${
-                        isOpen
-                          ? "text-[#005090] dark:text-[#0986C8]"
-                          : "text-[#041E42] dark:text-white group-hover:text-[#005090] dark:group-hover:text-[#0986C8]"
-                      }`}
-                    >
-                      {item.question}
-                    </span>
-                    <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#005090] text-white shadow-sm transition-transform duration-300 ${
-                        isOpen ? "rotate-180 scale-105" : "group-hover:scale-105"
-                      }`}
-                    >
-                      {isOpen ? (
-                        <MinusIcon className="h-4 w-4" />
-                      ) : (
-                        <PlusIcon className="h-4 w-4" />
-                      )}
-                    </div>
-                  </button>
+          {FAQ_ITEMS.map((item, idx) => (
+            <ScrollReveal key={item.id} delayMs={idx * 55}>
+              <details
+                className="nk-faq group overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white shadow-[0_8px_24px_-8px_rgba(10,35,80,0.05)] transition-all duration-300 open:border-[#005090] open:shadow-[0_14px_34px_-10px_rgba(0,80,144,0.14)] dark:border-slate-800 dark:bg-slate-900 dark:open:border-blue-500"
+                open={idx === 0}
+              >
+                <summary className="flex w-full cursor-pointer list-none items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60 sm:p-6">
+                  <span className="text-[15px] font-bold text-[#041E42] transition-colors group-open:text-[#005090] dark:text-white dark:group-open:text-[#0986C8] sm:text-[16px]">
+                    {item.question}
+                  </span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#005090] text-white shadow-sm transition-transform duration-300 group-open:rotate-180 group-open:scale-105">
+                    <PlusIcon className="h-4 w-4 group-open:hidden" aria-hidden="true" />
+                    <MinusIcon
+                      className="hidden h-4 w-4 group-open:block"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </summary>
 
-                  <div
-                    id={panelId}
-                    role="region"
-                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="px-5 pb-6 sm:px-6 pt-2 text-[13.5px] leading-[1.75] text-[#4A5D78] dark:text-slate-300 border-t border-[#F0F5FD] dark:border-slate-800">
-                        {item.answer}
-                      </div>
-                    </div>
-                  </div>
+                <div className="border-t border-[#F0F5FD] px-5 pb-6 pt-2 text-[13.5px] leading-[1.75] text-[#4A5D78] dark:border-slate-800 dark:text-slate-300 sm:px-6">
+                  {item.answer}
                 </div>
-              </ScrollReveal>
-            );
-          })}
+              </details>
+            </ScrollReveal>
+          ))}
         </div>
 
         <ScrollReveal delayMs={120}>

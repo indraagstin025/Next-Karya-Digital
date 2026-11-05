@@ -950,7 +950,7 @@ body {
   animation: nkCardFilterEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Spotlight card layanan: posisi mengikuti kursor lewat --mx/--my dari GSAP. */
+/* Spotlight card layanan: glow statis saat hover, tanpa pelacakan kursor. */
 .nk-service-spotlight {
   position: absolute;
   inset: 0;
@@ -1008,6 +1008,219 @@ textarea:focus-visible {
   .theme-toggle {
     padding: 0.5rem 0.7rem;
   }
+}
+
+/* ─── Animasi CSS: hero, layanan, dan reveal ─── */
+/* Semua animasi di bawah ini berjalan tanpa JavaScript. Konten tetap terlihat
+   bila browser tidak mendukung scroll-driven animation. */
+@media (prefers-reduced-motion: no-preference) {
+  .nk-hero-line {
+    animation: nkHeroLine 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .nk-hero-fade {
+    animation: nkHeroFade 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .nk-hero-visual {
+    animation: nkHeroVisual 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  [data-service-float] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nkServiceFloat var(--nk-float-duration, 3s) ease-in-out infinite;
+    animation-delay: var(--nk-float-delay, 0s);
+  }
+
+  [data-service-float="website-plus"] {
+    --nk-float-x: -2px;
+    --nk-float-y: -4px;
+    --nk-float-r: -3deg;
+    --nk-float-duration: 3s;
+  }
+
+  [data-service-float="website-arrow"] {
+    --nk-float-x: 1px;
+    --nk-float-y: -5px;
+    --nk-float-r: 2deg;
+    --nk-float-duration: 3.4s;
+  }
+
+  [data-service-float="website-window"] {
+    --nk-float-y: -4px;
+    --nk-float-duration: 2.6s;
+  }
+
+  [data-service-float="website-chart"] {
+    --nk-float-y: -3px;
+    --nk-float-duration: 3.1s;
+  }
+
+  [data-service-float="mobile-android"] {
+    --nk-float-x: -2px;
+    --nk-float-y: -5px;
+    --nk-float-r: -2deg;
+    --nk-float-duration: 2.8s;
+  }
+
+  [data-service-float="mobile-apple"] {
+    --nk-float-x: 1px;
+    --nk-float-y: -6px;
+    --nk-float-r: 2deg;
+    --nk-float-duration: 3.2s;
+    --nk-float-delay: 0.35s;
+  }
+
+  @supports (animation-timeline: view()) {
+    [data-nk-reveal] {
+      animation-duration: 0.7s;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 8% entry 92%;
+    }
+
+    [data-nk-reveal="up"] {
+      animation-name: nkRevealUp;
+    }
+
+    [data-nk-reveal="left"] {
+      animation-name: nkRevealLeft;
+    }
+
+    [data-nk-reveal="right"] {
+      animation-name: nkRevealRight;
+    }
+
+    [data-nk-reveal="scale"] {
+      animation-name: nkRevealScale;
+    }
+
+    [data-nk-reveal="none"] {
+      animation-name: nkRevealFade;
+    }
+  }
+}
+
+@keyframes nkHeroLine {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 110%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nkHeroFade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Visual hero sengaja tidak memakai opacity: logo adalah elemen LCP, jadi
+   harus sudah dicat walau animasi masuknya belum selesai. */
+@keyframes nkHeroVisual {
+  from {
+    transform: translate3d(0, 16px, 0) scale(0.97);
+  }
+  to {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Filter portofolio tanpa JavaScript. Browser tanpa :has() menampilkan semua
+   kartu, sehingga konten tetap utuh. */
+[data-portfolio-filter]:has(#portfolio-filter-webapp:checked)
+  [data-portfolio-item]:not([data-category="webapp"]),
+[data-portfolio-filter]:has(#portfolio-filter-website:checked)
+  [data-portfolio-item]:not([data-category="website"]),
+[data-portfolio-filter]:has(#portfolio-filter-mobile:checked)
+  [data-portfolio-item]:not([data-category="mobile"]) {
+  display: none;
+}
+
+@keyframes nkServiceFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(
+      var(--nk-float-x, 0),
+      var(--nk-float-y, -4px),
+      0
+    )
+      rotate(var(--nk-float-r, 0deg));
+  }
+}
+
+@keyframes nkRevealUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nkRevealLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-1.5rem, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nkRevealRight {
+  from {
+    opacity: 0;
+    transform: translate3d(1.5rem, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nkRevealScale {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes nkRevealFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nk-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.nk-faq summary {
+  list-style: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

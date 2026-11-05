@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CheckCircledIcon, ArrowRightIcon } from "@radix-ui/react-icons";
@@ -10,29 +8,24 @@ import { toPortfolioTeasers } from "@/lib/live-content-adapters";
 
 type CategoryFilter = "all" | "webapp" | "website" | "mobile";
 
+const FILTER_TABS: { label: string; value: CategoryFilter }[] = [
+  { label: "Semua Proyek", value: "all" },
+  { label: "Aplikasi Web & Dasbor", value: "webapp" },
+  { label: "Website Bisnis", value: "website" },
+  { label: "Aplikasi Mobile", value: "mobile" },
+];
+
 export function PortfolioSection({
   portfolios,
 }: {
   portfolios?: PublicPortfolioDTO[] | null;
 }) {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
   const PORTFOLIO_TEASERS = toPortfolioTeasers(portfolios);
-
-  const filterTabs: { label: string; value: CategoryFilter }[] = [
-    { label: "Semua Proyek", value: "all" },
-    { label: "Aplikasi Web & Dasbor", value: "webapp" },
-    { label: "Website Bisnis", value: "website" },
-    { label: "Aplikasi Mobile", value: "mobile" },
-  ];
-
-  const filteredItems =
-    activeCategory === "all"
-      ? PORTFOLIO_TEASERS
-      : PORTFOLIO_TEASERS.filter((item) => item.categorySlug === activeCategory);
 
   return (
     <section
       id="portofolio"
+      data-portfolio-filter
       className="relative isolate overflow-hidden bg-gradient-to-b from-[#EFF6FB] via-[#F8FAFC] to-[#FFFFFF] dark:from-[#030711] dark:via-[#061231] dark:to-[#08183A] py-16 sm:py-20 lg:py-24 border-t border-[#E2E8F0] dark:border-blue-900/30"
     >
       <svg
@@ -80,33 +73,38 @@ export function PortfolioSection({
             aria-label="Filter kategori portofolio"
             className="mt-8 flex flex-wrap items-center justify-center gap-2.5"
           >
-            {filterTabs.map((tab) => {
-              const selected = activeCategory === tab.value;
-              return (
-                <button
-                  key={tab.value}
-                  type="button"
-                  aria-pressed={selected}
-                  onClick={() => setActiveCategory(tab.value)}
-                  className={`min-h-11 rounded-full px-4.5 py-2 text-xs sm:text-[13px] font-semibold transition-all duration-200 active:scale-95 cursor-pointer ${
-                    selected
-                      ? "bg-[#005090] text-white shadow-[0_6px_18px_-3px_rgba(0,80,144,0.4)]"
-                      : "bg-white text-[#4A5D78] border border-[#E2E8F0] hover:border-[#005090] hover:text-[#005090] dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:border-blue-500"
-                  }`}
+            {FILTER_TABS.map((tab) => (
+              <React.Fragment key={tab.value}>
+                <input
+                  type="radio"
+                  name="portfolio-filter"
+                  id={`portfolio-filter-${tab.value}`}
+                  value={tab.value}
+                  defaultChecked={tab.value === "all"}
+                  className="peer sr-only"
+                />
+                <label
+                  htmlFor={`portfolio-filter-${tab.value}`}
+                  className="min-h-11 cursor-pointer rounded-full border border-[#E2E8F0] bg-white px-4.5 py-2 text-xs font-semibold text-[#4A5D78] transition-all duration-200 hover:border-[#005090] hover:text-[#005090] active:scale-95 peer-checked:border-[#005090] peer-checked:bg-[#005090] peer-checked:text-white peer-checked:shadow-[0_6px_18px_-3px_rgba(0,80,144,0.4)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#005090] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500 sm:text-[13px]"
                 >
                   {tab.label}
-                </button>
-              );
-            })}
+                </label>
+              </React.Fragment>
+            ))}
           </div>
         </ScrollReveal>
 
         <div className="mt-10 sm:mt-12 grid gap-6 lg:gap-7 md:grid-cols-2 lg:grid-cols-3">
-          {filteredItems.map((item, idx) => (
-            <ScrollReveal key={`${activeCategory}-${item.id}`} delayMs={idx * 75} className="h-full">
-              <article
-                className="nk-card-enter h-full flex flex-col justify-between overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group"
-              >
+          {PORTFOLIO_TEASERS.map((item, idx) => (
+            <div
+              key={item.id}
+              data-portfolio-item
+              data-category={item.categorySlug}
+              data-nk-reveal="up"
+              style={idx > 0 ? { animationDelay: `${Math.min(idx, 5) * 60}ms` } : undefined}
+              className="h-full"
+            >
+              <article className="h-full flex flex-col justify-between overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group">
                 <div>
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-b border-[#E2E8F0] dark:border-slate-800">
                     {item.image && (
@@ -164,7 +162,7 @@ export function PortfolioSection({
                   </div>
                 </div>
               </article>
-            </ScrollReveal>
+            </div>
           ))}
         </div>
 

@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { HERO_HIGHLIGHTS } from "../data/homeData";
-import { HeroMotion } from "./HeroMotion";
 
 export function HeroSection() {
   return (
@@ -54,17 +53,19 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14 py-10 sm:py-14 lg:py-12">
-        <HeroMotion>
         <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-8">
           <div className="max-w-[530px]">
             <h1 className="text-[31px] sm:text-[38px] lg:text-[44px] xl:text-[48px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[#041E42] dark:text-[#f4f8ff]">
               <span className="block overflow-hidden">
-                <span data-hero-line className="block pb-[0.08em]">
+                <span className="nk-hero-line block pb-[0.08em]">
                   Bangun Website Profesional
                 </span>
               </span>
               <span className="block overflow-hidden">
-                <span data-hero-line className="block pb-[0.08em]">
+                <span
+                  className="nk-hero-line block pb-[0.08em]"
+                  style={{ animationDelay: "80ms" }}
+                >
                   untuk Bisnis Anda yang{" "}
                   <span className="text-[#005090] dark:text-[#0986C8]">
                     Lebih Dipercaya.
@@ -74,15 +75,15 @@ export function HeroSection() {
             </h1>
 
             <p
-              data-hero-fade
-              className="mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal"
+              className="nk-hero-fade mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal"
+              style={{ animationDelay: "180ms" }}
             >
               Tingkatkan kredibilitas dan jangkauan pasar bisnis Anda. Next Karya Digital Solutions merancang website modern berkecepatan tinggi, sistem web kustom, dan aplikasi mobile yang ramah SEO serta mudah dihubungi oleh calon pelanggan.
             </p>
 
             <div
-              data-hero-fade
-              className="mt-6 flex flex-wrap items-center gap-3.5"
+              className="nk-hero-fade mt-6 flex flex-wrap items-center gap-3.5"
+              style={{ animationDelay: "240ms" }}
             >
               <Link
                 href="#layanan"
@@ -100,8 +101,8 @@ export function HeroSection() {
             </div>
 
             <div
-              data-hero-fade
-              className="mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5"
+              className="nk-hero-fade mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5"
+              style={{ animationDelay: "300ms" }}
             >
               {HERO_HIGHLIGHTS.map((item, index) => (
                 <React.Fragment key={item.label}>
@@ -123,8 +124,8 @@ export function HeroSection() {
 
           {/* Right Column: 3D Stage with Logo Gabungan */}
           <div
-            data-hero-visual
-            className="group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]"
+            className="nk-hero-visual group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]"
+            style={{ animationDelay: "220ms" }}
           >
             <svg
               viewBox="0 0 700 540"
@@ -226,13 +227,14 @@ export function HeroSection() {
                 alt="Next Karya Digital Solutions - Mengakselerasi Inovasi, Mewujudkan Karya Digital"
                 width={960}
                 height={304}
-                priority
-                className="w-full h-auto object-contain drop-shadow-[0_14px_32px_rgba(0,80,144,0.14)] dark:drop-shadow-[0_14px_32px_rgba(0,80,144,0.30)]"
+                sizes="(max-width: 640px) 72vw, 390px"
+                preload
+                fetchPriority="high"
+                className="w-full h-auto object-contain"
               />
             </div>
           </div>
         </div>
-        </HeroMotion>
       </div>
     </section>
   );
