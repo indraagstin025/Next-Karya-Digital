@@ -79,7 +79,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 dark:bg-[#030711]/95 backdrop-blur-md shadow-[0_4px_20px_-4px_rgba(10,30,63,0.08)] border-b border-slate-200/80 dark:border-blue-900/40"
+          ? "bg-white dark:bg-[#030711] shadow-[0_4px_20px_-4px_rgba(10,30,63,0.08)] border-b border-slate-200/80 dark:border-blue-900/40"
           : "bg-transparent border-b border-transparent"
       }`}
       suppressHydrationWarning
