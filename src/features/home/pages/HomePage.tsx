@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ThemeWrapper } from "@/components/ThemeWrapper";
 import type {
   PublicFaqDTO,
   PublicPortfolioDTO,
@@ -31,7 +30,7 @@ export function HomePage({
   faqs,
 }: HomePageProps) {
   return (
-    <ThemeWrapper>
+    <div id="nk-site" className="site-wrap">
       <Navbar />
       <main>
         <HeroSection />
@@ -44,6 +43,6 @@ export function HomePage({
         <ContactSection />
       </main>
       <Footer />
-    </ThemeWrapper>
+    </div>
   );
 }

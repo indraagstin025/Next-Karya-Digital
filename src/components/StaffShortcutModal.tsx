@@ -2,7 +2,13 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { EyeIcon, EyeOffIcon, KeyRoundIcon, ShieldCheckIcon, XIcon } from "lucide-react";
+import {
+  CheckCircledIcon,
+  Cross2Icon,
+  EyeNoneIcon,
+  EyeOpenIcon,
+  LockClosedIcon,
+} from "@radix-ui/react-icons";
 import { isWorkspacePath } from "@/lib/workspace-paths";
 
 const STAFF_QUICK_ACCOUNTS = [
@@ -23,10 +29,10 @@ const STAFF_QUICK_ACCOUNTS = [
   },
 ];
 
-export function StaffShortcutModal() {
+export function StaffShortcutModal({ defaultOpen = false }: { defaultOpen?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [email, setEmail] = useState("programmer@nextkarya.web.id");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -166,7 +172,7 @@ export function StaffShortcutModal() {
                 Next Karya Studio
               </span>
               <span className="ml-2 inline-flex items-center gap-1 rounded-md border border-sky-400/40 bg-sky-950/60 px-2 py-0.5 font-mono text-[11px] font-bold text-[#38BDF8]">
-                <KeyRoundIcon className="size-3" />
+                <LockClosedIcon className="size-3" />
                 Ctrl+Shift+S
               </span>
             </div>
@@ -182,7 +188,7 @@ export function StaffShortcutModal() {
             aria-label="Tutup modal login"
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-[#2A436E] bg-[#12213F] hover:bg-[#1E3358] text-[#F1F5FB] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38BDF8] cursor-pointer"
           >
-            <XIcon className="size-4" />
+            <Cross2Icon className="size-4" />
           </button>
         </div>
 
@@ -310,9 +316,9 @@ export function StaffShortcutModal() {
                 className="absolute right-1 inline-flex min-h-10 min-w-10 items-center justify-center rounded-md text-[#94A7C4] hover:text-[#F1F5FB] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#38BDF8] cursor-pointer"
               >
                 {showPassword ? (
-                  <EyeOffIcon className="size-4" />
+                  <EyeNoneIcon className="size-4" />
                 ) : (
-                  <EyeIcon className="size-4" />
+                  <EyeOpenIcon className="size-4" />
                 )}
               </button>
             </div>
@@ -329,7 +335,7 @@ export function StaffShortcutModal() {
 
         <div className="mt-5 flex items-center justify-between border-t border-[#1E3358] pt-4 text-xs text-[#94A7C4]">
           <span className="inline-flex items-center gap-1.5">
-            <ShieldCheckIcon className="size-4 text-[#34D399]" />
+            <CheckCircledIcon className="size-4 text-[#34D399]" />
             Koneksi login dilindungi
           </span>
           <span className="font-mono text-[11px] text-[#38BDF8]">

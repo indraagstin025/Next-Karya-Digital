@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AboutHero } from "../components/AboutHero";
@@ -8,20 +6,10 @@ import { AboutProfile } from "../components/AboutProfile";
 import { AboutValues } from "../components/AboutValues";
 
 export function AboutPage() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("nk-theme-preference");
-    if (saved === "dark") {
-      setIsDark(true);
-    }
-  }, []);
-
   return (
     <div
       id="nk-site"
-      className={`site-wrap min-h-screen flex flex-col ${isDark ? "theme-dark" : ""}`}
-      suppressHydrationWarning
+      className="site-wrap min-h-screen flex flex-col"
     >
       <Navbar />
 

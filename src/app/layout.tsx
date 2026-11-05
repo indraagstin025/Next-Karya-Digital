@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { StaffShortcutModal } from "@/components/StaffShortcutModal";
+import { StaffShortcutLauncher } from "@/components/StaffShortcutLauncher";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import "./globals.css";
 
@@ -143,6 +143,11 @@ export default function RootLayout({
     <html lang="id" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(localStorage.getItem('nk-theme-preference')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}})();`,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
@@ -173,12 +178,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="min-h-screen bg-slate-50 text-slate-900 antialiased font-sans flex flex-col"
+        className="min-h-screen antialiased font-sans flex flex-col"
         suppressHydrationWarning
       >
         <AnalyticsTracker />
         {children}
-        <StaffShortcutModal />
+        <StaffShortcutLauncher />
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthenticatedCmsUser } from "@/lib/cms-server";
-import { CmsShell } from "@/features/cms/CmsShell";
+import { CmsShellLoader } from "@/features/cms/CmsShellLoader";
 import { WorkspaceUnavailable } from "@/features/cms/WorkspaceUnavailable";
 
 export const metadata: Metadata = {
@@ -27,5 +27,5 @@ export default async function ArticleEditorLayout({
     return <WorkspaceUnavailable message={auth.message} retryHref="/cms/artikel" />;
   }
 
-  return <CmsShell>{children}</CmsShell>;
+  return <CmsShellLoader>{children}</CmsShellLoader>;
 }
