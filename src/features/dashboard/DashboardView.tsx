@@ -21,6 +21,8 @@ import { TotalEarningCard } from "./components/TotalEarningCard";
 import { SalesMetricsCard } from "./components/SalesMetricsCard";
 import { TrafficTrendChart } from "./components/TrafficTrendChart";
 import { TopPagesTable } from "./components/TopPagesTable";
+import { AudienceBreakdownCard } from "./components/AudienceBreakdownCard";
+import { ContentClicksCard } from "./components/ContentClicksCard";
 import {
   DashboardTransactionTable,
   type TransactionItem,
@@ -277,7 +279,20 @@ export function DashboardView({
           <TrafficTrendChart timeline={analytics?.timeline} />
         </div>
 
-        {/* Baris 4: Datatable Prospek Klien & Tabel Halaman Terpopuler */}
+        {/* Baris 4: Tabel Halaman Terpopuler & Klik Konten */}
+        <div className="col-span-full grid gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <TopPagesTable pages={analytics?.pages} className="h-full" />
+          </div>
+          <div className="xl:col-span-1">
+            <ContentClicksCard
+              contentClicks={analytics?.contentClicks}
+              className="h-full"
+            />
+          </div>
+        </div>
+
+        {/* Baris 5: Datatable Prospek Klien & Profil Pengunjung */}
         <div className="col-span-full grid gap-6 xl:grid-cols-3">
           <div className="xl:col-span-2">
             <Card className="w-full py-0 h-full">
@@ -285,7 +300,10 @@ export function DashboardView({
             </Card>
           </div>
           <div className="xl:col-span-1">
-            <TopPagesTable pages={analytics?.pages} className="h-full" />
+            <AudienceBreakdownCard
+              audience={analytics?.audience}
+              className="h-full"
+            />
           </div>
         </div>
       </div>

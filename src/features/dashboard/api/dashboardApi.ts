@@ -1,4 +1,6 @@
 import type {
+  AnalyticsAudience,
+  AnalyticsContentClicks,
   AnalyticsDeviceItem,
   AnalyticsPageRank,
   AnalyticsTrafficSource,
@@ -163,6 +165,77 @@ export const dashboardApi = {
   },
 
   /**
+   * Mengambil rincian browser dan sistem operasi pengunjung.
+   */
+  getAnalyticsAudience: async (
+    params?: { from?: string; to?: string }
+  ): Promise<AnalyticsAudience | null> => {
+    try {
+      const q = new URLSearchParams();
+      if (params?.from) q.set("from", params.from);
+      if (params?.to) q.set("to", params.to);
+
+      const qs = q.toString() ? `?${q.toString()}` : "";
+      const res = await fetch(`/api/cms/analytics/audience${qs}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`);
+      }
+
+      const json = await res.json();
+      const data = json?.success ? json.data : null;
+      if (!data) return null;
+
+      return {
+        browsers: Array.isArray(data.browsers) ? data.browsers : [],
+        os: Array.isArray(data.os) ? data.os : [],
+      };
+    } catch (error) {
+      console.error("[dashboardApi] getAnalyticsAudience error:", error);
+      return null;
+    }
+  },
+
+  /**
+   * Mengambil peringkat klik tautan layanan dan portofolio.
+   */
+  getAnalyticsContentClicks: async (
+    limit = 10,
+    params?: { from?: string; to?: string }
+  ): Promise<AnalyticsContentClicks | null> => {
+    try {
+      const q = new URLSearchParams({ limit: String(limit) });
+      if (params?.from) q.set("from", params.from);
+      if (params?.to) q.set("to", params.to);
+
+      const res = await fetch(`/api/cms/analytics/content-clicks?${q.toString()}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`);
+      }
+
+      const json = await res.json();
+      const data = json?.success ? json.data : null;
+      if (!data) return null;
+
+      return {
+        items: Array.isArray(data.items) ? data.items : [],
+        totalServiceClicks: Number(data.totalServiceClicks) || 0,
+        totalPortfolioClicks: Number(data.totalPortfolioClicks) || 0,
+      };
+    } catch (error) {
+      console.error("[dashboardApi] getAnalyticsContentClicks error:", error);
+      return null;
+    }
+  },
+
+  /**
    * Mengambil paket lengkap analitik (Overview, Pages, Sources, Devices) sekaligus.
    */
   getFullAnalytics: async (
@@ -171,11 +244,20 @@ export const dashboardApi = {
     const range = resolveDateRange(period);
 
     try {
-      const [overviewData, pagesData, sourcesData, devicesData] = await Promise.all([
+      const [
+        overviewData,
+        pagesData,
+        sourcesData,
+        devicesData,
+        audienceData,
+        contentClicksData,
+      ] = await Promise.all([
         dashboardApi.getAnalyticsOverview(range),
         dashboardApi.getAnalyticsPages(10, range),
         dashboardApi.getAnalyticsSources(range),
         dashboardApi.getAnalyticsDevices(range),
+        dashboardApi.getAnalyticsAudience(range),
+        dashboardApi.getAnalyticsContentClicks(10, range),
       ]);
 
       if (!overviewData) return null;
@@ -185,6 +267,8 @@ export const dashboardApi = {
         pages: pagesData,
         sources: sourcesData,
         devices: devicesData.length > 0 ? devicesData : overviewData.devices,
+        audience: audienceData ?? overviewData.audience,
+        contentClicks: contentClicksData ?? overviewData.contentClicks,
       };
     } catch (error) {
       console.error("[dashboardApi] getFullAnalytics error:", error);

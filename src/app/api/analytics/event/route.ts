@@ -1,12 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAllowedAnalyticsOrigin } from "@/lib/analytics-core";
 
 const BACKEND_API_URL =
   process.env.BACKEND_API_URL?.replace(/\/+$/, "") ||
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ||
   "http://localhost:5000/api/v1";
 
+const ALLOWED_ORIGINS = [
+  process.env.FRONTEND_URL,
+  "https://nextkarya.web.id",
+  "https://www.nextkarya.web.id",
+  "http://localhost:3000",
+].filter((origin): origin is string => Boolean(origin));
+
+function firstHeaderEntry(value: string | null): string | null {
+  if (!value) return null;
+  return value.split(",")[0]?.trim() || null;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const origin = request.headers.get("origin");
+    const referer = request.headers.get("referer");
+    const host = request.headers.get("host") || request.nextUrl.host;
+
+    if (
+      !isAllowedAnalyticsOrigin({
+        origin,
+        referer,
+        host,
+        allowedOrigins: ALLOWED_ORIGINS,
+      })
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "ANALYTICS_ORIGIN_REJECTED",
+            message: "Asal permintaan analitik tidak dikenali.",
+          },
+        },
+        { status: 403 }
+      );
+    }
+
     const bodyText = await request.text();
     if (!bodyText || bodyText.length > 2048) {
       return NextResponse.json(
@@ -19,7 +56,13 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/json",
     };
 
-    // Forward client IP and User-Agent if available
+    // Forward the visitor IP so the backend can build a daily visitor identity.
+    const clientIp =
+      request.headers.get("cf-connecting-ip") ||
+      firstHeaderEntry(request.headers.get("x-forwarded-for")) ||
+      request.headers.get("x-real-ip");
+    if (clientIp) forwardHeaders["x-analytics-client-ip"] = clientIp;
+
     const forwardedFor = request.headers.get("x-forwarded-for");
     if (forwardedFor) forwardHeaders["x-forwarded-for"] = forwardedFor;
 

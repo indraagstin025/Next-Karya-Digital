@@ -1,8 +1,15 @@
 "use client";
 
+import {
+  detectBrowser,
+  detectOs,
+  resolveAnalyticsSession,
+  type AnalyticsSession,
+} from "./analytics-core";
 import { isWorkspacePath } from "./workspace-paths";
 
 const SESSION_KEY = "nk_analytics_sid";
+let memorySession: AnalyticsSession | null = null;
 
 function generateSessionId(): string {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -13,20 +20,59 @@ function generateSessionId(): string {
   return id;
 }
 
-export function getOrCreateSessionId(): string {
-  if (typeof window === "undefined") return "server_session_placeholder";
+function readStoredSession(): AnalyticsSession | null {
+  if (typeof window === "undefined") return memorySession;
 
   try {
-    const existing = window.sessionStorage.getItem(SESSION_KEY);
-    if (existing && existing.length >= 10 && existing.length <= 64) {
-      return existing;
+    const raw = window.sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return memorySession;
+
+    try {
+      const parsed = JSON.parse(raw) as Partial<AnalyticsSession>;
+      if (
+        typeof parsed.id === "string" &&
+        parsed.id.length >= 10 &&
+        parsed.id.length <= 64 &&
+        typeof parsed.lastActiveAt === "number"
+      ) {
+        return { id: parsed.id, lastActiveAt: parsed.lastActiveAt };
+      }
+      return memorySession;
+    } catch {
+      // Legacy storage held only the session ID; rotate it once.
+      if (raw.length >= 10 && raw.length <= 64) {
+        return { id: raw, lastActiveAt: 0 };
+      }
+      return memorySession;
     }
-    const newId = generateSessionId();
-    window.sessionStorage.setItem(SESSION_KEY, newId);
-    return newId;
   } catch {
-    return generateSessionId();
+    return memorySession;
   }
+}
+
+function writeStoredSession(session: AnalyticsSession): void {
+  memorySession = session;
+
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } catch {
+    // Storage can be blocked in private webviews; memory keeps the session stable.
+  }
+}
+
+export function getOrCreateSessionId(now = Date.now()): string {
+  if (typeof window === "undefined") return "server_session_placeholder";
+
+  const next = resolveAnalyticsSession(
+    readStoredSession(),
+    now,
+    generateSessionId
+  );
+  writeStoredSession(next);
+
+  return next.id;
 }
 
 export function detectDevice(): "mobile" | "tablet" | "desktop" {
@@ -62,8 +108,15 @@ export function detectTrafficSource(): string {
 
 export interface AnalyticsBeaconPayload {
   site_id?: string;
-  eventName: "pageview" | "whatsapp_click" | "form_submit" | "heartbeat";
+  eventName:
+    | "pageview"
+    | "whatsapp_click"
+    | "form_submit"
+    | "heartbeat"
+    | "service_click"
+    | "portfolio_click";
   path?: string;
+  targetPath?: string | null;
   referrer?: string | null;
   durationSec?: number;
 }
@@ -74,14 +127,20 @@ export function sendAnalyticsBeacon(payload: AnalyticsBeaconPayload): boolean {
   const path = payload.path || window.location.pathname;
   if (isWorkspacePath(path)) return false; // Ignore internal staff workspace
 
+  const userAgent =
+    typeof navigator !== "undefined" ? navigator.userAgent : "";
+
   const body = JSON.stringify({
     site_id: payload.site_id || "nextkarya-main",
     sessionId: getOrCreateSessionId(),
     eventName: payload.eventName,
     path: path.startsWith("/") ? path : `/${path}`,
+    targetPath: payload.targetPath ?? null,
     referrer: payload.referrer !== undefined ? payload.referrer : document.referrer || null,
     source: detectTrafficSource(),
     device: detectDevice(),
+    browser: detectBrowser(userAgent),
+    os: detectOs(userAgent),
     durationSec: payload.durationSec || 0,
   });
 

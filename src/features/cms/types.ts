@@ -229,15 +229,42 @@ export interface CmsAnalyticsOverview {
   };
   pages?: CmsAnalyticsPage[];
   sources?: CmsAnalyticsSource[];
+  audience?: CmsAnalyticsAudience;
+  contentClicks?: CmsAnalyticsContentClicks;
 }
 
 export interface CmsAnalyticsPage {
   path: string;
   pageviews: number;
   visitors: number;
+  averageDurationSec?: number;
+  sharePercentage?: number;
   bounceRate: number;
   conversions: number;
   conversionRate: number;
+}
+
+export interface CmsAnalyticsAudienceItem {
+  name: string;
+  pageviews: number;
+  sharePercentage: number;
+}
+
+export interface CmsAnalyticsAudience {
+  browsers: CmsAnalyticsAudienceItem[];
+  os: CmsAnalyticsAudienceItem[];
+}
+
+export interface CmsAnalyticsContentClick {
+  targetPath: string;
+  type: "service" | "portfolio";
+  clicks: number;
+}
+
+export interface CmsAnalyticsContentClicks {
+  items: CmsAnalyticsContentClick[];
+  totalServiceClicks: number;
+  totalPortfolioClicks: number;
 }
 
 export type StructuredSubTab = "faqs" | "testimonials" | "pages" | "redirects";

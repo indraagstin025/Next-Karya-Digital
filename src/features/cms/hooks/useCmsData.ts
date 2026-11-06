@@ -62,6 +62,8 @@ export function useCmsData() {
         analyticsRes,
         pagesRes,
         sourcesRes,
+        audienceRes,
+        contentClicksRes,
       ] = await Promise.all([
         fetch("/api/cms/categories"),
         fetch("/api/cms/posts?limit=50"),
@@ -79,6 +81,8 @@ export function useCmsData() {
         fetch("/api/cms/analytics/overview"),
         fetch("/api/cms/analytics/pages?limit=10"),
         fetch("/api/cms/analytics/sources"),
+        fetch("/api/cms/analytics/audience"),
+        fetch("/api/cms/analytics/content-clicks?limit=10"),
       ]);
 
       if (catRes.status === 401 || postRes.status === 401) {
@@ -103,6 +107,8 @@ export function useCmsData() {
         analyticsJson,
         pagesJson,
         sourcesJson,
+        audienceJson,
+        contentClicksJson,
       ] = await Promise.all([
         catRes.json().catch(() => null),
         postRes.json().catch(() => null),
@@ -120,6 +126,8 @@ export function useCmsData() {
         analyticsRes.json().catch(() => null),
         pagesRes.json().catch(() => null),
         sourcesRes.json().catch(() => null),
+        audienceRes.json().catch(() => null),
+        contentClicksRes.json().catch(() => null),
       ]);
 
       if (catJson?.success && Array.isArray(catJson.data)) setCategories(catJson.data);
@@ -139,6 +147,29 @@ export function useCmsData() {
           ...analyticsJson.data,
           pages: pagesJson?.success && Array.isArray(pagesJson.data) ? pagesJson.data : [],
           sources: sourcesJson?.success && Array.isArray(sourcesJson.data) ? sourcesJson.data : [],
+          audience:
+            audienceJson?.success && audienceJson.data
+              ? {
+                  browsers: Array.isArray(audienceJson.data.browsers)
+                    ? audienceJson.data.browsers
+                    : [],
+                  os: Array.isArray(audienceJson.data.os)
+                    ? audienceJson.data.os
+                    : [],
+                }
+              : undefined,
+          contentClicks:
+            contentClicksJson?.success && contentClicksJson.data
+              ? {
+                  items: Array.isArray(contentClicksJson.data.items)
+                    ? contentClicksJson.data.items
+                    : [],
+                  totalServiceClicks:
+                    Number(contentClicksJson.data.totalServiceClicks) || 0,
+                  totalPortfolioClicks:
+                    Number(contentClicksJson.data.totalPortfolioClicks) || 0,
+                }
+              : undefined,
         });
       }
       if (emJson?.success && emJson.data) setEmergencyOverview(emJson.data);

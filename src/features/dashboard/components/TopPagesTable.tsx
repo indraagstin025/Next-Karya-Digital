@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import type { AnalyticsPageRank } from "../types";
+import { formatDurationShort } from "../utils";
 
 export interface TopPagesTableProps {
   pages?: AnalyticsPageRank[];
@@ -45,8 +46,10 @@ export function TopPagesTable({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40%] text-xs">Jalur Halaman</TableHead>
+                <TableHead className="w-[32%] text-xs">Jalur Halaman</TableHead>
                 <TableHead className="text-right text-xs">Tayangan</TableHead>
+                <TableHead className="text-right text-xs">Porsi</TableHead>
+                <TableHead className="text-right text-xs">Rata-rata</TableHead>
                 <TableHead className="text-right text-xs">Pengunjung</TableHead>
                 <TableHead className="text-right text-xs">Pantulan</TableHead>
                 <TableHead className="text-right text-xs">Konversi</TableHead>
@@ -59,11 +62,21 @@ export function TopPagesTable({
                     <TableCell className="font-mono text-xs font-medium text-foreground">
                       <div className="flex items-center gap-2">
                         <FileTextIcon className="size-3.5 text-muted-foreground shrink-0" />
-                        <span className="truncate max-w-[200px]">{page.path}</span>
+                        <span className="truncate max-w-[200px]" title={page.path}>
+                          {page.path}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell className="text-right text-xs font-medium">
                       {page.pageviews.toLocaleString("id-ID")}
+                    </TableCell>
+                    <TableCell className="text-right text-xs">
+                      <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                        {(page.sharePercentage ?? 0).toFixed(1)}%
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right text-xs text-muted-foreground">
+                      {formatDurationShort(page.averageDurationSec ?? 0)}
                     </TableCell>
                     <TableCell className="text-right text-xs text-muted-foreground">
                       {page.visitors.toLocaleString("id-ID")}
@@ -91,7 +104,7 @@ export function TopPagesTable({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-28 text-center text-muted-foreground text-xs">
+                  <TableCell colSpan={7} className="h-28 text-center text-muted-foreground text-xs">
                     Belum ada data kunjungan halaman tercatat.
                   </TableCell>
                 </TableRow>

@@ -21,9 +21,34 @@ export interface AnalyticsPageRank {
   path: string;
   pageviews: number;
   visitors: number;
+  averageDurationSec?: number;
+  sharePercentage?: number;
   bounceRate: number;
   conversions: number;
   conversionRate: number;
+}
+
+export interface AnalyticsAudienceItem {
+  name: string;
+  pageviews: number;
+  sharePercentage: number;
+}
+
+export interface AnalyticsAudience {
+  browsers: AnalyticsAudienceItem[];
+  os: AnalyticsAudienceItem[];
+}
+
+export interface AnalyticsContentClick {
+  targetPath: string;
+  type: "service" | "portfolio";
+  clicks: number;
+}
+
+export interface AnalyticsContentClicks {
+  items: AnalyticsContentClick[];
+  totalServiceClicks: number;
+  totalPortfolioClicks: number;
 }
 
 export interface AnalyticsTrafficSource {
@@ -61,6 +86,8 @@ export interface CmsAnalyticsOverview {
   sources?: AnalyticsTrafficSource[];
   timeline?: AnalyticsTimelineItem[];
   devices?: AnalyticsDeviceItem[];
+  audience?: AnalyticsAudience;
+  contentClicks?: AnalyticsContentClicks;
   generatedAt?: string;
 }
 
