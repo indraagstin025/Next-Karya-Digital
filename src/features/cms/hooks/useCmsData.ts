@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { dashboardApi, type PeriodFilter } from "@/features/dashboard";
+import {
+  dashboardApi,
+  type AnalyticsDateRange,
+  type PeriodFilter,
+} from "@/features/dashboard";
 import type {
   CmsAnalyticsOverview,
   CmsCategory,
@@ -186,16 +190,25 @@ export function useCmsData() {
     loadWorkspaceData();
   }, [loadWorkspaceData]);
 
-  const refreshAnalyticsByPeriod = useCallback(async (period: PeriodFilter) => {
-    try {
-      const data = await dashboardApi.getFullAnalytics(period);
-      if (data) {
-        setAnalyticsOverview(data as unknown as CmsAnalyticsOverview);
+  const refreshAnalyticsByPeriod = useCallback(
+    async (
+      period: PeriodFilter,
+      range: AnalyticsDateRange | null = null
+    ) => {
+      try {
+        const data = await dashboardApi.getFullAnalytics(
+          period,
+          period === "custom" ? range : null
+        );
+        if (data) {
+          setAnalyticsOverview(data as unknown as CmsAnalyticsOverview);
+        }
+      } catch {
+        // Graceful fallback
       }
-    } catch {
-      // Graceful fallback
-    }
-  }, []);
+    },
+    []
+  );
 
   const counts = {
     posts: posts.length,

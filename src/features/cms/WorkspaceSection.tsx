@@ -4,7 +4,11 @@ import React, { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOutIcon, RefreshCwIcon, ShieldCheckIcon } from "lucide-react";
 import type { StructuredSubTab } from "./types";
-import { DashboardView, type PeriodFilter } from "@/features/dashboard";
+import {
+  DashboardView,
+  type AnalyticsDateRange,
+  type PeriodFilter,
+} from "@/features/dashboard";
 import { CrmView } from "@/features/crm";
 import { PostModule } from "./posts/PostModule";
 import { PortfolioModule } from "./portfolios/PortfolioModule";
@@ -79,11 +83,17 @@ export function WorkspaceSection({ section }: WorkspaceSectionProps) {
   } = useWorkspace();
 
   const [dashboardPeriod, setDashboardPeriod] = useState<PeriodFilter>("30d");
+  const [dashboardRange, setDashboardRange] =
+    useState<AnalyticsDateRange | null>(null);
 
   const handleDashboardPeriodChange = useCallback(
-    (period: PeriodFilter) => {
+    (period: PeriodFilter, range: AnalyticsDateRange | null = null) => {
       setDashboardPeriod(period);
-      data.refreshAnalyticsByPeriod(period);
+      setDashboardRange(period === "custom" ? range : null);
+      data.refreshAnalyticsByPeriod(
+        period,
+        period === "custom" ? range : null
+      );
     },
     [data]
   );
@@ -151,6 +161,7 @@ export function WorkspaceSection({ section }: WorkspaceSectionProps) {
         }
         analytics={data.analyticsOverview}
         selectedPeriod={dashboardPeriod}
+        selectedRange={dashboardRange}
         onPeriodChange={handleDashboardPeriodChange}
         emergencyNotice={
           data.emergencyOverview?.site

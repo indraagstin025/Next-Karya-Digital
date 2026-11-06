@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import {
+  CalendarIcon,
   ClockIcon,
   GlobeIcon,
   MessageSquareIcon,
@@ -9,11 +10,31 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import type {
   CmsAnalyticsOverview,
   DashboardEmergencyNotice,
 } from "./types";
-import type { PeriodFilter } from "./api/dashboardApi";
+import type { AnalyticsDateRange, PeriodFilter } from "./date-range";
+import {
+  MAX_CUSTOM_RANGE_DAYS,
+  RAW_EVENT_RETENTION_DAYS,
+  countRangeDays,
+  defaultCustomRange,
+  formatRangeLabel,
+  getJakartaToday,
+  validateCustomRange,
+} from "./date-range";
 import { EmergencyAlertBanner } from "./components/EmergencyAlertBanner";
 import { StatisticsCard } from "./components/StatisticsCard";
 import { ProductInsightsCard } from "./components/ProductInsightsCard";
@@ -38,7 +59,11 @@ export interface DashboardViewProps {
   analytics?: CmsAnalyticsOverview | null;
   emergencyNotice?: DashboardEmergencyNotice | null;
   selectedPeriod?: PeriodFilter;
-  onPeriodChange?: (period: PeriodFilter) => void;
+  selectedRange?: AnalyticsDateRange | null;
+  onPeriodChange?: (
+    period: PeriodFilter,
+    range?: AnalyticsDateRange | null
+  ) => void;
   onNavigateTab: (tab: string, sub?: string) => void;
   sites?: { id: string; name: string; domain?: string }[];
   selectedSiteId?: string;
@@ -54,20 +79,57 @@ export function DashboardView({
   analytics,
   emergencyNotice,
   selectedPeriod = "30d",
+  selectedRange,
   onPeriodChange,
   onNavigateTab,
   sites,
   selectedSiteId,
   onSiteChange,
 }: DashboardViewProps) {
-  const [internalPeriod, setInternalPeriod] = useState<PeriodFilter>(selectedPeriod);
+  const [internalPeriod, setInternalPeriod] =
+    useState<PeriodFilter>(selectedPeriod);
+  const [internalRange, setInternalRange] =
+    useState<AnalyticsDateRange | null>(null);
   const currentPeriod = onPeriodChange ? selectedPeriod : internalPeriod;
+  const currentRange = onPeriodChange ? selectedRange ?? null : internalRange;
+  const [rangeOpen, setRangeOpen] = useState(false);
+  const [draftRange, setDraftRange] = useState<AnalyticsDateRange>(
+    () => currentRange ?? defaultCustomRange()
+  );
+  const todayKey = getJakartaToday();
 
-  function handlePeriodSelect(period: PeriodFilter) {
+  const draftError = validateCustomRange(draftRange, todayKey);
+  const draftDays = countRangeDays(draftRange.from, draftRange.to);
+  const showDraftError = Boolean(draftError);
+  const showRetentionNote =
+    draftDays !== null && draftDays > RAW_EVENT_RETENTION_DAYS;
+
+  function handlePeriodSelect(
+    period: PeriodFilter,
+    range: AnalyticsDateRange | null = null
+  ) {
     setInternalPeriod(period);
-    if (onPeriodChange) {
-      onPeriodChange(period);
+    setInternalRange(period === "custom" ? range : null);
+    onPeriodChange?.(period, period === "custom" ? range : null);
+  }
+
+  function handleRangeOpenChange(open: boolean) {
+    if (open) {
+      setDraftRange(currentRange ?? defaultCustomRange());
     }
+    setRangeOpen(open);
+  }
+
+  function handleDraftChange(field: "from" | "to", value: string) {
+    setDraftRange((previous) => ({ ...previous, [field]: value }));
+  }
+
+  function handleApplyRange(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (validateCustomRange(draftRange, todayKey)) return;
+
+    handlePeriodSelect("custom", draftRange);
+    setRangeOpen(false);
   }
 
   const visitorsCount = analytics?.metrics?.visitors ?? 0;
@@ -153,40 +215,159 @@ export function DashboardView({
           )}
 
           {/* Period Selector Filter */}
-          <div className="inline-flex rounded-lg border border-border bg-muted/40 p-1 text-xs">
-            <button
-              type="button"
-              onClick={() => handlePeriodSelect("today")}
-              className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
-                currentPeriod === "today"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Hari Ini
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePeriodSelect("7d")}
-              className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
-                currentPeriod === "7d"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              7 Hari
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePeriodSelect("30d")}
-              className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
-                currentPeriod === "30d"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              30 Hari
-            </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex rounded-lg border border-border bg-muted/40 p-1 text-xs">
+              <button
+                type="button"
+                onClick={() => handlePeriodSelect("today")}
+                className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
+                  currentPeriod === "today"
+                    ? "bg-background text-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Hari Ini
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePeriodSelect("7d")}
+                className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
+                  currentPeriod === "7d"
+                    ? "bg-background text-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                7 Hari
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePeriodSelect("30d")}
+                className={`px-3 py-1.5 rounded-md font-medium transition cursor-pointer ${
+                  currentPeriod === "30d"
+                    ? "bg-background text-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                30 Hari
+              </button>
+            </div>
+
+            <Popover open={rangeOpen} onOpenChange={handleRangeOpenChange}>
+              <div className="inline-flex rounded-lg border border-border bg-muted/40 p-1 text-xs">
+                <PopoverTrigger
+                  type="button"
+                  aria-label="Pilih rentang tanggal kustom"
+                  title={
+                    currentPeriod === "custom" && currentRange
+                      ? `${currentRange.from} sampai ${currentRange.to}`
+                      : "Pilih rentang tanggal kustom"
+                  }
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition cursor-pointer ${
+                    currentPeriod === "custom"
+                      ? "bg-background text-foreground shadow-xs font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <CalendarIcon className="size-3.5" />
+                  {currentPeriod === "custom" && currentRange
+                    ? formatRangeLabel(currentRange)
+                    : "Kustom"}
+                </PopoverTrigger>
+              </div>
+
+              <PopoverContent
+                align="end"
+                className="w-[min(20rem,calc(100vw-2rem))]"
+              >
+                <form
+                  className="flex flex-col gap-4"
+                  onSubmit={handleApplyRange}
+                >
+                  <PopoverHeader>
+                    <PopoverTitle>Rentang tanggal</PopoverTitle>
+                    <PopoverDescription>
+                      Pilih tanggal awal dan akhir. Maksimal{" "}
+                      {MAX_CUSTOM_RANGE_DAYS} hari.
+                    </PopoverDescription>
+                  </PopoverHeader>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="dashboard-range-from" className="text-xs">
+                        Dari
+                      </Label>
+                      <Input
+                        id="dashboard-range-from"
+                        type="date"
+                        value={draftRange.from}
+                        max={draftRange.to || todayKey}
+                        onChange={(event) =>
+                          handleDraftChange("from", event.target.value)
+                        }
+                        aria-invalid={showDraftError ? true : undefined}
+                        aria-describedby={
+                          showDraftError ? "dashboard-range-error" : undefined
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="dashboard-range-to" className="text-xs">
+                        Sampai
+                      </Label>
+                      <Input
+                        id="dashboard-range-to"
+                        type="date"
+                        value={draftRange.to}
+                        min={draftRange.from || undefined}
+                        max={todayKey}
+                        onChange={(event) =>
+                          handleDraftChange("to", event.target.value)
+                        }
+                        aria-invalid={showDraftError ? true : undefined}
+                        aria-describedby={
+                          showDraftError ? "dashboard-range-error" : undefined
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  {showDraftError ? (
+                    <p
+                      id="dashboard-range-error"
+                      role="alert"
+                      className="text-xs text-destructive"
+                    >
+                      {draftError}
+                    </p>
+                  ) : null}
+
+                  {showRetentionNote ? (
+                    <p className="text-[11px] leading-relaxed text-muted-foreground">
+                      Rincian browser, OS, dan klik konten hanya tersedia untuk{" "}
+                      {RAW_EVENT_RETENTION_DAYS} hari terakhir.
+                    </p>
+                  ) : null}
+
+                  <div className="flex items-center justify-end gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setRangeOpen(false)}
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      disabled={Boolean(draftError)}
+                    >
+                      Terapkan
+                    </Button>
+                  </div>
+                </form>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>

@@ -6,41 +6,14 @@ import type {
   AnalyticsTrafficSource,
   CmsAnalyticsOverview,
 } from "../types";
+import {
+  resolveDateRange,
+  type AnalyticsDateRange,
+  type PeriodFilter,
+} from "../date-range";
 
-export type PeriodFilter = "today" | "7d" | "30d";
-
-const JAKARTA_TIME_ZONE = "Asia/Jakarta";
-const DAY_MS = 24 * 60 * 60 * 1000;
-const jakartaDateFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: JAKARTA_TIME_ZONE,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
-
-export function formatDateInJakarta(date: Date): string {
-  const parts = jakartaDateFormatter.formatToParts(date);
-
-  const year = parts.find((part) => part.type === "year")?.value;
-  const month = parts.find((part) => part.type === "month")?.value;
-  const day = parts.find((part) => part.type === "day")?.value;
-
-  if (!year || !month || !day) {
-    return date.toISOString().slice(0, 10);
-  }
-
-  return `${year}-${month}-${day}`;
-}
-
-function resolveDateRange(period: PeriodFilter): { from: string; to: string } {
-  const now = new Date();
-  const daysBack = period === "today" ? 0 : period === "7d" ? 6 : 29;
-
-  return {
-    from: formatDateInJakarta(new Date(now.getTime() - daysBack * DAY_MS)),
-    to: formatDateInJakarta(now),
-  };
-}
+export { formatDateInJakarta } from "../date-range";
+export type { AnalyticsDateRange, PeriodFilter } from "../date-range";
 
 /**
  * Service API untuk modul Dashboard Analitik.
@@ -236,12 +209,13 @@ export const dashboardApi = {
   },
 
   /**
-   * Mengambil paket lengkap analitik (Overview, Pages, Sources, Devices) sekaligus.
+   * Mengambil paket lengkap analitik (Overview, Pages, Sources, Devices, Audience, Content Clicks).
    */
   getFullAnalytics: async (
-    period: PeriodFilter = "30d"
+    period: PeriodFilter = "30d",
+    customRange?: AnalyticsDateRange | null
   ): Promise<CmsAnalyticsOverview | null> => {
-    const range = resolveDateRange(period);
+    const range = resolveDateRange(period, customRange);
 
     try {
       const [

@@ -1,8 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CmsAnalyticsOverview } from "../types";
-import { dashboardApi, type PeriodFilter } from "../api/dashboardApi";
+import {
+  dashboardApi,
+  type AnalyticsDateRange,
+  type PeriodFilter,
+} from "../api/dashboardApi";
 
 export function useDashboard(initialAnalytics?: CmsAnalyticsOverview | null) {
   const [analytics, setAnalytics] = useState<CmsAnalyticsOverview | null>(
@@ -10,28 +14,50 @@ export function useDashboard(initialAnalytics?: CmsAnalyticsOverview | null) {
   );
   const [loading, setLoading] = useState(false);
   const [period, setPeriod] = useState<PeriodFilter>("30d");
+  const [range, setRange] = useState<AnalyticsDateRange | null>(null);
+  const didInitialFetch = useRef(false);
 
-  const refreshAnalytics = useCallback(async (selectedPeriod?: PeriodFilter) => {
-    const targetPeriod = selectedPeriod || period;
-    setLoading(true);
-    try {
-      const data = await dashboardApi.getFullAnalytics(targetPeriod);
-      if (data) {
-        setAnalytics(data);
+  const refreshAnalytics = useCallback(
+    async (
+      selectedPeriod: PeriodFilter = period,
+      selectedRange: AnalyticsDateRange | null = range
+    ) => {
+      setLoading(true);
+      try {
+        const data = await dashboardApi.getFullAnalytics(
+          selectedPeriod,
+          selectedPeriod === "custom" ? selectedRange : null
+        );
+        if (data) {
+          setAnalytics(data);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [period]);
+    },
+    [period, range]
+  );
 
-  const changePeriod = useCallback((newPeriod: PeriodFilter) => {
-    setPeriod(newPeriod);
-    refreshAnalytics(newPeriod);
-  }, [refreshAnalytics]);
+  const changePeriod = useCallback(
+    (newPeriod: PeriodFilter, newRange: AnalyticsDateRange | null = null) => {
+      setPeriod(newPeriod);
+      setRange(newPeriod === "custom" ? newRange : null);
+      void refreshAnalytics(
+        newPeriod,
+        newPeriod === "custom" ? newRange : null
+      );
+    },
+    [refreshAnalytics]
+  );
 
   useEffect(() => {
+    if (didInitialFetch.current) return;
+    didInitialFetch.current = true;
+
     if (!initialAnalytics) {
-      refreshAnalytics("30d");
+      // Initial fetch only; later period changes call changePeriod explicitly.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void refreshAnalytics("30d", null);
     }
   }, [initialAnalytics, refreshAnalytics]);
 
@@ -39,6 +65,7 @@ export function useDashboard(initialAnalytics?: CmsAnalyticsOverview | null) {
     analytics,
     loading,
     period,
+    range,
     setPeriod: changePeriod,
     refreshAnalytics,
   };

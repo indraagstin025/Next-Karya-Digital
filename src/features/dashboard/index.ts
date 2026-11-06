@@ -10,7 +10,16 @@ export { ContentClicksCard } from "./components/ContentClicksCard";
 export { TrafficTrendChart } from "./components/TrafficTrendChart";
 export { DashboardTransactionTable } from "./components/DashboardTransactionTable";
 export { dashboardApi } from "./api/dashboardApi";
-export type { PeriodFilter } from "./api/dashboardApi";
+export type { AnalyticsDateRange, PeriodFilter } from "./api/dashboardApi";
+export {
+  MAX_CUSTOM_RANGE_DAYS,
+  RAW_EVENT_RETENTION_DAYS,
+  countRangeDays,
+  defaultCustomRange,
+  formatRangeLabel,
+  getJakartaToday,
+  validateCustomRange,
+} from "./date-range";
 export { useDashboard } from "./hooks/useDashboard";
 export type {
   AnalyticsAudience,
