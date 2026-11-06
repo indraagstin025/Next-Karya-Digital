@@ -68,6 +68,15 @@ export interface AnalyticsTimelineItem {
   conversions: number;
 }
 
+export interface AnalyticsHourlyItem {
+  hour: number;
+  label: string;
+  visitors: number;
+  sessions: number;
+  pageviews: number;
+  conversions: number;
+}
+
 export interface AnalyticsDeviceItem {
   device: string;
   label: string;
@@ -85,6 +94,7 @@ export interface CmsAnalyticsOverview {
   pages?: AnalyticsPageRank[];
   sources?: AnalyticsTrafficSource[];
   timeline?: AnalyticsTimelineItem[];
+  hourly?: AnalyticsHourlyItem[];
   devices?: AnalyticsDeviceItem[];
   audience?: AnalyticsAudience;
   contentClicks?: AnalyticsContentClicks;

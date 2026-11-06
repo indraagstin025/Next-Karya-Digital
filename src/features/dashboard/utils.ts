@@ -6,3 +6,10 @@ export function formatDurationShort(totalSeconds: number): string {
 
   return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
 }
+
+export function formatHourLabel(hour: number): string {
+  const value = Number.isFinite(hour) ? hour : 0;
+  const safe = Math.min(Math.max(Math.trunc(value), 0), 23);
+
+  return `${String(safe).padStart(2, "0")}:00`;
+}

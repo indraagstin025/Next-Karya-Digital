@@ -8,6 +8,7 @@ export { TopPagesTable } from "./components/TopPagesTable";
 export { AudienceBreakdownCard } from "./components/AudienceBreakdownCard";
 export { ContentClicksCard } from "./components/ContentClicksCard";
 export { TrafficTrendChart } from "./components/TrafficTrendChart";
+export { HourlyPatternChart } from "./components/HourlyPatternChart";
 export { DashboardTransactionTable } from "./components/DashboardTransactionTable";
 export { dashboardApi } from "./api/dashboardApi";
 export type { AnalyticsDateRange, PeriodFilter } from "./api/dashboardApi";
@@ -26,6 +27,7 @@ export type {
   AnalyticsAudienceItem,
   AnalyticsContentClick,
   AnalyticsContentClicks,
+  AnalyticsHourlyItem,
   AnalyticsMetrics,
   AnalyticsPageRank,
   AnalyticsTrafficSource,

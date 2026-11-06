@@ -41,6 +41,7 @@ import { ProductInsightsCard } from "./components/ProductInsightsCard";
 import { TotalEarningCard } from "./components/TotalEarningCard";
 import { SalesMetricsCard } from "./components/SalesMetricsCard";
 import { TrafficTrendChart } from "./components/TrafficTrendChart";
+import { HourlyPatternChart } from "./components/HourlyPatternChart";
 import { TopPagesTable } from "./components/TopPagesTable";
 import { AudienceBreakdownCard } from "./components/AudienceBreakdownCard";
 import { ContentClicksCard } from "./components/ContentClicksCard";
@@ -455,9 +456,20 @@ export function DashboardView({
           className="col-span-full *:data-[slot=card-content]:space-y-6 xl:col-span-2"
         />
 
-        {/* Baris 3: Grafik Garis Tren Harian */}
-        <div className="col-span-full">
-          <TrafficTrendChart timeline={analytics?.timeline} />
+        {/* Baris 3: Grafik Garis Tren Harian & Pola Jam Sibuk */}
+        <div className="col-span-full grid gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <TrafficTrendChart
+              timeline={analytics?.timeline}
+              className="h-full"
+            />
+          </div>
+          <div className="xl:col-span-1">
+            <HourlyPatternChart
+              hourly={analytics?.hourly}
+              className="h-full"
+            />
+          </div>
         </div>
 
         {/* Baris 4: Tabel Halaman Terpopuler & Klik Konten */}
