@@ -38,7 +38,7 @@ export function FaqSection({ faqs }: { faqs?: PublicFaqDTO[] | null }) {
         <circle cx="106.8" cy="183.2" r="5.5" fill="#0986C8" />
       </svg>
       <div className="relative z-10 mx-auto w-full max-w-[980px] px-6 sm:px-9 lg:px-14">
-        <ScrollReveal className="text-center max-w-[700px] mx-auto">
+        <ScrollReveal priority className="text-center max-w-[700px] mx-auto">
           <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.24em] text-[#005090] dark:text-[#0986C8]">
             PERTANYAAN UMUM (FAQ)
           </p>

@@ -42,7 +42,7 @@ export function PricingSection({ plans }: { plans?: PublicPricingPlanDTO[] | nul
         <circle cx="144.2" cy="116" r="5.5" fill="#005090" />
       </svg>
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14">
-        <ScrollReveal className="text-center max-w-[760px] mx-auto">
+        <ScrollReveal priority className="text-center max-w-[760px] mx-auto">
           <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.24em] text-[#005090] dark:text-[#0986C8]">
             PAKET LAYANAN &amp; INVESTASI
           </p>

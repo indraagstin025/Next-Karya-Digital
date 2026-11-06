@@ -35,7 +35,7 @@ export function WorkflowSection() {
       </svg>
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14">
-        <ScrollReveal className="text-center max-w-[740px] mx-auto">
+        <ScrollReveal priority className="text-center max-w-[740px] mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#005090] px-3.5 py-1 text-white shadow-sm mb-3">
             <span className="h-2 w-2 rounded-full bg-white shrink-0" />
             <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.12em] text-white">

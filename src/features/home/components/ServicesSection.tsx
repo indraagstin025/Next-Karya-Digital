@@ -102,7 +102,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
       </svg>
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14">
-        <ScrollReveal className="text-center max-w-[760px] mx-auto">
+        <ScrollReveal priority className="text-center max-w-[760px] mx-auto">
           <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.24em] text-[#005090] dark:text-[#0986C8]">
             LAYANAN UTAMA
           </p>

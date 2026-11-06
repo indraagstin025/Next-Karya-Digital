@@ -4,7 +4,7 @@ import { CONTACT_CHANNELS } from "../data/contactData";
 
 export function ContactInfoList() {
   return (
-    <ScrollReveal direction="left">
+    <ScrollReveal priority direction="left">
       <h2 className="text-[22px] sm:text-[26px] font-extrabold text-[#041E42] dark:text-white">
         Saluran Komunikasi Resmi
       </h2>

@@ -14,7 +14,7 @@ export function ServicePricing({ plans }: { plans?: PublicPricingPlanDTO[] | nul
   const PRICING_PLANS = toPricingPlans(plans);
   return (
     <div id="paket-layanan" className="mt-20 pt-16 border-t border-[#E2E8F0] dark:border-slate-800 scroll-mt-24">
-      <ScrollReveal className="text-center max-w-[760px] mx-auto">
+      <ScrollReveal priority className="text-center max-w-[760px] mx-auto">
         <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.24em] text-[#005090] dark:text-[#0986C8]">
           DAFTAR PAKET &amp; INVESTASI
         </p>

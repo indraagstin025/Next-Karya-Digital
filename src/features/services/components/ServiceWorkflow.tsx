@@ -7,7 +7,7 @@ import { SERVICE_WORKFLOW_STEPS } from "../data/servicesData";
 export function ServiceWorkflow() {
   return (
     <div className="mt-20 pt-16 border-t border-[#E2E8F0] dark:border-slate-800">
-      <ScrollReveal className="text-center max-w-[680px] mx-auto mb-10">
+      <ScrollReveal priority className="text-center max-w-[680px] mx-auto mb-10">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#005090] px-3.5 py-1 text-white shadow-sm mb-3">
           <span className="h-2 w-2 rounded-full bg-white shrink-0" />
           <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.12em] text-white">
