@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { CheckCircledIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -14,6 +13,20 @@ const FILTER_TABS: { label: string; value: CategoryFilter }[] = [
   { label: "Website Bisnis", value: "website" },
   { label: "Aplikasi Mobile", value: "mobile" },
 ];
+
+function resolvePortfolioImage(image: string | null | undefined) {
+  if (!image) return null;
+
+  if (/^\/portfolio\/.+\.jpe?g$/i.test(image)) {
+    const base = image.replace(/\.jpe?g$/i, "");
+    return {
+      src: `${base}-800.webp`,
+      srcSet: `${base}-480.webp 480w, ${base}-800.webp 800w`,
+    };
+  }
+
+  return { src: image, srcSet: undefined };
+}
 
 export function PortfolioSection({
   portfolios,
@@ -95,7 +108,9 @@ export function PortfolioSection({
         </ScrollReveal>
 
         <div className="mt-10 sm:mt-12 grid gap-6 lg:gap-7 md:grid-cols-2 lg:grid-cols-3">
-          {PORTFOLIO_TEASERS.map((item, idx) => (
+          {PORTFOLIO_TEASERS.map((item, idx) => {
+            const image = resolvePortfolioImage(item.image);
+            return (
             <div
               key={item.id}
               data-portfolio-item
@@ -107,13 +122,17 @@ export function PortfolioSection({
               <article className="h-full flex flex-col justify-between overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group">
                 <div>
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-b border-[#E2E8F0] dark:border-slate-800">
-                    {item.image && (
-                      <Image
-                        src={item.image}
-                        alt={item.imageAlt}
-                        fill
+                    {image && (
+                      <img
+                        src={image.src}
+                        srcSet={image.srcSet}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                        width={800}
+                        height={500}
+                        alt={item.imageAlt}
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                       />
                     )}
                     <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2">
@@ -163,7 +182,8 @@ export function PortfolioSection({
                 </div>
               </article>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <ScrollReveal delayMs={150} className="mt-12 text-center">

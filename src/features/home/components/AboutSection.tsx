@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ABOUT_FEATURES } from "../data/homeData";
@@ -50,11 +49,15 @@ export function AboutSection() {
               className="pointer-events-none absolute -inset-2 rounded-3xl bg-gradient-to-r from-[#005090]/10 via-[#0986C8]/10 to-transparent blur-xl -z-10"
             />
             <div className="group relative w-full overflow-hidden rounded-[22px] border-[4px] border-white dark:border-slate-800 bg-white shadow-[0_18px_42px_-10px_rgba(10,35,80,0.13)] transition-all duration-300 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.18)]">
-              <Image
-                src="/team-next-karya.jpg"
-                alt="Tim programmer Next Karya Digital Solutions berkolaborasi merancang arsitektur sistem"
+              <img
+                src="/team-next-karya-960.webp"
+                srcSet="/team-next-karya-640.webp 640w, /team-next-karya-960.webp 960w, /team-next-karya-1280.webp 1280w"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 564px"
                 width={960}
                 height={680}
+                alt="Tim programmer Next Karya Digital Solutions berkolaborasi merancang arsitektur sistem"
+                loading="lazy"
+                decoding="async"
                 className="h-[210px] sm:h-[235px] lg:h-[230px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
               />
 

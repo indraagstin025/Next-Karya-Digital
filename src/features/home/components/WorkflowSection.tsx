@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { WORKFLOW_STEPS } from "../data/homeData";
@@ -72,11 +71,15 @@ export function WorkflowSection() {
 
                   {/* 2D Cartoon Illustration Box (Bersih tanpa badge di dalam foto) */}
                   <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-gradient-to-b from-[#F4F8FC] to-[#E5F0FA] dark:from-slate-800 dark:to-slate-900 border border-slate-200/80 dark:border-slate-800 mb-5">
-                    <Image
-                      src={step.image}
-                      alt={step.title}
+                    <img
+                      src={`${step.image.replace(/\.(png|jpe?g)$/i, "")}-1024.webp`}
+                      srcSet={`${step.image.replace(/\.(png|jpe?g)$/i, "")}-512.webp 512w, ${step.image.replace(/\.(png|jpe?g)$/i, "")}-1024.webp 1024w`}
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 458px"
                       width={512}
                       height={512}
+                      alt={step.title}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-contain p-2 transition-transform duration-500 ease-out group-hover:scale-108 group-hover:-rotate-1"
                     />
                   </div>
