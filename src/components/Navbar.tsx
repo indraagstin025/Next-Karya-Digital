@@ -106,8 +106,8 @@ export default function Navbar() {
     // Banner layanan tidak mendesak; jalankan setelah halaman sempat idle.
     const handle =
       typeof window.requestIdleCallback === "function"
-        ? window.requestIdleCallback(loadStatus, { timeout: 2500 })
-        : window.setTimeout(loadStatus, 1500);
+        ? window.requestIdleCallback(loadStatus, { timeout: 5000 })
+        : window.setTimeout(loadStatus, 5000);
 
     return () => {
       active = false;

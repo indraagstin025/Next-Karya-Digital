@@ -24,8 +24,8 @@ export function AnalyticsTracker() {
 
     const handle =
       typeof window.requestIdleCallback === "function"
-        ? window.requestIdleCallback(sendPageview, { timeout: 2500 })
-        : window.setTimeout(sendPageview, 1500);
+        ? window.requestIdleCallback(sendPageview, { timeout: 5000 })
+        : window.setTimeout(sendPageview, 5000);
 
     return () => {
       if (typeof window.cancelIdleCallback === "function") {

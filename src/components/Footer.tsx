@@ -15,6 +15,7 @@ export default function Footer() {
           <div>
             <Link
               href="/"
+              prefetch={false}
               className="inline-block transition-transform duration-200 hover:scale-[1.02]"
             >
               <img
