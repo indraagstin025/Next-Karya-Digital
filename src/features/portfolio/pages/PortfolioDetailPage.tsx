@@ -113,6 +113,7 @@ export function PortfolioDetailPage({
                       src={item.url}
                       alt={item.alt || `${portfolio.title} - gambar ${index + 1}`}
                       loading="lazy"
+                      decoding="async"
                       className="aspect-[4/3] w-full object-cover"
                     />
                     {item.alt && (
