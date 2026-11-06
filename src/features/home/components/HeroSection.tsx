@@ -56,15 +56,12 @@ export function HeroSection() {
           <div className="max-w-[530px]">
             <h1 className="text-[31px] sm:text-[38px] lg:text-[44px] xl:text-[48px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[#041E42] dark:text-[#f4f8ff]">
               <span className="block overflow-hidden">
-                <span className="nk-hero-line block pb-[0.08em]">
+                <span className="block pb-[0.08em]">
                   Bangun Website Profesional
                 </span>
               </span>
               <span className="block overflow-hidden">
-                <span
-                  className="nk-hero-line block pb-[0.08em]"
-                  style={{ animationDelay: "80ms" }}
-                >
+                <span className="block pb-[0.08em]">
                   untuk Bisnis Anda yang{" "}
                   <span className="text-[#005090] dark:text-[#0986C8]">
                     Lebih Dipercaya.
@@ -73,17 +70,11 @@ export function HeroSection() {
               </span>
             </h1>
 
-            <p
-              className="nk-hero-fade mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal"
-              style={{ animationDelay: "180ms" }}
-            >
+            <p className="mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal">
               Tingkatkan kredibilitas dan jangkauan pasar bisnis Anda. Next Karya Digital Solutions merancang website modern berkecepatan tinggi, sistem web kustom, dan aplikasi mobile yang ramah SEO serta mudah dihubungi oleh calon pelanggan.
             </p>
 
-            <div
-              className="nk-hero-fade mt-6 flex flex-wrap items-center gap-3.5"
-              style={{ animationDelay: "240ms" }}
-            >
+            <div className="mt-6 flex flex-wrap items-center gap-3.5">
               <a
                 href="#layanan"
                 className="group inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#005090] hover:bg-[#003E70] px-6 py-3 text-[13.5px] font-semibold text-white shadow-[0_10px_25px_-5px_rgba(0,80,144,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-5px_rgba(0,80,144,0.55)] active:scale-[0.98]"
@@ -100,10 +91,7 @@ export function HeroSection() {
               </Link>
             </div>
 
-            <div
-              className="nk-hero-fade mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5"
-              style={{ animationDelay: "300ms" }}
-            >
+            <div className="mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5">
               {HERO_HIGHLIGHTS.map((item, index) => (
                 <React.Fragment key={item.label}>
                   {index > 0 && (
@@ -123,15 +111,13 @@ export function HeroSection() {
           </div>
 
           {/* Right Column: 3D Stage with Logo Gabungan */}
-          <div
-            className="nk-hero-visual group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]"
-            style={{ animationDelay: "220ms" }}
-          >
+          <div className="group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]">
             <svg
               viewBox="0 0 700 540"
               fill="none"
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              className="nk-hero-visual pointer-events-none absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              style={{ animationDelay: "220ms" }}
             >
               <defs>
                 {/* Aura using Brand Primary & Navy colors instead of pale baby blue */}
