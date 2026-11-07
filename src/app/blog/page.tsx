@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
+// Dirender saat request: build CI tidak bisa menjangkau backend internal,
+// jadi hasil fetch saat build tidak boleh menyimpan halaman error.
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const articles = await getPublicArticles(24);
   return <BlogPage articles={articles} />;
