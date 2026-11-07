@@ -37,7 +37,7 @@ describe("validateRedirectTarget", () => {
 
 describe("sanitizeInternalHref", () => {
   it("keeps safe anchors and falls back on unsafe input", () => {
-    expect(sanitizeInternalHref("/layanan#harga")).toBe("/layanan#harga");
+    expect(sanitizeInternalHref("/layanan#paket-layanan")).toBe("/layanan#paket-layanan");
     expect(sanitizeInternalHref("/admin")).toBe("/kontak");
     expect(sanitizeInternalHref("https://evil.example")).toBe("/kontak");
   });

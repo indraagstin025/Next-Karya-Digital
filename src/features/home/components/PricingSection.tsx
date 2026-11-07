@@ -44,7 +44,7 @@ export function PricingSection({ plans }: { plans?: PublicPricingPlanDTO[] | nul
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14">
         <ScrollReveal priority className="text-center max-w-[760px] mx-auto">
           <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.24em] text-[#005090] dark:text-[#0986C8]">
-            PAKET LAYANAN &amp; INVESTASI
+            PAKET LAYANAN
           </p>
           <h2 className="mt-3 text-[26px] sm:text-[34px] lg:text-[38px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#041E42] dark:text-white">
             Pilihan paket solusi website terukur{" "}
@@ -55,9 +55,8 @@ export function PricingSection({ plans }: { plans?: PublicPricingPlanDTO[] | nul
             </span>
           </h2>
           <p className="mx-auto mt-3.5 max-w-[680px] text-[13.5px] sm:text-[14.5px] leading-[1.68] text-[#4A5D78] dark:text-slate-300">
-            Estimasi biaya awal transparan dan sudah termasuk Dashboard Analitik buatan
-            tim Next Karya Digital Solutions untuk memantau performa dan kunjungan website
-            secara mandiri.
+            Setiap proyek berbeda ruang lingkupnya. Ceritakan kebutuhan Anda. Estimasi
+            kami kirim dalam 1×24 jam kerja.
           </p>
         </ScrollReveal>
 
@@ -93,13 +92,13 @@ export function PricingSection({ plans }: { plans?: PublicPricingPlanDTO[] | nul
                     {plan.description}
                   </p>
 
-                  <div className="mt-5 pt-4 pb-5 border-y border-[#E2E8F0] dark:border-slate-800">
-                    <span className="block text-xs font-semibold uppercase tracking-wider text-[#4A5D78] dark:text-slate-400">
-                      {plan.priceLabel}
-                    </span>
-                    <div className="mt-1 text-[26px] sm:text-[28px] font-extrabold text-[#005090] dark:text-[#0986C8] tracking-tight transition-transform duration-300 origin-left group-hover:scale-[1.02]">
-                      {plan.price}
-                    </div>
+                  <div className="mt-5 py-5 border-y border-[#E2E8F0] dark:border-slate-800">
+                    <p className="text-[15px] sm:text-[16px] font-bold text-[#041E42] dark:text-white">
+                      Estimasi menyesuaikan ruang lingkup
+                    </p>
+                    <p className="mt-1.5 text-[11.5px] sm:text-xs leading-relaxed text-[#4A5D78] dark:text-slate-400">
+                      Yang memengaruhi biaya: ruang lingkup, jumlah halaman/fitur, integrasi, dan timeline.
+                    </p>
                   </div>
 
                   <div className="mt-5 space-y-3">
@@ -122,14 +121,14 @@ export function PricingSection({ plans }: { plans?: PublicPricingPlanDTO[] | nul
 
                 <div className="mt-7 pt-4">
                   <Link
-                    href={plan.ctaHref}
+                    href="/kontak"
                     className={`group/btn inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[13px] sm:text-[13.5px] font-bold transition-all duration-200 active:scale-[0.98] ${
                       plan.isRecommended
                         ? "bg-[#005090] text-white shadow-[0_10px_25px_-5px_rgba(0,80,144,0.45)] hover:bg-[#003E70]"
                         : "bg-slate-100 text-[#041E42] hover:bg-[#005090] hover:text-white border border-slate-200 hover:border-[#005090] dark:bg-slate-800 dark:text-white dark:border-slate-700 dark:hover:bg-[#005090]"
                     }`}
                   >
-                    <span>{plan.ctaText}</span>
+                    <span>Minta Estimasi Gratis</span>
                     <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                   </Link>
                 </div>
@@ -165,9 +164,9 @@ export function PricingSection({ plans }: { plans?: PublicPricingPlanDTO[] | nul
                   Butuh Sistem atau Fitur Kustom?
                 </h4>
                 <p className="mt-1.5 text-xs sm:text-[13px] leading-relaxed text-[#4A5D78] dark:text-slate-300">
-                  Harga di atas merupakan estimasi awal yang fleksibel sesuai ruang lingkup
-                  proyek. Untuk pengembangan sistem informasi internal, desain UI/UX, atau
-                  penambahan fitur khusus, diskusikan langsung bersama tim kami.
+                  Setiap paket bisa disesuaikan dengan ruang lingkup proyek. Untuk
+                  pengembangan sistem informasi internal, desain UI/UX, atau penambahan
+                  fitur khusus, diskusikan langsung bersama tim kami.
                 </p>
                 <div className="mt-3">
                   <Link

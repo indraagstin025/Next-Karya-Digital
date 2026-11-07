@@ -86,7 +86,7 @@ export function ServiceCards({ services }: { services?: PublicServiceDTO[] | nul
                     href="#paket-layanan"
                     className="inline-flex items-center gap-2 text-[13.5px] font-bold text-[#005090] dark:text-[#0986C8] hover:text-[#003E70] transition-colors group/link"
                   >
-                    <span>Lihat paket harga</span>
+                    <span>Lihat pilihan paket</span>
                     <ArrowRightIcon className="h-4 w-4 transition-transform group-hover/link:translate-x-1.5" />
                   </a>
                 </div>

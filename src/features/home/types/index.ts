@@ -60,9 +60,6 @@ export interface PricingPlan {
   name: string;
   badge?: string;
   isRecommended?: boolean;
-  priceLabel: string;
-  price: string;
-  period?: string;
   description: string;
   features: string[];
   ctaText: string;

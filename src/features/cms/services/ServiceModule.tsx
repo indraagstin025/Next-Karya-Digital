@@ -58,8 +58,6 @@ export function ServiceModule({
   const [icon, setIcon] = useState("GlobeIcon");
   const [shortDesc, setShortDesc] = useState("");
   const [features, setFeatures] = useState("");
-  const [priceLabel, setPriceLabel] = useState("");
-  const [priceNote, setPriceNote] = useState("");
   const [badge, setBadge] = useState("");
   const [ctaLabel, setCtaLabel] = useState("Konsultasi Gratis");
   const [ctaHref, setCtaHref] = useState("/kontak");
@@ -74,8 +72,6 @@ export function ServiceModule({
     setIcon("GlobeIcon");
     setShortDesc("");
     setFeatures("");
-    setPriceLabel("");
-    setPriceNote("");
     setBadge("");
     setCtaLabel("Konsultasi Gratis");
     setCtaHref("/kontak");
@@ -90,8 +86,6 @@ export function ServiceModule({
     setIcon(item.icon || "GlobeIcon");
     setShortDesc(item.shortDesc);
     setFeatures(Array.isArray(item.features) ? item.features.join("\n") : "");
-    setPriceLabel(item.priceLabel);
-    setPriceNote(item.priceNote || "");
     setBadge(item.badge || "");
     setCtaLabel(item.ctaLabel || "Konsultasi Gratis");
     setCtaHref(item.ctaHref || "/kontak");
@@ -112,8 +106,6 @@ export function ServiceModule({
       icon: icon.trim() || "GlobeIcon",
       shortDesc: shortDesc.trim(),
       features: featuresArr,
-      priceLabel: priceLabel.trim(),
-      priceNote: priceNote.trim() || null,
       badge: badge.trim() || null,
       ctaLabel: ctaLabel.trim() || "Konsultasi Gratis",
       ctaHref: ctaHref.trim() || "/kontak",
@@ -200,7 +192,7 @@ export function ServiceModule({
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground">Paket Layanan</h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Atur katalog solusi digital, fitur paket, dan skema harga Next Karya.
+            Atur katalog solusi digital, fitur paket, dan tampilan layanan Next Karya.
           </p>
         </div>
         <button
@@ -268,13 +260,6 @@ export function ServiceModule({
               <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
                 {service.shortDesc}
               </p>
-
-              <div className="mt-4 rounded-lg bg-muted/40 p-2.5">
-                <p className="text-base font-bold text-foreground">{service.priceLabel}</p>
-                {service.priceNote && (
-                  <p className="text-[10px] text-muted-foreground">{service.priceNote}</p>
-                )}
-              </div>
 
               {Array.isArray(service.features) && service.features.length > 0 && (
                 <ul className="mt-3 space-y-1 text-[11px] text-muted-foreground">
@@ -416,30 +401,6 @@ export function ServiceModule({
                   placeholder="Deskripsikan nilai tambah dan cakupan layanan."
                   className={`${INPUT_CLASS} h-auto py-2`}
                 />
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className={LABEL_CLASS}>Label Harga *</label>
-                  <input
-                    type="text"
-                    required
-                    value={priceLabel}
-                    onChange={(e) => setPriceLabel(e.target.value)}
-                    placeholder="Mulai Rp 15.000.000"
-                    className={INPUT_CLASS}
-                  />
-                </div>
-                <div>
-                  <label className={LABEL_CLASS}>Catatan Harga</label>
-                  <input
-                    type="text"
-                    value={priceNote}
-                    onChange={(e) => setPriceNote(e.target.value)}
-                    placeholder="Contoh: Per proyek / modular"
-                    className={INPUT_CLASS}
-                  />
-                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

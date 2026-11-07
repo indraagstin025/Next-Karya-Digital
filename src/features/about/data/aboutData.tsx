@@ -28,7 +28,7 @@ export const ABOUT_APPROACH_ITEMS = [
   },
   {
     icon: <CheckCircledIcon className="h-5 w-5" />,
-    title: "Harga Jelas di Awal, Tenang Setelah Rilis",
+    title: "Estimasi Jelas di Awal, Tenang Setelah Rilis",
     description:
       "Tidak ada biaya tiba-tiba. Setelah website live, bug kami perbaiki dan tim kami tetap mendampingi Anda.",
   },

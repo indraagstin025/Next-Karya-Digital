@@ -85,8 +85,6 @@ export function toPricingPlans(
     name: item.name,
     badge: item.badge ?? undefined,
     isRecommended: item.isRecommended,
-    priceLabel: item.priceNote,
-    price: item.price,
     description: item.description,
     features: item.features,
     ctaText: item.ctaLabel,

@@ -75,7 +75,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-2.5 text-[13.5px] font-medium text-[#4A5D78] dark:text-slate-300">
               {[
                 { label: "Pembuatan Website Bisnis", href: "/layanan" },
-                { label: "Paket Harga Website", href: "/layanan#paket-layanan" },
+                { label: "Paket Layanan Website", href: "/layanan#paket-layanan" },
                 { label: "Redesign & Optimalisasi Website", href: "/layanan" },
                 { label: "Aplikasi Web & Dashboard Kustom", href: "/layanan" },
                 { label: "Pengembangan Aplikasi Mobile", href: "/layanan" },

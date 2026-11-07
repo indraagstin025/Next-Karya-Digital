@@ -161,7 +161,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                         href="/layanan#paket-layanan"
                         className="inline-flex items-center gap-2 text-[13.5px] font-bold text-[#005090] dark:text-[#0986C8] hover:text-[#003E70] transition-colors group/link"
                       >
-                        <span>Lihat detail &amp; harga</span>
+                        <span>Lihat detail &amp; paket</span>
                         <ArrowRightIcon className="h-4 w-4 transition-transform group-hover/link:translate-x-1.5" />
                       </Link>
                     </div>

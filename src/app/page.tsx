@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title:
       "Next Karya Digital Solutions - Jasa Pembuatan Website, Aplikasi Web & Mobile",
     description:
-      "Tim rekayasa perangkat lunak untuk website bisnis, dashboard kustom, dan aplikasi mobile. Lihat layanan, paket harga, dan portofolio Next Karya Digital Solutions.",
+      "Tim rekayasa perangkat lunak untuk website bisnis, dashboard kustom, dan aplikasi mobile. Lihat layanan, paket, dan portofolio Next Karya Digital Solutions.",
     url: "https://nextkarya.web.id",
   },
 };

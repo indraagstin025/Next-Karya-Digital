@@ -63,7 +63,7 @@ export const ABOUT_FEATURES = [
   },
   {
     icon: <CheckCircledIcon className="h-5 w-5" />,
-    title: "Harga Jelas di Awal, Tenang Setelah Rilis",
+    title: "Estimasi Jelas di Awal, Tenang Setelah Rilis",
     description:
       "Tidak ada biaya tiba-tiba. Setelah website live, bug kami perbaiki dan tim kami tetap mendampingi Anda.",
   },
@@ -282,8 +282,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: "Website Landing Page",
     badge: "Cepat & Efektif",
     isRecommended: false,
-    priceLabel: "Mulai dari",
-    price: "Rp 750.000",
     description:
       "Pembuatan landing page untuk mempromosikan produk, layanan, acara, atau kampanye promosi dengan alur konten yang fokus pada konversi.",
     features: [
@@ -303,8 +301,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: "Website Company Profile",
     badge: "Paling Populer",
     isRecommended: true,
-    priceLabel: "Mulai dari",
-    price: "Rp 1.750.000",
     description:
       "Pembuatan website profil resmi untuk memperkenalkan bisnis, UMKM, atau penyedia jasa melalui profil, layanan, dan portofolio.",
     features: [
@@ -324,8 +320,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: "Website Portofolio Personal",
     badge: "Personal Branding",
     isRecommended: false,
-    priceLabel: "Mulai dari",
-    price: "Rp 1.000.000",
     description:
       "Website personal untuk menampilkan profil profesional, keahlian, riwayat pendidikan/pengalaman, sertifikasi, dan katalog karya.",
     features: [
@@ -345,8 +339,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: "Website Sekolah & Institusi",
     badge: "Edukasi Terpusat",
     isRecommended: false,
-    priceLabel: "Mulai dari",
-    price: "Rp 2.500.000",
     description:
       "Website informasi resmi untuk sekolah atau lembaga pendidikan guna menyampaikan profil, fasilitas, agenda, dan pengumuman.",
     features: [
@@ -366,8 +358,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: "Website Komunitas & Organisasi",
     badge: "Publikasi Terstruktur",
     isRecommended: false,
-    priceLabel: "Mulai dari",
-    price: "Rp 2.000.000",
     description:
       "Website untuk organisasi mahasiswa, komunitas sosial/hobi, lembaga kepemudaan, atau asosiasi profesi.",
     features: [
@@ -387,8 +377,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     name: "Website Portal Berita (CMS)",
     badge: "CMS & Analitik Lengkap",
     isRecommended: false,
-    priceLabel: "Mulai dari",
-    price: "Rp 5.500.000",
     description:
       "Website dengan Content Management System (CMS) mandiri untuk menerbitkan dan mengelola berita, artikel, dan pengumuman secara dinamis.",
     features: [

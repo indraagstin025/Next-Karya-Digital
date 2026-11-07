@@ -78,8 +78,6 @@ export interface PublicPricingPlanDTO {
   name: string;
   badge: string | null;
   isRecommended: boolean;
-  priceNote: string;
-  price: string;
   description: string;
   features: string[];
   ctaLabel: string;
@@ -276,8 +274,6 @@ const readPricing = unstable_cache(
       name: item.title,
       badge: item.badge || null,
       isRecommended: item.badge === "Paling Populer",
-      priceNote: item.priceNote || "",
-      price: item.priceLabel,
       description: item.shortDesc,
       features: Array.isArray(item.features) ? item.features : [],
       ctaLabel: item.ctaLabel || "Pilih Paket",
