@@ -3,7 +3,7 @@ import { ServicesPage } from "@/features/services";
 import { getPublicPricing, getPublicServices } from "@/lib/public-content";
 
 export const metadata: Metadata = {
-  title: "Layanan & Paket Website | Next Karya Digital Solutions",
+  title: "Layanan & Paket Website",
   description:
     "Layanan pembuatan website bisnis, pilihan paket layanan website, redesign, aplikasi web kustom, dan aplikasi mobile Android & iOS bersama Next Karya Digital Solutions.",
 };
