@@ -13,7 +13,6 @@ export function WorkflowSection() {
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
-        data-nk-parallax="0.06"
         className="pointer-events-none absolute top-0 right-0 h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] -z-10"
       >
         <circle

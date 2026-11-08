@@ -5,7 +5,6 @@ export function ContactHero() {
     <section className="relative isolate overflow-hidden bg-gradient-to-r from-[#002857] via-[#013565] to-[#01427C] text-white py-16 sm:py-20 border-b border-[#014F90]">
       <div
         aria-hidden="true"
-        data-nk-parallax="0.05"
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent"
       />
 

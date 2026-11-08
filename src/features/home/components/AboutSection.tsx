@@ -11,13 +11,11 @@ export function AboutSection() {
     >
       <div
         aria-hidden="true"
-        data-nk-parallax="0.07"
-        className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#005090]/5 dark:bg-[#002857]/20 blur-3xl"
+        className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(0,80,144,0.06)_0%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(0,40,87,0.22)_0%,transparent_70%)]"
       />
       <div
         aria-hidden="true"
-        data-nk-parallax="-0.06"
-        className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[#0986C8]/5 dark:bg-[#005090]/15 blur-3xl"
+        className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(9,134,200,0.06)_0%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(0,80,144,0.16)_0%,transparent_70%)]"
       />
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14 grid items-stretch gap-10 lg:grid-cols-2 lg:gap-12">
@@ -46,11 +44,7 @@ export function AboutSection() {
           </div>
 
           <div className="relative mt-6 sm:mt-7">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -inset-2 rounded-3xl bg-gradient-to-r from-[#005090]/10 via-[#0986C8]/10 to-transparent blur-xl -z-10"
-            />
-            <div className="group relative w-full overflow-hidden rounded-[22px] border-[4px] border-white dark:border-slate-800 bg-white shadow-[0_18px_42px_-10px_rgba(10,35,80,0.13)] transition-all duration-300 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.18)]">
+            <div className="group relative w-full overflow-hidden rounded-[22px] border-[4px] border-white dark:border-slate-800 bg-white shadow-[0_18px_42px_-10px_rgba(10,35,80,0.13)] transition-shadow duration-300 hover:shadow-[0_24px_50px_-10px_rgba(0,80,144,0.18)]">
               <img
                 src="/team-next-karya-960.webp"
                 srcSet="/team-next-karya-640.webp 640w, /team-next-karya-960.webp 960w, /team-next-karya-1280.webp 1280w"
@@ -63,7 +57,7 @@ export function AboutSection() {
                 className="h-[210px] sm:h-[235px] lg:h-[230px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
               />
 
-              <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:max-w-[400px] rounded-xl border border-white/40 dark:border-slate-700/60 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3.5 py-2.5 shadow-[0_10px_25px_-5px_rgba(10,35,80,0.18)] flex items-center gap-3 transition-transform duration-300 group-hover:-translate-y-0.5">
+              <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:max-w-[400px] rounded-xl border border-white/60 dark:border-slate-700/60 bg-white/95 dark:bg-slate-900/95 px-3.5 py-2.5 shadow-[0_10px_25px_-5px_rgba(10,35,80,0.18)] flex items-center gap-3 transition-transform duration-300 group-hover:-translate-y-0.5">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#005090] text-white shadow-xs">
                   <PersonIcon className="h-4.5 w-4.5" />
                 </div>
@@ -87,7 +81,7 @@ export function AboutSection() {
             {ABOUT_FEATURES.map((item) => (
               <div
                 key={item.title}
-                className="group relative flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-900/90 border border-[#E2E8F0] dark:border-slate-800 p-4.5 sm:p-5 shadow-[0_4px_18px_-4px_rgba(0,40,87,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#005090] hover:shadow-[0_14px_30px_-8px_rgba(0,80,144,0.14)]"
+                className="group relative flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-900/90 border border-[#E2E8F0] dark:border-slate-800 p-4.5 sm:p-5 shadow-[0_4px_18px_-4px_rgba(0,40,87,0.06)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-[#005090] hover:shadow-[0_14px_30px_-8px_rgba(0,80,144,0.14)]"
               >
                 <div>
                   <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#005090] to-[#002857] text-white shadow-xs transition-transform duration-300 group-hover:scale-105 mb-3.5">

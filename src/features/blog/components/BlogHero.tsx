@@ -7,7 +7,6 @@ export function BlogHero() {
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
-        data-nk-parallax="0.06"
         className="pointer-events-none absolute top-0 left-0 h-[190px] w-[190px] sm:h-[240px] sm:w-[240px] -z-10"
       >
         <circle

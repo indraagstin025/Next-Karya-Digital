@@ -55,7 +55,6 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
-        data-nk-parallax="0.06"
         className="pointer-events-none absolute top-0 right-0 h-[190px] w-[190px] sm:h-[240px] sm:w-[240px] -scale-x-100 -z-10"
       >
         <circle
@@ -81,7 +80,6 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
-        data-nk-parallax="-0.06"
         className="pointer-events-none absolute bottom-0 left-0 h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] -scale-x-100 -z-10"
       >
         <circle
@@ -174,7 +172,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
                       <svg
                         viewBox="0 0 320 230"
                         fill="none"
-                        className="w-full h-auto drop-shadow-[0_12px_28px_rgba(0,80,144,0.12)]"
+                        className="w-full h-auto"
                       >
                         <defs>
                           <linearGradient id="browserHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -236,7 +234,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
                         <g data-service-float="website-plus">
                           <g className="transition-transform duration-500 group-hover:-translate-y-1 group-hover:-translate-x-1">
-                            <circle cx="12" cy="115" r="16" fill="#005090" className="drop-shadow-md" />
+                            <circle cx="12" cy="115" r="16" fill="#005090" />
                             <circle cx="12" cy="115" r="11" fill="none" stroke="#FFFFFF" strokeWidth="1.5" />
                             <path d="M12 4 L12 26 M1 15 L23 15" stroke="#FFFFFF" strokeWidth="1.2" />
                           </g>
@@ -244,14 +242,14 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
                         <g data-service-float="website-arrow">
                           <g className="transition-transform duration-500 group-hover:translate-y-1 group-hover:translate-x-1">
-                            <rect x="268" y="142" width="28" height="28" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" className="drop-shadow-md dark:fill-slate-800" />
+                            <rect x="268" y="142" width="28" height="28" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" className="dark:fill-slate-800" />
                             <path d="M276 156 L288 156 M282 150 L288 156 L282 162" stroke="#005090" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                           </g>
                         </g>
 
                         <g data-service-float="website-window">
                           <g className="transition-transform duration-500 group-hover:-translate-y-1.5">
-                            <rect x="264" y="44" width="30" height="30" rx="9" fill="#005090" className="drop-shadow-lg" />
+                            <rect x="264" y="44" width="30" height="30" rx="9" fill="#005090" />
                             <rect x="271" y="52" width="16" height="14" rx="2.5" fill="none" stroke="#FFFFFF" strokeWidth="1.5" />
                             <path d="M271 57 L287 57" stroke="#FFFFFF" strokeWidth="1.2" />
                           </g>
@@ -259,7 +257,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
                         <g data-service-float="website-chart">
                           <g className="transition-transform duration-500 group-hover:translate-y-1">
-                            <rect x="24" y="174" width="32" height="32" rx="9" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" className="drop-shadow-md dark:fill-slate-800" />
+                            <rect x="24" y="174" width="32" height="32" rx="9" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" className="dark:fill-slate-800" />
                             <path d="M32 196 L32 188 M40 196 L40 182 M48 196 L48 185" stroke="#005090" strokeWidth="2.5" strokeLinecap="round" />
                           </g>
                         </g>
@@ -421,7 +419,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
                   <div className="relative flex items-center justify-center pt-4 md:pt-0">
                     <div className="relative w-full max-w-[220px] transition-transform duration-500 group-hover:scale-[1.05] group-hover:-translate-y-2 group-hover:rotate-1">
-                      <svg viewBox="0 0 240 320" fill="none" className="w-full h-auto drop-shadow-[0_20px_35px_rgba(3,20,68,0.5)]">
+                      <svg viewBox="0 0 240 320" fill="none" className="w-full h-auto">
                         <rect
                           x="40"
                           y="20"
@@ -464,7 +462,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
                         <g data-service-float="mobile-android">
                           <g className="transition-transform duration-500 group-hover:-translate-y-2">
-                            <circle cx="28" cy="120" r="19" fill="#005090" stroke="#FFFFFF" strokeWidth="2" className="drop-shadow-lg" />
+                            <circle cx="28" cy="120" r="19" fill="#005090" stroke="#FFFFFF" strokeWidth="2" />
                             <path d="M22 122 C22 117.5 25.5 114 30 114 C34.5 114 38 117.5 38 122 Z" fill="#FFFFFF" />
                             <circle cx="26" cy="119" r="1" fill="#005090" />
                             <circle cx="34" cy="119" r="1" fill="#005090" />
@@ -475,7 +473,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
 
                         <g data-service-float="mobile-apple">
                           <g className="transition-transform duration-500 group-hover:translate-y-2">
-                            <circle cx="212" cy="190" r="19" fill="#005090" stroke="#FFFFFF" strokeWidth="2" className="drop-shadow-lg" />
+                            <circle cx="212" cy="190" r="19" fill="#005090" stroke="#FFFFFF" strokeWidth="2" />
                             <path
                               d="M211 182 C212 180.5 213.5 180 214.5 180 C215 181 214.5 182.5 213.5 183 C212.8 183.5 211.5 183.2 211 182 Z M215.5 185 C217 185 218 186 218 187 C217 187.5 216.5 189 217.2 190.5 C218 192 217 194 216 195.5 C215.2 196.5 214.5 197 213.5 197 C212.5 197 212 196.2 211 196.2 C210 196.2 209.2 197 208.2 197 C207 197 206 195.8 205.2 194.5 C204 192.5 203.5 189.5 204.8 187.5 C205.5 186 207 185 208.5 185 C209.5 185 210.2 185.8 211 185.8 C211.8 185.8 212.5 185 213.5 185 Z"
                               fill="#FFFFFF"
