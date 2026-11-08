@@ -1094,41 +1094,45 @@ textarea:focus-visible {
     }
   }
 
-  @supports (animation-timeline: view()) {
-    [data-nk-reveal] {
-      animation-duration: 0.45s;
-      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 45%;
-    }
+  html.nk-reveal-ready [data-nk-reveal] {
+    opacity: 0;
+    transition:
+      opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-    [data-nk-reveal="up"] {
-      animation-name: nkRevealUp;
-    }
+  html.nk-reveal-ready [data-nk-reveal="up"] {
+    transform: translate3d(0, 22px, 0);
+  }
 
-    [data-nk-reveal="left"] {
-      animation-name: nkRevealLeft;
-    }
+  html.nk-reveal-ready [data-nk-reveal="left"] {
+    transform: translate3d(-22px, 0, 0);
+  }
 
-    [data-nk-reveal="right"] {
-      animation-name: nkRevealRight;
-    }
+  html.nk-reveal-ready [data-nk-reveal="right"] {
+    transform: translate3d(22px, 0, 0);
+  }
 
-    [data-nk-reveal="scale"] {
-      animation-name: nkRevealScale;
-    }
+  html.nk-reveal-ready [data-nk-reveal="scale"] {
+    transform: translate3d(0, 14px, 0) scale(0.975);
+  }
 
-    [data-nk-reveal="none"] {
-      animation-name: nkRevealFade;
-    }
+  html.nk-reveal-ready [data-nk-reveal="none"] {
+    transform: translate3d(0, 0, 0);
+  }
 
-    /* Di layar kecil hanya header section yang beranimasi; kartu dan item
-       daftar tampil statis agar jumlah layer tetap sedikit. */
-    @media (max-width: 767px) {
-      [data-nk-reveal]:not([data-nk-reveal-priority]) {
-        animation: none;
-      }
+  html.nk-reveal-ready [data-nk-reveal][data-nk-revealed="true"] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  /* Di layar kecil hanya header section yang beranimasi; kartu dan item
+     daftar tampil statis agar jumlah layer tetap sedikit. */
+  @media (max-width: 767px) {
+    html.nk-reveal-ready [data-nk-reveal]:not([data-nk-reveal-priority]) {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 }

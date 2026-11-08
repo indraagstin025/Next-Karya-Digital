@@ -9,6 +9,12 @@ import React, {
   useRef,
 } from "react";
 import { usePathname } from "next/navigation";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export interface ScrollToOptions {
   offset?: number;
@@ -25,35 +31,11 @@ export interface SmoothScrollContextValue {
 }
 
 const SmoothScrollContext = createContext<SmoothScrollContextValue>({
-  scrollTo: (target, options) => {
-    if (typeof window === "undefined") return;
-    const offset = options?.offset ?? 0;
-    if (typeof target === "number") {
-      window.scrollTo({
-        top: Math.max(0, target + offset),
-        behavior: options?.immediate ? "auto" : "smooth",
-      });
-    } else if (typeof target === "string") {
-      const el = document.querySelector(target);
-      if (el) {
-        const top = el.getBoundingClientRect().top + window.scrollY + offset;
-        window.scrollTo({
-          top: Math.max(0, top),
-          behavior: options?.immediate ? "auto" : "smooth",
-        });
-      }
-    } else if (target instanceof HTMLElement) {
-      const top = target.getBoundingClientRect().top + window.scrollY + offset;
-      window.scrollTo({
-        top: Math.max(0, top),
-        behavior: options?.immediate ? "auto" : "smooth",
-      });
-    }
-  },
+  scrollTo: () => {},
   refresh: () => {},
 });
 
-export function useSmoothScroll() {
+export function useSmoothScroll(): SmoothScrollContextValue {
   return useContext(SmoothScrollContext);
 }
 
@@ -66,92 +48,89 @@ function isWorkspaceRoute(pathname: string | null): boolean {
   );
 }
 
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
-
-function easeOutExpo(t: number): number {
-  return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
-}
-
 function getHeaderOffset(): number {
   if (typeof window === "undefined") return 84;
   return window.innerWidth >= 1024 ? 92 : 84;
 }
 
-function canElementScrollInternally(
-  target: EventTarget | null,
-  deltaY: number
-): boolean {
-  if (!(target instanceof HTMLElement)) return false;
+function easeOutExpo(t: number): number {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
 
-  let el: HTMLElement | null = target;
-  while (el && el !== document.body && el !== document.documentElement) {
+function hasScrollableAncestor(el: EventTarget | null, deltaY: number): boolean {
+  if (!(el instanceof HTMLElement)) return false;
+
+  let node: HTMLElement | null = el;
+  while (
+    node &&
+    node !== document.body &&
+    node !== document.documentElement
+  ) {
     if (
-      el.hasAttribute("data-smooth-prevent") ||
-      el.hasAttribute("data-lenis-prevent") ||
-      el.getAttribute("role") === "dialog" ||
-      el.getAttribute("role") === "listbox" ||
-      el.getAttribute("role") === "menu"
+      node.hasAttribute("data-smooth-prevent") ||
+      node.getAttribute("role") === "dialog" ||
+      node.getAttribute("role") === "listbox" ||
+      node.getAttribute("role") === "menu" ||
+      node.tagName === "TEXTAREA" ||
+      node.tagName === "SELECT"
     ) {
       return true;
     }
 
-    const style = window.getComputedStyle(el);
+    const style = window.getComputedStyle(node);
     const overflowY = style.overflowY;
     const isScrollableY =
-      overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
+      (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") &&
+      node.scrollHeight > node.clientHeight + 1;
 
-    if (isScrollableY && el.scrollHeight > el.clientHeight + 1) {
-      const atTop = el.scrollTop <= 0;
-      const atBottom =
-        Math.ceil(el.scrollTop + el.clientHeight) >= el.scrollHeight;
-
-      if ((deltaY < 0 && !atTop) || (deltaY > 0 && !atBottom)) {
+    if (isScrollableY) {
+      const canScrollDown =
+        deltaY > 0 &&
+        node.scrollTop + node.clientHeight < node.scrollHeight - 1;
+      const canScrollUp = deltaY < 0 && node.scrollTop > 0;
+      if (canScrollDown || canScrollUp) {
         return true;
       }
     }
 
-    el = el.parentElement;
+    node = node.parentElement;
   }
 
   return false;
 }
 
 /**
- * Mendeteksi apakah event wheel berasal dari Touchpad (Precision Trackpad / macOS)
- * atau dari roda mouse bertakik (Stepped Mouse Wheel).
- * Touchpad dibiarkan berjalan native di GPU Compositor Thread browser (0ms lag, 120Hz inertia).
+ * Mendeteksi apakah WheelEvent berasal dari Touchpad 2-jari atau Mouse Wheel bertakik.
+ * Touchpad diberi damping lebih responsif (0.165) agar mengikuti jari secara presisi
+ * namun tetap memiliki luncuran (gliding tail) halus seperti web Antigravity.
  */
-function isTouchpadEvent(event: WheelEvent, dtMs: number, wasTouchpad: boolean): boolean {
-  if (event.deltaMode !== 0) return false;
-  if (Math.abs(event.deltaX) > 0) return true;
-  if (!Number.isInteger(event.deltaY)) return true;
+function isTouchpadEvent(e: WheelEvent, dtMs: number): boolean {
+  if (e.deltaMode !== 0) return false;
+  if (!Number.isInteger(e.deltaY) || !Number.isInteger(e.deltaX)) return true;
+  if (e.deltaX !== 0) return true;
 
-  const legacyWheelDeltaY = (
-    event as WheelEvent & { wheelDeltaY?: number }
-  ).wheelDeltaY;
-
-  if (
-    typeof legacyWheelDeltaY === "number" &&
-    legacyWheelDeltaY !== 0 &&
-    Math.abs(legacyWheelDeltaY) % 120 !== 0
-  ) {
-    return true;
+  const legacyWheelDeltaY = (e as unknown as { wheelDeltaY?: number }).wheelDeltaY;
+  if (typeof legacyWheelDeltaY === "number" && legacyWheelDeltaY !== 0) {
+    if (legacyWheelDeltaY % 120 !== 0) return true;
   }
 
-  if (Math.abs(event.deltaY) < 48) return true;
-  if (wasTouchpad && dtMs < 55) return true;
+  const absY = Math.abs(e.deltaY);
+  if (absY > 0 && absY < 48) return true;
+  if (dtMs > 0 && dtMs < 24 && absY < 96) return true;
 
   return false;
 }
 
-interface ProgrammaticTween {
-  startScroll: number;
-  endScroll: number;
-  elapsed: number;
-  duration: number;
+interface ParallaxItem {
+  el: HTMLElement;
+  speed: number;
+  top: number;
+  height: number;
 }
+
+const TOUCHPAD_DAMPING = 0.165;
+const WHEEL_DAMPING = 0.105;
+const STOP_EPSILON = 0.05;
 
 export function SmoothScrollProvider({
   children,
@@ -159,28 +138,77 @@ export function SmoothScrollProvider({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isPublicPage = !isWorkspaceRoute(pathname);
+  const isDisabledRoute = isWorkspaceRoute(pathname);
 
   const stateRef = useRef({
     currentScroll: 0,
     targetScroll: 0,
+    maxScroll: 0,
+    viewportHeight: 0,
+    activeDamping: WHEEL_DAMPING,
     lastWheelTime: 0,
-    lastFrameTime: 0,
-    lastInternalWriteTime: 0,
-    wasTouchpad: false,
+    touchpadLockUntil: 0,
+    isRunning: false,
     rafId: 0,
-    reducedMotion: false,
-    tween: null as ProgrammaticTween | null,
+    lastFrameTime: 0,
+    isEnabled: false,
+    programmatic: null as {
+      startScroll: number;
+      endScroll: number;
+      startTime: number;
+      durationMs: number;
+    } | null,
+    parallaxItems: [] as ParallaxItem[],
   });
 
-  const getMaxScroll = useCallback(() => {
-    if (typeof document === "undefined" || typeof window === "undefined") {
-      return 0;
+  const updateBoundsAndParallax = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const s = stateRef.current;
+    const doc = document.documentElement;
+    s.viewportHeight = window.innerHeight;
+    s.maxScroll = Math.max(0, doc.scrollHeight - window.innerHeight);
+    if (s.targetScroll > s.maxScroll) s.targetScroll = s.maxScroll;
+    if (s.currentScroll > s.maxScroll) s.currentScroll = s.maxScroll;
+
+    // Cache koordinat statis elemen [data-nk-parallax] sekali saja (di luar rAF loop)
+    // sehingga 0 pemanggilan getBoundingClientRect() saat scrolling.
+    const nodes = document.querySelectorAll<HTMLElement>("[data-nk-parallax]");
+    const items: ParallaxItem[] = [];
+    const scrollY = window.scrollY;
+
+    nodes.forEach((el) => {
+      const rawSpeed = parseFloat(el.getAttribute("data-nk-parallax") || "0");
+      if (!rawSpeed || Number.isNaN(rawSpeed)) return;
+      const rect = el.getBoundingClientRect();
+      items.push({
+        el,
+        speed: rawSpeed,
+        top: rect.top + scrollY,
+        height: rect.height,
+      });
+    });
+
+    s.parallaxItems = items;
+  }, []);
+
+  const applyParallaxTransforms = useCallback((scrollY: number) => {
+    const s = stateRef.current;
+    const items = s.parallaxItems;
+    if (items.length === 0) return;
+
+    const viewTop = scrollY - 120;
+    const viewBottom = scrollY + s.viewportHeight + 120;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.top + item.height < viewTop || item.top > viewBottom) {
+        continue;
+      }
+      const centerOffset =
+        scrollY + s.viewportHeight * 0.5 - (item.top + item.height * 0.5);
+      const yOffset = Math.max(-36, Math.min(36, centerOffset * item.speed));
+      item.el.style.transform = `translate3d(0, ${yOffset.toFixed(2)}px, 0)`;
     }
-    return Math.max(
-      0,
-      document.documentElement.scrollHeight - window.innerHeight
-    );
   }, []);
 
   const stopLoop = useCallback(() => {
@@ -189,239 +217,343 @@ export function SmoothScrollProvider({
       window.cancelAnimationFrame(s.rafId);
       s.rafId = 0;
     }
-    s.lastFrameTime = 0;
-    if (typeof document !== "undefined") {
-      document.documentElement.classList.remove("nk-smooth-scroll");
-    }
+    s.isRunning = false;
+    s.programmatic = null;
+    document.documentElement.classList.remove("nk-smooth-scroll");
   }, []);
 
   const startLoop = useCallback(() => {
     const s = stateRef.current;
-    if (s.rafId || typeof window === "undefined") return;
-
-    document.documentElement.classList.add("nk-smooth-scroll");
+    if (s.isRunning || !s.isEnabled) return;
+    s.isRunning = true;
     s.lastFrameTime = performance.now();
+    document.documentElement.classList.add("nk-smooth-scroll");
 
-    const step = (now: number) => {
-      const dt = clamp((now - s.lastFrameTime) / 1000, 0.001, 0.064);
+    const tick = (now: number) => {
+      if (!s.isRunning) return;
+
+      const dt = Math.min((now - s.lastFrameTime) / 1000, 0.064);
       s.lastFrameTime = now;
 
-      if (s.tween) {
-        s.tween.elapsed += dt;
-        const progress = clamp(s.tween.elapsed / s.tween.duration, 0, 1);
+      if (s.programmatic) {
+        const elapsed = now - s.programmatic.startTime;
+        const progress = Math.min(1, elapsed / s.programmatic.durationMs);
         const eased = easeOutExpo(progress);
         s.currentScroll =
-          s.tween.startScroll +
-          (s.tween.endScroll - s.tween.startScroll) * eased;
-        s.targetScroll = s.tween.endScroll;
+          s.programmatic.startScroll +
+          (s.programmatic.endScroll - s.programmatic.startScroll) * eased;
+        s.targetScroll = s.currentScroll;
 
-        s.lastInternalWriteTime = now;
         window.scrollTo(0, s.currentScroll);
+        applyParallaxTransforms(s.currentScroll);
+        ScrollTrigger.update();
 
         if (progress >= 1) {
-          s.tween = null;
-          s.rafId = 0;
-          document.documentElement.classList.remove("nk-smooth-scroll");
+          s.currentScroll = s.programmatic.endScroll;
+          s.targetScroll = s.programmatic.endScroll;
+          window.scrollTo(0, s.currentScroll);
+          stopLoop();
           return;
         }
 
-        s.rafId = window.requestAnimationFrame(step);
+        s.rafId = window.requestAnimationFrame(tick);
         return;
       }
 
       const diff = s.targetScroll - s.currentScroll;
-      if (Math.abs(diff) > 0.4) {
-        // Frame-rate independent exponential LERP khusus untuk memperhalus roda mouse
-        const alpha = 1 - Math.exp(-0.14 * 60 * dt);
+
+      if (Math.abs(diff) > STOP_EPSILON) {
+        const lambda = -Math.log(1 - s.activeDamping) * 60;
+        const alpha = 1 - Math.exp(-lambda * Math.max(dt, 0.004));
         s.currentScroll += diff * alpha;
 
-        s.lastInternalWriteTime = now;
         window.scrollTo(0, s.currentScroll);
-        s.rafId = window.requestAnimationFrame(step);
+        applyParallaxTransforms(s.currentScroll);
+        ScrollTrigger.update();
+
+        s.rafId = window.requestAnimationFrame(tick);
       } else {
         s.currentScroll = s.targetScroll;
-        s.lastInternalWriteTime = now;
         window.scrollTo(0, s.currentScroll);
-        s.rafId = 0;
-        document.documentElement.classList.remove("nk-smooth-scroll");
+        applyParallaxTransforms(s.currentScroll);
+        ScrollTrigger.update();
+        stopLoop();
       }
     };
 
-    s.rafId = window.requestAnimationFrame(step);
-  }, []);
+    s.rafId = window.requestAnimationFrame(tick);
+  }, [applyParallaxTransforms, stopLoop]);
 
   const scrollTo = useCallback(
     (
       target: number | string | HTMLElement,
-      options?: ScrollToOptions
-    ): void => {
+      options: ScrollToOptions = {}
+    ) => {
       if (typeof window === "undefined") return;
 
       const s = stateRef.current;
-      const offset = options?.offset ?? 0;
-      let destination = 0;
+      updateBoundsAndParallax();
+
+      let resolvedY = 0;
 
       if (typeof target === "number") {
-        destination = target + offset;
+        resolvedY = target;
       } else if (typeof target === "string") {
-        const selector = target.startsWith("#") ? target : `#${target}`;
-        const el =
-          document.getElementById(selector.slice(1)) ??
-          document.querySelector<HTMLElement>(target);
-        if (!el) return;
-        destination = el.getBoundingClientRect().top + window.scrollY + offset;
+        if (target === "#" || target === "#top") {
+          resolvedY = 0;
+        } else {
+          const id = target.startsWith("#") ? target.slice(1) : target;
+          const el =
+            document.getElementById(id) ??
+            document.querySelector<HTMLElement>(target);
+          if (!el) return;
+          const offset = options.offset ?? -getHeaderOffset();
+          resolvedY = el.getBoundingClientRect().top + window.scrollY + offset;
+        }
       } else if (target instanceof HTMLElement) {
-        destination =
-          target.getBoundingClientRect().top + window.scrollY + offset;
+        const offset = options.offset ?? -getHeaderOffset();
+        resolvedY = target.getBoundingClientRect().top + window.scrollY + offset;
       }
 
-      const maxScroll = getMaxScroll();
-      const clampedDest = clamp(destination, 0, maxScroll);
+      const clampedY = Math.max(0, Math.min(s.maxScroll, resolvedY));
 
-      if (
-        !isPublicPage ||
-        s.reducedMotion ||
-        options?.immediate ||
-        Math.abs(clampedDest - window.scrollY) < 2
-      ) {
+      if (!s.isEnabled || options.immediate) {
         stopLoop();
-        s.tween = null;
-        s.currentScroll = clampedDest;
-        s.targetScroll = clampedDest;
-        s.lastInternalWriteTime = performance.now();
-        window.scrollTo(0, clampedDest);
+        s.currentScroll = clampedY;
+        s.targetScroll = clampedY;
+        window.scrollTo({ top: clampedY, behavior: "auto" });
         return;
       }
 
       s.currentScroll = window.scrollY;
-      s.targetScroll = clampedDest;
-      s.tween = {
+      s.targetScroll = clampedY;
+      const durationMs = Math.max(180, (options.duration ?? 0.9) * 1000);
+      s.programmatic = {
         startScroll: s.currentScroll,
-        endScroll: clampedDest,
-        elapsed: 0,
-        duration: options?.duration ?? 0.9,
+        endScroll: clampedY,
+        startTime: performance.now(),
+        durationMs,
       };
       startLoop();
     },
-    [getMaxScroll, isPublicPage, startLoop, stopLoop]
+    [startLoop, stopLoop, updateBoundsAndParallax]
   );
 
   const refresh = useCallback(() => {
     if (typeof window === "undefined") return;
-    const maxScroll = getMaxScroll();
-    const s = stateRef.current;
-    s.targetScroll = clamp(s.targetScroll, 0, maxScroll);
-    s.currentScroll = clamp(window.scrollY, 0, maxScroll);
-  }, [getMaxScroll]);
+    updateBoundsAndParallax();
+    ScrollTrigger.refresh();
+  }, [updateBoundsAndParallax]);
 
+  // Shared IntersectionObserver untuk [data-nk-reveal] agar animasi masuk kartu
+  // berjalan mulus dengan kurva spring GPU tanpa membebani scroll timeline.
   useEffect(() => {
-    if (typeof window === "undefined" || !isPublicPage) {
-      stopLoop();
+    if (typeof window === "undefined" || isDisabledRoute) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const html = document.documentElement;
+    if (prefersReducedMotion) {
+      html.classList.remove("nk-reveal-ready");
       return;
     }
 
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const touchDeviceQuery = window.matchMedia("(pointer: coarse)");
-    const s = stateRef.current;
-    s.reducedMotion = mediaQuery.matches;
-    s.currentScroll = window.scrollY;
-    s.targetScroll = window.scrollY;
+    html.classList.add("nk-reveal-ready");
 
-    const syncMode = () => {
-      s.reducedMotion = mediaQuery.matches;
-      if (s.reducedMotion || touchDeviceQuery.matches) {
-        stopLoop();
-      }
-    };
+    const elements = document.querySelectorAll<HTMLElement>("[data-nk-reveal]");
+    if (elements.length === 0) return;
 
-    const onWheel = (event: WheelEvent) => {
-      if (s.reducedMotion || touchDeviceQuery.matches) return;
-      if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
-      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-
-      const now = performance.now();
-      const dtWheel = now - s.lastWheelTime;
-      s.lastWheelTime = now;
-
-      const touchpad = isTouchpadEvent(event, dtWheel, s.wasTouchpad);
-      s.wasTouchpad = touchpad;
-
-      // Jika pengguna memakai Touchpad, biarkan GPU Compositor Thread browser
-      // menanganinya secara native (0ms lag, 120Hz inersia hardware asli)
-      if (touchpad) {
-        if (s.rafId) {
-          stopLoop();
-          s.tween = null;
+    const vh = window.innerHeight;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (let i = 0; i < entries.length; i++) {
+          const entry = entries[i];
+          if (entry.isIntersecting) {
+            const target = entry.target as HTMLElement;
+            target.setAttribute("data-nk-revealed", "true");
+            observer.unobserve(target);
+          }
         }
-        s.currentScroll = window.scrollY;
-        s.targetScroll = window.scrollY;
-        return;
+      },
+      {
+        rootMargin: "0px 0px -6% 0px",
+        threshold: 0.08,
       }
+    );
 
-      if (canElementScrollInternally(event.target, event.deltaY)) return;
-
-      // Hanya intervensi untuk Stepped Mouse Wheel agar tidak patah-patah
-      event.preventDefault();
-
-      let deltaY = event.deltaY;
-      if (event.deltaMode === 1) {
-        deltaY *= 40;
-      } else if (event.deltaMode === 2) {
-        deltaY *= window.innerHeight;
+    elements.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      // Elemen yang sudah ada di dalam layar saat halaman dibuka langsung tampil
+      if (rect.top < vh * 0.92 && rect.bottom > 0) {
+        el.setAttribute("data-nk-revealed", "true");
+      } else {
+        observer.observe(el);
       }
+    });
 
-      if (!s.rafId) {
-        s.currentScroll = window.scrollY;
-        s.targetScroll = window.scrollY;
-      }
-
-      s.tween = null;
-      const maxScroll = getMaxScroll();
-      const scaledDelta = clamp(deltaY * 0.95, -240, 240);
-      s.targetScroll = clamp(s.targetScroll + scaledDelta, 0, maxScroll);
-      startLoop();
+    return () => {
+      observer.disconnect();
     };
+  }, [pathname, isDisabledRoute]);
 
-    const onNativeScroll = () => {
-      const now = performance.now();
-      // Abaikan event scroll asinkron yang dipicu oleh window.scrollTo di dalam loop rAF kita
-      if (s.rafId && now - s.lastInternalWriteTime < 48) {
-        return;
-      }
-      s.currentScroll = window.scrollY;
-      s.targetScroll = window.scrollY;
-    };
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-    const onDocumentClick = (event: MouseEvent) => {
+    const s = stateRef.current;
+    const html = document.documentElement;
+
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+    const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
+
+    if (
+      isDisabledRoute ||
+      reducedMotionQuery.matches ||
+      coarsePointerQuery.matches
+    ) {
+      stopLoop();
+      s.isEnabled = false;
+      return;
+    }
+
+    s.isEnabled = true;
+    const initialY = window.scrollY;
+    s.currentScroll = initialY;
+    s.targetScroll = initialY;
+    updateBoundsAndParallax();
+    applyParallaxTransforms(initialY);
+
+    const onWheel = (e: WheelEvent) => {
+      if (!s.isEnabled) return;
+      if (e.defaultPrevented) return;
+      if (e.ctrlKey || e.metaKey) return;
+
       if (
-        event.defaultPrevented ||
-        event.button !== 0 ||
-        event.metaKey ||
-        event.ctrlKey ||
-        event.shiftKey ||
-        event.altKey
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) &&
+        Math.abs(e.deltaY) < 4
       ) {
         return;
       }
 
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const anchor = target.closest("a[href]");
-      if (!(anchor instanceof HTMLAnchorElement)) return;
+      let deltaY = e.deltaY;
+      if (e.deltaMode === 1) {
+        deltaY *= 36;
+      } else if (e.deltaMode === 2) {
+        deltaY *= window.innerHeight * 0.85;
+      }
 
-      const rawHref = anchor.getAttribute("href");
-      if (!rawHref || rawHref === "#") return;
+      if (hasScrollableAncestor(e.target, deltaY)) {
+        return;
+      }
+
+      const now = performance.now();
+      const dt = now - s.lastWheelTime;
+      s.lastWheelTime = now;
+
+      const detectedTouchpad = isTouchpadEvent(e, dt);
+      if (detectedTouchpad) {
+        // Kunci mode touchpad selama 280ms agar ekor inersia touchpad tidak
+        // berganti damping di tengah luncuran.
+        s.touchpadLockUntil = now + 280;
+      }
+      const isTouchpad = detectedTouchpad || now < s.touchpadLockUntil;
+
+      e.preventDefault();
+
+      s.programmatic = null;
+      s.activeDamping = isTouchpad ? TOUCHPAD_DAMPING : WHEEL_DAMPING;
+
+      // Perbarui batas maksimum scroll bila tinggi dokumen berubah
+      const maxScroll = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
+      s.maxScroll = maxScroll;
+
+      if (!s.isRunning) {
+        const currentY = window.scrollY;
+        s.currentScroll = currentY;
+        s.targetScroll = currentY;
+      }
+
+      s.targetScroll = Math.max(
+        0,
+        Math.min(s.maxScroll, s.targetScroll + deltaY)
+      );
+
+      startLoop();
+    };
+
+    const onNativeScroll = () => {
+      // Selama loop animasi smooth scroll sedang berjalan, JANGAN pernah
+      // menimpa targetScroll/currentScroll dari event scroll asinkron!
+      if (s.isRunning) return;
+      const nativeY = window.scrollY;
+      s.currentScroll = nativeY;
+      s.targetScroll = nativeY;
+      applyParallaxTransforms(nativeY);
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      // Jika pengguna mengeklik atau menggeser scrollbar native di sisi kanan layar,
+      // hentikan loop segera agar drag scrollbar 100% responsif.
+      if (e.clientX >= document.documentElement.clientWidth - 2) {
+        stopLoop();
+        const y = window.scrollY;
+        s.currentScroll = y;
+        s.targetScroll = y;
+      }
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      const activeTag = document.activeElement?.tagName;
+      if (
+        activeTag === "INPUT" ||
+        activeTag === "TEXTAREA" ||
+        activeTag === "SELECT" ||
+        (document.activeElement as HTMLElement | null)?.isContentEditable
+      ) {
+        return;
+      }
+
+      if (
+        e.key === "ArrowDown" ||
+        e.key === "ArrowUp" ||
+        e.key === "PageDown" ||
+        e.key === "PageUp" ||
+        e.key === "Home" ||
+        e.key === "End" ||
+        e.key === " "
+      ) {
+        stopLoop();
+      }
+    };
+
+    const onAnchorClick = (e: MouseEvent) => {
+      if (!s.isEnabled || e.defaultPrevented) return;
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return;
+      }
+
+      const targetEl = e.target as HTMLElement | null;
+      const anchor = targetEl?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (!anchor) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href || !href.includes("#")) return;
 
       let hash = "";
-      if (rawHref.startsWith("#")) {
-        hash = rawHref;
+      if (href.startsWith("#")) {
+        hash = href;
       } else {
         try {
-          const url = new URL(anchor.href, window.location.origin);
+          const url = new URL(href, window.location.origin);
           if (
             url.origin === window.location.origin &&
-            url.pathname === window.location.pathname &&
-            url.hash
+            url.pathname === window.location.pathname
           ) {
             hash = url.hash;
           }
@@ -430,56 +562,86 @@ export function SmoothScrollProvider({
         }
       }
 
-      if (!hash || hash.length < 2) return;
+      if (!hash || hash === "#") return;
 
-      const targetElement = document.getElementById(
-        decodeURIComponent(hash.slice(1))
-      );
-      if (!targetElement) return;
+      const id = decodeURIComponent(hash.slice(1));
+      const dest = document.getElementById(id);
+      if (!dest) return;
 
-      event.preventDefault();
+      e.preventDefault();
       window.history.pushState(null, "", hash);
-      scrollTo(targetElement, {
-        offset: -getHeaderOffset(),
-        duration: 0.9,
-      });
+      scrollTo(dest, { offset: -getHeaderOffset(), duration: 0.9 });
+    };
+
+    let resizeTimer = 0;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        updateBoundsAndParallax();
+      }, 120);
     };
 
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("scroll", onNativeScroll, { passive: true });
-    document.addEventListener("click", onDocumentClick);
-    mediaQuery.addEventListener("change", syncMode);
-    touchDeviceQuery.addEventListener("change", syncMode);
+    window.addEventListener("pointerdown", onPointerDown, { passive: true });
+    window.addEventListener("keydown", onKeyDown, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
+    document.addEventListener("click", onAnchorClick);
 
     return () => {
       stopLoop();
+      s.isEnabled = false;
+      html.classList.remove("nk-smooth-scroll");
+      window.clearTimeout(resizeTimer);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("scroll", onNativeScroll);
-      document.removeEventListener("click", onDocumentClick);
-      mediaQuery.removeEventListener("change", syncMode);
-      touchDeviceQuery.removeEventListener("change", syncMode);
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onResize);
+      document.removeEventListener("click", onAnchorClick);
     };
-  }, [getMaxScroll, isPublicPage, scrollTo, startLoop, stopLoop]);
+  }, [
+    isDisabledRoute,
+    applyParallaxTransforms,
+    scrollTo,
+    startLoop,
+    stopLoop,
+    updateBoundsAndParallax,
+  ]);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !isPublicPage) return;
+    if (typeof window === "undefined") return;
+    const s = stateRef.current;
 
     const timer = window.setTimeout(() => {
-      const hash = window.location.hash;
-      if (hash && hash.length > 1) {
-        const el = document.getElementById(decodeURIComponent(hash.slice(1)));
-        if (el) {
-          scrollTo(el, { offset: -getHeaderOffset(), duration: 0.85 });
+      updateBoundsAndParallax();
+
+      if (window.location.hash && s.isEnabled && !isDisabledRoute) {
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        const dest = document.getElementById(id);
+        if (dest) {
+          scrollTo(dest, { offset: -getHeaderOffset(), duration: 0.85 });
           return;
         }
       }
-      const s = stateRef.current;
-      s.currentScroll = window.scrollY;
-      s.targetScroll = window.scrollY;
-    }, 50);
+
+      stopLoop();
+      const y = window.scrollY;
+      s.currentScroll = y;
+      s.targetScroll = y;
+      applyParallaxTransforms(y);
+      ScrollTrigger.refresh();
+    }, 60);
 
     return () => window.clearTimeout(timer);
-  }, [pathname, isPublicPage, scrollTo]);
+  }, [
+    pathname,
+    isDisabledRoute,
+    applyParallaxTransforms,
+    scrollTo,
+    stopLoop,
+    updateBoundsAndParallax,
+  ]);
 
   const contextValue = useMemo<SmoothScrollContextValue>(
     () => ({

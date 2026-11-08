@@ -11,9 +11,8 @@ interface ScrollRevealProps {
 }
 
 /**
- * Pembungkus reveal tanpa JavaScript. Animasi dijalankan browser lewat
- * scroll-driven animation; bila browser tidak mendukung, konten tampil biasa.
- * `priority` menandai header section agar tetap beranimasi di layar kecil.
+ * Pembungkus reveal GPU-accelerated (opacity + translate3d) yang dipicu oleh
+ * shared IntersectionObserver di SmoothScrollProvider.
  */
 export function ScrollReveal({
   children,
@@ -26,7 +25,7 @@ export function ScrollReveal({
     <div
       data-nk-reveal={direction}
       data-nk-reveal-priority={priority ? "true" : undefined}
-      style={delayMs > 0 ? { animationDelay: `${delayMs}ms` } : undefined}
+      style={delayMs > 0 ? { transitionDelay: `${delayMs}ms` } : undefined}
       className={className}
     >
       {children}
