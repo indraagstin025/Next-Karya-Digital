@@ -42,17 +42,12 @@ export interface WorkflowStepItem {
 
 export interface PortfolioTeaserItem {
   id: string;
-  category: string;
   categorySlug: "all" | "webapp" | "website" | "mobile";
   clientSector: string;
   title: string;
   description: string;
-  tech: string[];
-  businessImpact: string;
-  metric: string;
   image: string;
   imageAlt: string;
-  icon: React.ReactNode;
 }
 
 export interface PricingPlan {

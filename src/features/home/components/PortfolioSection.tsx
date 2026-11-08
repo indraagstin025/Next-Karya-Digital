@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { CheckCircledIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import type { PublicPortfolioDTO } from "@/lib/public-content";
 import { toPortfolioTeasers } from "@/lib/live-content-adapters";
@@ -119,66 +119,34 @@ export function PortfolioSection({
               style={idx > 0 ? { animationDelay: `${Math.min(idx, 5) * 60}ms` } : undefined}
               className="h-full"
             >
-              <article className="h-full flex flex-col justify-between overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group">
-                <div>
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-b border-[#E2E8F0] dark:border-slate-800">
-                    {image && (
-                      <img
-                        src={image.src}
-                        srcSet={image.srcSet}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        width={800}
-                        height={500}
-                        alt={item.imageAlt}
-                        loading="lazy"
-                        decoding="async"
-                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                      />
-                    )}
-                    <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#041E42] text-white px-3 py-1 text-[11px] font-bold shadow-md">
-                        {item.icon}
-                        <span>{item.category}</span>
-                      </span>
-                      <span className="rounded-full bg-[#005090] text-white px-3.5 py-1 text-[11px] font-bold shadow-md">
-                        {item.metric}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-6 sm:p-7 pb-0 sm:pb-0">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
-                      {item.clientSector}
-                    </p>
-
-                    <h3 className="mt-1.5 text-[17px] sm:text-[18px] font-extrabold tracking-[-0.015em] text-[#041E42] dark:text-white leading-snug transition-colors duration-200 group-hover:text-[#005090] dark:group-hover:text-[#0986C8]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2.5 text-[13px] sm:text-[13.5px] leading-[1.68] text-[#4A5D78] dark:text-slate-300">
-                      {item.description}
-                    </p>
-
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {item.tech.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-[11px] font-semibold text-[#0A2558] dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors group-hover:border-slate-300 dark:group-hover:border-slate-600"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+              <article className="h-full flex flex-col overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group">
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-b border-[#E2E8F0] dark:border-slate-800">
+                  {image && (
+                    <img
+                      src={image.src}
+                      srcSet={image.srcSet}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      width={800}
+                      height={500}
+                      alt={item.imageAlt}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                  )}
                 </div>
 
-                <div className="p-6 sm:p-7 pt-5 sm:pt-5 mt-5">
-                  <div className="rounded-2xl bg-[#FFFFFF] dark:bg-slate-800 p-3.5 text-xs text-[#4A5D78] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-700 leading-relaxed transition-colors duration-300 group-hover:border-[#005090]">
-                    <div className="flex items-center gap-1.5 font-extrabold text-[#005090] dark:text-[#0986C8] mb-0.5">
-                      <CheckCircledIcon className="h-3.5 w-3.5 shrink-0" />
-                      <span>Dampak Bisnis</span>
-                    </div>
-                    {item.businessImpact}
-                  </div>
+                <div className="flex flex-1 flex-col p-6 sm:p-7">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
+                    {item.clientSector}
+                  </p>
+
+                  <h3 className="mt-1.5 text-[17px] sm:text-[18px] font-extrabold tracking-[-0.015em] text-[#041E42] dark:text-white leading-snug transition-colors duration-200 group-hover:text-[#005090] dark:group-hover:text-[#0986C8]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2.5 text-[13px] sm:text-[13.5px] leading-[1.68] text-[#4A5D78] dark:text-slate-300">
+                    {item.description}
+                  </p>
                 </div>
               </article>
             </div>

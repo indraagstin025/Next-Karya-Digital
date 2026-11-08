@@ -1,9 +1,3 @@
-import React from "react";
-import {
-  GlobeIcon,
-  LayersIcon,
-  MobileIcon,
-} from "@radix-ui/react-icons";
 import type {
   PublicFaqDTO,
   PublicPortfolioDTO,
@@ -29,29 +23,18 @@ import {
 // failed (null). An empty array from PostgreSQL stays empty on purpose, so an
 // editor who unpublishes everything does not see stale content reappear.
 
-function portfolioIcon(slug: PublicPortfolioDTO["categorySlug"]) {
-  if (slug === "mobile") return <MobileIcon className="h-5 w-5" />;
-  if (slug === "webapp") return <LayersIcon className="h-5 w-5" />;
-  return <GlobeIcon className="h-5 w-5" />;
-}
-
 export function toPortfolioTeasers(
   items: PublicPortfolioDTO[] | null | undefined
 ): PortfolioTeaserItem[] {
   if (!items) return PORTFOLIO_TEASERS;
   return items.map((item) => ({
     id: item.id,
-    category: item.category,
     categorySlug: item.categorySlug,
     clientSector: item.clientSector,
     title: item.title,
     description: item.description,
-    tech: item.tech,
-    businessImpact: item.impact,
-    metric: item.metric,
     image: item.image ?? "",
     imageAlt: item.imageAlt,
-    icon: portfolioIcon(item.categorySlug),
   }));
 }
 
@@ -62,17 +45,12 @@ export function toPortfolioCases(
   return items.map((item) => ({
     id: item.id,
     slug: item.slug,
-    category: item.category,
     categorySlug: item.categorySlug,
     clientSector: item.clientSector,
     title: item.title,
     description: item.description,
-    tech: item.tech,
-    impact: item.impact,
-    metric: item.metric,
     image: item.image ?? "",
     imageAlt: item.imageAlt,
-    icon: portfolioIcon(item.categorySlug),
   }));
 }
 

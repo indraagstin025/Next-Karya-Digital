@@ -52,11 +52,10 @@ export interface CmsPortfolio {
   slug: string;
   title: string;
   clientName: string;
+  clientNameMode: "FULL" | "MASKED";
   serviceCategory: string;
   summary: string;
-  impactSummary: string | null;
   metricResult: string | null;
-  technologies: string[];
   thumbnailUrl: string | null;
   thumbnailAlt: string | null;
   projectUrl: string | null;

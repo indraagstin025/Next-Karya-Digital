@@ -55,44 +55,13 @@ export function PortfolioDetailPage({
             </div>
           )}
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
-                Dampak Bisnis
-              </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-[#2F4260] dark:text-slate-300">
-                {portfolio.impact || "Dampak proyek belum diisi."}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
-                Hasil Terukur
-              </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-[#2F4260] dark:text-slate-300">
-                {portfolio.metric || "Metrik hasil belum diisi."}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-[#E2E8F0] bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
-                Teknologi
-              </p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {portfolio.tech.length > 0 ? (
-                  portfolio.tech.map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-[#0A2558] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                    >
-                      {tech}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-[14px] text-[#425776] dark:text-slate-400">
-                    Belum diisi.
-                  </span>
-                )}
-              </div>
-            </div>
+          <div className="mt-10 rounded-2xl border border-[#E2E8F0] bg-white p-5 sm:p-6 dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
+              Hasil Terukur
+            </p>
+            <p className="mt-2 text-[20px] sm:text-[24px] font-extrabold leading-tight text-[#041E42] dark:text-white">
+              {portfolio.metric || "Metrik hasil belum diisi."}
+            </p>
           </div>
 
           {portfolio.gallery.length > 0 && (

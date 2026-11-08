@@ -69,11 +69,10 @@ export function PortfolioModule({
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [clientName, setClientName] = useState("");
+  const [clientNameMode, setClientNameMode] = useState<"FULL" | "MASKED">("FULL");
   const [serviceCategory, setServiceCategory] = useState("Sistem Web Internal");
   const [summary, setSummary] = useState("");
-  const [impactSummary, setImpactSummary] = useState("");
   const [metricResult, setMetricResult] = useState("");
-  const [technologies, setTechnologies] = useState("Next.js, Express.js, PostgreSQL");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [thumbnailAlt, setThumbnailAlt] = useState("");
   const [projectUrl, setProjectUrl] = useState("");
@@ -89,11 +88,10 @@ export function PortfolioModule({
     setTitle("");
     setSlug("");
     setClientName("");
+    setClientNameMode("FULL");
     setServiceCategory("Sistem Web Internal");
     setSummary("");
-    setImpactSummary("");
     setMetricResult("");
-    setTechnologies("Next.js, Express.js, PostgreSQL");
     setThumbnailUrl("");
     setThumbnailAlt("");
     setProjectUrl("");
@@ -109,11 +107,10 @@ export function PortfolioModule({
     setTitle(item.title);
     setSlug(item.slug);
     setClientName(item.clientName);
+    setClientNameMode(item.clientNameMode === "MASKED" ? "MASKED" : "FULL");
     setServiceCategory(item.serviceCategory);
     setSummary(item.summary);
-    setImpactSummary(item.impactSummary || "");
     setMetricResult(item.metricResult || "");
-    setTechnologies(Array.isArray(item.technologies) ? item.technologies.join(", ") : "");
     setThumbnailUrl(item.thumbnailUrl || "");
     setThumbnailAlt(item.thumbnailAlt || "");
     setProjectUrl(item.projectUrl || "");
@@ -139,20 +136,15 @@ export function PortfolioModule({
 
   async function handleSavePortfolio(e: React.FormEvent) {
     e.preventDefault();
-    const techArr = technologies
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
 
     const payload: Record<string, any> = {
       title: title.trim(),
       slug: (slug.trim() || slugifyText(title)).slice(0, 255),
       clientName: clientName.trim(),
+      clientNameMode,
       serviceCategory: serviceCategory.trim(),
       summary: summary.trim(),
-      impactSummary: impactSummary.trim() || null,
       metricResult: metricResult.trim() || null,
-      technologies: techArr,
       thumbnailUrl: thumbnailUrl.trim() || null,
       thumbnailAlt: thumbnailAlt.trim() || title.trim(),
       projectUrl: projectUrl.trim() || null,
@@ -405,7 +397,16 @@ export function PortfolioModule({
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-medium text-foreground">{item.clientName}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">
+                    <div className="flex items-center gap-1.5">
+                      <span>{item.clientName}</span>
+                      {item.clientNameMode === "MASKED" && (
+                        <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                          Disamarkan
+                        </span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{item.serviceCategory}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={item.status} />
@@ -569,7 +570,7 @@ export function PortfolioModule({
                 placeholder="otomasi-sistem-logistik"
               />
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={LABEL_CLASS}>Kategori Solusi *</label>
                   <input
@@ -580,6 +581,22 @@ export function PortfolioModule({
                     placeholder="Web App, Mobile App, Cloud"
                     className={INPUT_CLASS}
                   />
+                </div>
+                <div>
+                  <label className={LABEL_CLASS}>Tampilan Nama Klien *</label>
+                  <select
+                    value={clientNameMode}
+                    onChange={(e) =>
+                      setClientNameMode(e.target.value as "FULL" | "MASKED")
+                    }
+                    className={INPUT_CLASS}
+                  >
+                    <option value="FULL">Tampilkan nama klien</option>
+                    <option value="MASKED">Samarkan nama klien</option>
+                  </select>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Mode samar menampilkan label &quot;Nama Disamarkan&quot; di situs publik.
+                  </p>
                 </div>
                 <div>
                   <label className={LABEL_CLASS}>Metrik Hasil Terukur</label>
@@ -612,28 +629,6 @@ export function PortfolioModule({
                   onChange={(e) => setSummary(e.target.value)}
                   placeholder="Jelaskan tantangan bisnis klien dan solusi yang dikerjakan oleh Next Karya."
                   className={`${INPUT_CLASS} h-auto py-2`}
-                />
-              </div>
-
-              <div>
-                <label className={LABEL_CLASS}>Ringkasan Dampak Bisnis (Impact)</label>
-                <textarea
-                  rows={2}
-                  value={impactSummary}
-                  onChange={(e) => setImpactSummary(e.target.value)}
-                  placeholder="Dampak konkret pasca implementasi bagi operasional klien."
-                  className={`${INPUT_CLASS} h-auto py-2`}
-                />
-              </div>
-
-              <div>
-                <label className={LABEL_CLASS}>Teknologi yang Digunakan (Pisahkan dengan koma)</label>
-                <input
-                  type="text"
-                  value={technologies}
-                  onChange={(e) => setTechnologies(e.target.value)}
-                  placeholder="Next.js, Tailwind CSS, PostgreSQL, Docker"
-                  className={INPUT_CLASS}
                 />
               </div>
 

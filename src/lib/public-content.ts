@@ -53,11 +53,10 @@ export interface PublicPortfolioDTO {
   slug: string;
   category: string;
   categorySlug: "webapp" | "website" | "mobile";
+  clientNameMode: "FULL" | "MASKED";
   clientSector: string;
   title: string;
   description: string;
-  tech: string[];
-  impact: string;
   metric: string;
   image: string | null;
   imageAlt: string;
@@ -219,11 +218,10 @@ const readPortfolios = unstable_cache(
       slug: typeof row.slug === "string" && row.slug ? row.slug : row.id,
       category: row.serviceCategory || "Website",
       categorySlug: toPortfolioCategory(row.serviceCategory || "Website"),
-      clientSector: row.clientName,
+      clientNameMode: row.clientNameMode === "MASKED" ? "MASKED" : "FULL",
+      clientSector: row.clientNameMode === "MASKED" ? "Nama Disamarkan" : row.clientName,
       title: row.title,
       description: row.summary,
-      tech: Array.isArray(row.technologies) ? row.technologies : [],
-      impact: row.impactSummary || "",
       metric: row.metricResult || "",
       image: resolvePortfolioThumbnail(row),
       imageAlt: row.thumbnailAlt || row.title,
@@ -245,11 +243,10 @@ const readPortfolioBySlug = unstable_cache(
       slug: row.slug,
       category: row.serviceCategory || "Website",
       categorySlug: toPortfolioCategory(row.serviceCategory || "Website"),
-      clientSector: row.clientName,
+      clientNameMode: row.clientNameMode === "MASKED" ? "MASKED" : "FULL",
+      clientSector: row.clientNameMode === "MASKED" ? "Nama Disamarkan" : row.clientName,
       title: row.title,
       description: row.summary,
-      tech: Array.isArray(row.technologies) ? row.technologies : [],
-      impact: row.impactSummary || "",
       metric: row.metricResult || "",
       image: resolvePortfolioThumbnail(row),
       imageAlt: row.thumbnailAlt || row.title,
