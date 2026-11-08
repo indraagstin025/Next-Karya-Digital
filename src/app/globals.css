@@ -225,6 +225,16 @@ html {
   html {
     scroll-behavior: smooth;
   }
+
+  html.nk-smooth-scroll {
+    scroll-behavior: auto !important;
+  }
+
+  [data-nk-parallax] {
+    translate: 0 var(--nk-parallax-y, 0px);
+    will-change: translate;
+    backface-visibility: hidden;
+  }
 }
 
 body {

@@ -12,6 +12,7 @@ export function HeroSection() {
       {/* Background Tech Waves matching Brand Colors (Navy & Primary Blue) */}
       <div
         aria-hidden="true"
+        data-nk-parallax="0.06"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[115px] sm:h-[155px] lg:h-[190px] w-full overflow-hidden -z-10"
       >
         <svg
@@ -111,7 +112,10 @@ export function HeroSection() {
           </div>
 
           {/* Right Column: 3D Stage with Logo Gabungan */}
-          <div className="group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]">
+          <div
+            data-nk-parallax="-0.05"
+            className="group relative flex items-center justify-center w-full max-w-[550px] mx-auto min-h-[280px] sm:min-h-[360px] lg:min-h-[430px]"
+          >
             <svg
               viewBox="0 0 700 540"
               fill="none"

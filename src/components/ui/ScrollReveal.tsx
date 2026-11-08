@@ -8,6 +8,7 @@ interface ScrollRevealProps {
   delayMs?: number;
   direction?: RevealDirection;
   priority?: boolean;
+  parallaxSpeed?: number;
 }
 
 /**
@@ -21,11 +22,15 @@ export function ScrollReveal({
   delayMs = 0,
   direction = "up",
   priority = false,
+  parallaxSpeed,
 }: ScrollRevealProps) {
   return (
     <div
       data-nk-reveal={direction}
       data-nk-reveal-priority={priority ? "true" : undefined}
+      data-nk-parallax={
+        typeof parallaxSpeed === "number" ? String(parallaxSpeed) : undefined
+      }
       style={delayMs > 0 ? { animationDelay: `${delayMs}ms` } : undefined}
       className={className}
     >

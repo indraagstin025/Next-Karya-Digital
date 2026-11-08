@@ -55,6 +55,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
+        data-nk-parallax="0.06"
         className="pointer-events-none absolute top-0 right-0 h-[190px] w-[190px] sm:h-[240px] sm:w-[240px] -scale-x-100 -z-10"
       >
         <circle
@@ -80,6 +81,7 @@ export function ServicesSection({ services }: { services?: PublicServiceDTO[] | 
         viewBox="0 0 260 260"
         fill="none"
         aria-hidden="true"
+        data-nk-parallax="-0.06"
         className="pointer-events-none absolute bottom-0 left-0 h-[180px] w-[180px] sm:h-[230px] sm:w-[230px] -scale-x-100 -z-10"
       >
         <circle

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { StaffShortcutLauncher } from "@/components/StaffShortcutLauncher";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
+import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import "./globals.css";
 
 const siteUrl = "https://nextkarya.web.id";
@@ -181,9 +183,12 @@ export default function RootLayout({
         className="min-h-screen antialiased font-sans flex flex-col"
         suppressHydrationWarning
       >
-        <AnalyticsTracker />
-        {children}
-        <StaffShortcutLauncher />
+        <SmoothScrollProvider>
+          <AnalyticsTracker />
+          {children}
+          <ScrollToTop />
+          <StaffShortcutLauncher />
+        </SmoothScrollProvider>
       </body>
     </html>
   );

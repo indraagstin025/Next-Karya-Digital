@@ -30,7 +30,7 @@ export function HomePage({
   faqs,
 }: HomePageProps) {
   return (
-    <div id="nk-site" className="site-wrap">
+    <div id="nk-site" data-nk-smooth-wrapper className="site-wrap">
       <Navbar />
       <main>
         <HeroSection />

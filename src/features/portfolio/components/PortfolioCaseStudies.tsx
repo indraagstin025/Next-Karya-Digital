@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import type { PublicPortfolioDTO } from "@/lib/public-content";
 import { toPortfolioCases } from "@/lib/live-content-adapters";
 
@@ -16,6 +17,11 @@ export function PortfolioCaseStudies({
 }) {
   const PORTFOLIO_CASES = toPortfolioCases(portfolios);
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
+  const { refresh } = useSmoothScroll();
+
+  useEffect(() => {
+    refresh();
+  }, [activeCategory, refresh]);
 
   const filterTabs: { label: string; value: CategoryFilter }[] = [
     { label: "Semua Proyek", value: "all" },

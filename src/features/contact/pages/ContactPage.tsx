@@ -10,6 +10,7 @@ export function ContactPage() {
   return (
     <div
       id="nk-site"
+      data-nk-smooth-wrapper
       className="site-wrap min-h-screen flex flex-col"
     >
       <Navbar />

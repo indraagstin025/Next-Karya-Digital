@@ -11,10 +11,12 @@ export function AboutSection() {
     >
       <div
         aria-hidden="true"
+        data-nk-parallax="0.07"
         className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#005090]/5 dark:bg-[#002857]/20 blur-3xl"
       />
       <div
         aria-hidden="true"
+        data-nk-parallax="-0.06"
         className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[#0986C8]/5 dark:bg-[#005090]/15 blur-3xl"
       />
 
