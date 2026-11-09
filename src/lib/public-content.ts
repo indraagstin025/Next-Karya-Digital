@@ -127,10 +127,13 @@ async function safeRead<T>(label: string, run: () => Promise<T>): Promise<T | nu
   try {
     return await withServerTimeout(run(), QUERY_TIMEOUT_MS, label);
   } catch (error) {
-    console.error(
-      `Public content read failed (${label}):`,
-      error instanceof Error ? error.message : "unknown"
-    );
+    const message = error instanceof Error ? error.message : "unknown";
+    if (
+      process.env.NODE_ENV === "production" ||
+      message !== "Public content API returned no response."
+    ) {
+      console.error(`Public content read failed (${label}):`, message);
+    }
     return null;
   }
 }
