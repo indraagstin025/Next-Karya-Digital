@@ -8,6 +8,7 @@ import {
   extractContactFieldErrors,
   type ContactFieldErrors,
 } from "../schema";
+import { buildWhatsAppConsultationUrl } from "../whatsapp";
 
 export interface ContactFormData {
   name: string;
@@ -21,6 +22,15 @@ export interface ContactFormData {
 export interface ContactFormStatus {
   type: "idle" | "sending" | "success" | "error";
   message: string;
+  whatsappUrl?: string;
+}
+
+function openWhatsAppUrl(url: string) {
+  if (typeof window === "undefined") return;
+  const popup = window.open(url, "_blank", "noopener,noreferrer");
+  if (!popup) {
+    window.location.assign(url);
+  }
 }
 
 const INITIAL_STATE: ContactFormData = {
@@ -122,7 +132,10 @@ export function useContactForm(sourcePage: string = "/kontak") {
 
       inFlightRef.current = true;
       setFieldErrors({});
-      setFormStatus({ type: "sending", message: "Sedang mengirim pesan..." });
+      setFormStatus({ type: "sending", message: "Sedang mengirim pesan & menyiapkan WhatsApp..." });
+
+      const isHoneypot = formData.websiteUrl.trim().length > 0;
+      const whatsappUrl = buildWhatsAppConsultationUrl(parsed.data);
 
       try {
         const result = await raceNetwork(
@@ -130,29 +143,59 @@ export function useContactForm(sourcePage: string = "/kontak") {
         );
 
         if (result.success) {
-          if (!formData.websiteUrl.trim()) {
+          if (!isHoneypot) {
             sendAnalyticsBeacon({
               eventName: "form_submit",
               path: sourcePage || "/kontak",
             });
+            sendAnalyticsBeacon({
+              eventName: "whatsapp_click",
+              path: sourcePage || "/kontak",
+            });
+            openWhatsAppUrl(whatsappUrl);
           }
-          setFormStatus({ type: "success", message: result.message });
+          setFormStatus({
+            type: "success",
+            message:
+              "Pesan Anda telah tercatat dan Anda sedang diarahkan ke WhatsApp resmi Next Karya.",
+            whatsappUrl,
+          });
+          resetForm();
+        } else if (
+          !result.fieldErrors &&
+          (result.errorKind === "server" ||
+            result.errorKind === "timeout" ||
+            result.errorKind === "locked")
+        ) {
+          if (!isHoneypot) {
+            sendAnalyticsBeacon({
+              eventName: "whatsapp_click",
+              path: sourcePage || "/kontak",
+            });
+            openWhatsAppUrl(whatsappUrl);
+          }
+          setFormStatus({
+            type: "success",
+            message:
+              "Anda langsung diarahkan ke WhatsApp resmi Next Karya dengan ringkasan konsultasi yang telah Anda isi.",
+            whatsappUrl,
+          });
           resetForm();
         } else {
           setFieldErrors(result.fieldErrors ?? {});
-          setFormStatus({ type: "error", message: result.message });
+          setFormStatus({ type: "error", message: result.message, whatsappUrl });
         }
       } catch (error) {
         let message =
-          "Koneksi sedang bermasalah. Isian Anda tetap tersimpan, silakan coba lagi.";
+          "Koneksi sedang bermasalah. Anda tetap dapat langsung mengirim pesan via tombol WhatsApp di bawah.";
         if (error instanceof ClientSubmitAbort && error.reason === "offline") {
           message =
             "Koneksi internet terputus saat mengirim. Pesan mungkin belum terkirim, kirim ulang setelah koneksi pulih.";
         } else if (error instanceof ClientSubmitAbort && error.reason === "timeout") {
           message =
-            "Koneksi terlalu lama. Isian Anda tetap tersimpan, silakan coba lagi.";
+            "Koneksi terlalu lama. Anda tetap dapat langsung melanjutkan konsultasi via WhatsApp di bawah.";
         }
-        setFormStatus({ type: "error", message });
+        setFormStatus({ type: "error", message, whatsappUrl });
       } finally {
         inFlightRef.current = false;
       }
