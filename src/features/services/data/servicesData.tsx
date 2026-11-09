@@ -1,13 +1,16 @@
 import React from "react";
 import {
-  GlobeIcon,
-  UpdateIcon,
   CodeIcon,
-  MobileIcon,
   MagnifyingGlassIcon,
   LayoutIcon,
   RocketIcon,
 } from "@radix-ui/react-icons";
+import {
+  SdlcDevelopmentIcon,
+  SdlcDeploymentIcon,
+  SdlcDesignIcon,
+  SdlcMobileAppIcon,
+} from "@/components/ui/BrandIcons";
 
 export const SERVICES_LIST = [
   {
@@ -19,7 +22,7 @@ export const SERVICES_LIST = [
     tags: ["Company Profile", "Landing Page", "Optimasi SEO", "Panel Admin / CMS"],
     linkText: "Konsultasi Pembuatan Web",
     linkHref: "/kontak",
-    icon: <GlobeIcon className="h-6 w-6" />,
+    icon: <SdlcDevelopmentIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
   },
   {
     id: "redesign",
@@ -30,7 +33,7 @@ export const SERVICES_LIST = [
     tags: ["Penyegaran UI/UX", "Kecepatan Loading", "Mobile-First", "Migrasi Konten Aman"],
     linkText: "Konsultasi Redesign",
     linkHref: "/kontak",
-    icon: <UpdateIcon className="h-6 w-6" />,
+    icon: <SdlcDeploymentIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
   },
   {
     id: "webapp",
@@ -41,7 +44,7 @@ export const SERVICES_LIST = [
     tags: ["Dashboard Analitik", "Database Relasional", "Integrasi REST API", "Hak Akses"],
     linkText: "Konsultasi Web App",
     linkHref: "/kontak",
-    icon: <CodeIcon className="h-6 w-6" />,
+    icon: <SdlcDesignIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
   },
   {
     id: "mobile",
@@ -57,7 +60,7 @@ export const SERVICES_LIST = [
     ],
     linkText: "Konsultasi Mobile App",
     linkHref: "/kontak",
-    icon: <MobileIcon className="h-6 w-6" />,
+    icon: <SdlcMobileAppIcon className="h-11 w-11 sm:h-12 sm:w-12" lightOnDark />,
   },
 ];
 
