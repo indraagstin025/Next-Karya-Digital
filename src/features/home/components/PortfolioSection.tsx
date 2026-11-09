@@ -1,7 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import {
+  SectionHeaderTypewriter,
+  ServiceCardSlide,
+} from "@/components/ui/ScrollTypewriter";
+import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import type { PublicPortfolioDTO } from "@/lib/public-content";
 import { toPortfolioTeasers } from "@/lib/live-content-adapters";
 
@@ -13,6 +20,12 @@ const FILTER_TABS: { label: string; value: CategoryFilter }[] = [
   { label: "Website Bisnis", value: "website" },
   { label: "Aplikasi Mobile", value: "mobile" },
 ];
+
+const CATEGORY_LABEL_MAP: Record<string, string> = {
+  webapp: "APLIKASI WEB & DASBOR",
+  website: "WEBSITE BISNIS",
+  mobile: "APLIKASI MOBILE",
+};
 
 function resolvePortfolioImage(image: string | null | undefined) {
   if (!image) return null;
@@ -34,6 +47,17 @@ export function PortfolioSection({
   portfolios?: PublicPortfolioDTO[] | null;
 }) {
   const PORTFOLIO_TEASERS = toPortfolioTeasers(portfolios);
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
+  const { refresh } = useSmoothScroll();
+
+  useEffect(() => {
+    refresh();
+  }, [activeCategory, refresh]);
+
+  const filteredItems =
+    activeCategory === "all"
+      ? PORTFOLIO_TEASERS
+      : PORTFOLIO_TEASERS.filter((item) => item.categorySlug === activeCategory);
 
   return (
     <section
@@ -67,89 +91,145 @@ export function PortfolioSection({
       </svg>
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14">
-        <ScrollReveal priority className="text-center max-w-[740px] mx-auto">
-          <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.24em] text-[#005090] dark:text-[#0986C8]">
-            STUDI KASUS &amp; KONSEP SOLUSI
-          </p>
-          <h2 className="mt-3 text-[26px] sm:text-[34px] lg:text-[38px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#041E42] dark:text-white">
-            Portofolio rekayasa{" "}
-            <span className="text-[#005090] dark:text-[#0986C8]">solusi digital</span> dan{" "}
-            <span className="text-[#005090] dark:text-[#0986C8]">dampak nyata</span>
-          </h2>
-          <p className="mx-auto mt-3.5 max-w-[660px] text-[13.5px] sm:text-[14.5px] leading-[1.68] text-[#4A5D78] dark:text-slate-300">
-            Gambaran implementasi arsitektur sistem, aplikasi web, dan mobile yang tim kami
-            rancang untuk memecahkan kendala operasional klien secara terukur.
-          </p>
+        <SectionHeaderTypewriter
+          eyebrow="STUDI KASUS & KONSEP SOLUSI"
+          line1="Portofolio rekayasa solusi digital"
+          line2Accent="dan dampak nyata"
+          description="Gambaran implementasi arsitektur sistem, aplikasi web, dan mobile yang tim kami rancang untuk memecahkan kendala operasional klien secara terukur."
+          charsPerSecond={68}
+        />
 
+        <ScrollReveal className="mt-8">
           <div
             role="group"
             aria-label="Filter kategori portofolio"
-            className="mt-8 flex flex-wrap items-center justify-center gap-2.5"
+            className="flex flex-wrap items-center justify-center gap-2.5"
           >
-            {FILTER_TABS.map((tab) => (
-              <React.Fragment key={tab.value}>
-                <input
-                  type="radio"
-                  name="portfolio-filter"
-                  id={`portfolio-filter-${tab.value}`}
-                  value={tab.value}
-                  defaultChecked={tab.value === "all"}
-                  className="peer sr-only"
-                />
-                <label
-                  htmlFor={`portfolio-filter-${tab.value}`}
-                  className="min-h-11 cursor-pointer rounded-full border border-[#E2E8F0] bg-white px-4.5 py-2 text-xs font-semibold text-[#4A5D78] transition-all duration-200 hover:border-[#005090] hover:text-[#005090] active:scale-95 peer-checked:border-[#005090] peer-checked:bg-[#005090] peer-checked:text-white peer-checked:shadow-[0_6px_18px_-3px_rgba(0,80,144,0.4)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#005090] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500 sm:text-[13px]"
+            {FILTER_TABS.map((tab) => {
+              const selected = activeCategory === tab.value;
+              return (
+                <button
+                  key={tab.value}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setActiveCategory(tab.value)}
+                  className={`min-h-11 cursor-pointer rounded-full px-4.5 py-2 text-xs sm:text-[13px] font-semibold transition-all duration-200 active:scale-95 ${
+                    selected
+                      ? "border border-[#005090] bg-[#005090] text-white shadow-[0_6px_18px_-3px_rgba(0,80,144,0.4)]"
+                      : "border border-[#E2E8F0] bg-white text-[#4A5D78] hover:border-[#005090] hover:text-[#005090] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500"
+                  }`}
                 >
                   {tab.label}
-                </label>
-              </React.Fragment>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </ScrollReveal>
 
-        <div className="mt-10 sm:mt-12 grid gap-6 lg:gap-7 md:grid-cols-2 lg:grid-cols-3">
-          {PORTFOLIO_TEASERS.map((item, idx) => {
+        {/* Daftar Portofolio Persegi Panjang Zig-Zag sesuai sketsa */}
+        <div className="mt-12 sm:mt-14 flex flex-col gap-8 sm:gap-10 lg:gap-12">
+          {filteredItems.map((item, idx) => {
             const image = resolvePortfolioImage(item.image);
+            // Baris genap (0, 2, 4): Card di kiri, Foto di sisi kiri (lebar) & Teks di sisi kanan
+            // Baris ganjil (1, 3, 5): Card di kanan, Teks di sisi kiri & Foto di sisi kanan (lebar)
+            const isEven = idx % 2 === 0;
+            const stepNumber = String(idx + 1).padStart(2, "0");
+            const categoryLabel =
+              CATEGORY_LABEL_MAP[item.categorySlug] ?? "SOLUSI DIGITAL";
+
             return (
-            <div
-              key={item.id}
-              data-portfolio-item
-              data-category={item.categorySlug}
-              data-nk-reveal="up"
-              style={idx > 0 ? { animationDelay: `${Math.min(idx, 5) * 60}ms` } : undefined}
-              className="h-full"
-            >
-              <article className="h-full flex flex-col overflow-hidden rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.07)] transition-all duration-300 hover:-translate-y-2 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_50px_-12px_rgba(0,80,144,0.18)] group">
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 border-b border-[#E2E8F0] dark:border-slate-800">
-                  {image && (
-                    <img
-                      src={image.src}
-                      srcSet={image.srcSet}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      width={800}
-                      height={500}
-                      alt={item.imageAlt}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
-                  )}
-                </div>
+              <div
+                key={`${activeCategory}-${item.id}`}
+                data-portfolio-item
+                data-category={item.categorySlug}
+                className={`w-full lg:w-[88%] xl:w-[85%] ${
+                  isEven ? "lg:mr-auto" : "lg:ml-auto"
+                }`}
+              >
+                <ServiceCardSlide
+                  side={isEven ? "left" : "right"}
+                  delayMs={(idx % 2) * 80}
+                >
+                  <article className="group relative flex flex-col md:flex-row items-stretch overflow-hidden rounded-[24px] sm:rounded-[28px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 shadow-[0_16px_42px_-12px_rgba(10,35,80,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#005090] dark:hover:border-blue-500 hover:shadow-[0_24px_52px_-12px_rgba(0,80,144,0.18)]">
+                    {/* Panel Foto / Visual (Lebar ~58% - Kiri pada kartu genap, Kanan pada kartu ganjil) */}
+                    <div
+                      className={`relative aspect-[16/10] md:aspect-auto md:min-h-[275px] lg:min-h-[310px] w-full md:w-[58%] lg:w-[60%] shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-800 border-b md:border-b-0 border-[#E2E8F0] dark:border-slate-800 transition-all duration-700 delay-75 ease-out ${
+                        isEven
+                          ? "md:order-1 md:border-r -translate-x-6 opacity-0 group-data-[slide-visible=true]/slide:translate-x-0 group-data-[slide-visible=true]/slide:opacity-100"
+                          : "md:order-2 md:border-l translate-x-6 opacity-0 group-data-[slide-visible=true]/slide:translate-x-0 group-data-[slide-visible=true]/slide:opacity-100"
+                      }`}
+                    >
+                      {image && (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={image.src}
+                          srcSet={image.srcSet}
+                          sizes="(max-width: 768px) 100vw, 55vw"
+                          width={800}
+                          height={500}
+                          alt={item.imageAlt}
+                          loading="lazy"
+                          decoding="async"
+                          className="absolute inset-0 h-full w-full object-cover scale-110 group-data-[slide-visible=true]/slide:scale-100 transition-transform duration-900 ease-out group-hover:scale-105"
+                        />
+                      )}
+                      {/* Overlay gradien halus di sudut foto */}
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#041E42]/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      />
+                    </div>
 
-                <div className="flex flex-1 flex-col p-6 sm:p-7">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#005090] dark:text-[#0986C8]">
-                    {item.clientSector}
-                  </p>
+                    {/* Panel Teks Penjelasan (Lebar ~42% - Kanan pada kartu genap, Kiri pada kartu ganjil) */}
+                    <div
+                      className={`flex flex-1 flex-col justify-between p-6 sm:p-7 lg:p-8 xl:p-9 transition-all duration-700 delay-150 ease-out ${
+                        isEven
+                          ? "md:order-2 translate-x-6 opacity-0 group-data-[slide-visible=true]/slide:translate-x-0 group-data-[slide-visible=true]/slide:opacity-100"
+                          : "md:order-1 -translate-x-6 opacity-0 group-data-[slide-visible=true]/slide:translate-x-0 group-data-[slide-visible=true]/slide:opacity-100"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#005090] dark:text-[#38BDF8]">
+                          <span>
+                            {stepNumber} / {categoryLabel}
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            className="text-[#CBD5E1] dark:text-slate-700"
+                          >
+                            •
+                          </span>
+                          <span className="font-semibold text-[#64748B] dark:text-slate-400">
+                            {item.clientSector}
+                          </span>
+                        </div>
 
-                  <h3 className="mt-1.5 text-[17px] sm:text-[18px] font-extrabold tracking-[-0.015em] text-[#041E42] dark:text-white leading-snug transition-colors duration-200 group-hover:text-[#005090] dark:group-hover:text-[#0986C8]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2.5 text-[13px] sm:text-[13.5px] leading-[1.68] text-[#4A5D78] dark:text-slate-300">
-                    {item.description}
-                  </p>
-                </div>
-              </article>
-            </div>
+                        <h3 className="mt-2.5 text-[19px] sm:text-[21px] lg:text-[23px] font-extrabold tracking-[-0.015em] text-[#041E42] dark:text-white leading-snug transition-colors duration-200 group-hover:text-[#005090] dark:group-hover:text-[#38BDF8]">
+                          <Link
+                            href={`/portofolio/${item.id}`}
+                            className="after:absolute after:inset-0 after:content-['']"
+                          >
+                            {item.title}
+                          </Link>
+                        </h3>
+
+                        <p className="mt-3 text-[13.5px] sm:text-[14.5px] leading-[1.7] text-[#4A5D78] dark:text-slate-300">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <div className="mt-6 pt-4 border-t border-[#F1F5F9] dark:border-slate-800/80 flex items-center justify-between">
+                        <span className="inline-flex items-center gap-2 text-[13px] sm:text-[13.5px] font-bold text-[#005090] dark:text-[#38BDF8] transition-colors group-hover:text-[#072146] dark:group-hover:text-white">
+                          <span>Lihat Studi Kasus</span>
+                          <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+                        </span>
+
+                        <span className="h-2 w-2 rounded-full bg-[#14B8A6] opacity-75 transition-transform duration-300 group-hover:scale-125" />
+                      </div>
+                    </div>
+                  </article>
+                </ServiceCardSlide>
+              </div>
             );
           })}
         </div>
@@ -167,3 +247,4 @@ export function PortfolioSection({
     </section>
   );
 }
+
