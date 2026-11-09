@@ -1,14 +1,14 @@
 import React from "react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
-interface SdlcStage {
+export interface SdlcStage {
   stepLabel: string;
   title: string;
   description: string;
   icon: React.ReactNode;
 }
 
-const SDLC_STAGES: SdlcStage[] = [
+export const SDLC_STAGES: SdlcStage[] = [
   {
     stepLabel: "01. Plan",
     title: "Analisis & Perencanaan",
@@ -309,7 +309,7 @@ const SDLC_STAGES: SdlcStage[] = [
   },
 ];
 
-function getGridDividerClasses(idx: number): string {
+export function getGridDividerClasses(idx: number): string {
   const classes: string[] = [];
 
   // Mobile (< sm): 1 kolom, garis bawah untuk item 0..4

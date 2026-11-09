@@ -1,5 +1,6 @@
 import React from "react";
-import { SewingPinIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
+import { ExternalLinkIcon } from "@radix-ui/react-icons";
+import { DuotoneLocationPinIcon } from "@/components/ui/BrandIcons";
 
 export function GoogleMapsEmbed() {
   const mapAddress = "Jl. Karyawangi No. 116, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559";
@@ -12,8 +13,8 @@ export function GoogleMapsEmbed() {
     <div className="overflow-hidden rounded-[24px] border border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_16px_40px_-12px_rgba(10,35,80,0.08)]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 sm:p-7 border-b border-[#E2E8F0] dark:border-slate-800 bg-gradient-to-r from-[#F8FAFC] via-white to-[#F8FAFC] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-900">
         <div className="flex items-start sm:items-center gap-3.5">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#005090] text-white shadow-sm">
-            <SewingPinIcon className="h-5 w-5" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700">
+            <DuotoneLocationPinIcon className="h-7 w-7" />
           </div>
           <div>
             <div className="flex items-center gap-2">

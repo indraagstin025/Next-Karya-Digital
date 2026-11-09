@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import { PersonIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { DuotonePartnerBadgeIcon } from "@/components/ui/BrandIcons";
 import { ABOUT_APPROACH_ITEMS } from "../data/aboutData";
 
 export function AboutProfile() {
@@ -42,8 +42,8 @@ export function AboutProfile() {
             />
 
             <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:max-w-[400px] rounded-xl border border-white/60 dark:border-slate-700/60 bg-white/95 dark:bg-slate-900/95 px-3.5 py-2.5 shadow-[0_10px_25px_-5px_rgba(10,35,80,0.18)] flex items-center gap-3 transition-transform duration-300 group-hover:-translate-y-0.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#005090] text-white shadow-xs">
-                <PersonIcon className="h-4.5 w-4.5" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700">
+                <DuotonePartnerBadgeIcon className="h-6 w-6" />
               </div>
               <div className="h-7 w-[1px] bg-[#CBD5E1] dark:bg-slate-700 shrink-0" />
               <div>
@@ -68,7 +68,7 @@ export function AboutProfile() {
               className="group relative flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-900/90 border border-[#E2E8F0] dark:border-slate-800 p-4.5 sm:p-5 shadow-[0_4px_18px_-4px_rgba(0,40,87,0.06)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-[#005090] hover:shadow-[0_14px_30px_-8px_rgba(0,80,144,0.14)]"
             >
               <div>
-                <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#005090] to-[#002857] text-white shadow-xs transition-transform duration-300 group-hover:scale-105 mb-3.5">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-[#EEF6FD] dark:bg-slate-800/90 border border-[#D5E6FA] dark:border-slate-700 transition-transform duration-300 group-hover:scale-105 mb-3.5">
                   {item.icon}
                 </div>
                 <h3 className="text-[13.5px] sm:text-[14.5px] font-bold text-[#041E42] dark:text-white transition-colors duration-200 group-hover:text-[#005090] dark:group-hover:text-[#0986C8] leading-snug min-h-[44px] flex items-center">

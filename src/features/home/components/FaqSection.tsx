@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { PlusIcon, MinusIcon, ArrowRightIcon, ChatBubbleIcon } from "@radix-ui/react-icons";
+import { PlusIcon, MinusIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { DuotoneChatDiscussionIcon } from "@/components/ui/BrandIcons";
 import type { PublicFaqDTO } from "@/lib/public-content";
 import { toFaqItems } from "@/lib/live-content-adapters";
 
@@ -87,8 +88,8 @@ export function FaqSection({ faqs }: { faqs?: PublicFaqDTO[] | null }) {
         <ScrollReveal delayMs={120}>
           <div className="mt-12 rounded-[24px] bg-[#FFFFFF] dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-5 transition-all duration-300 hover:border-[#005090]">
             <div className="flex items-center gap-3.5 group">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#005090] text-white shadow-sm transition-transform duration-300 group-hover:scale-110">
-                <ChatBubbleIcon className="h-5 w-5" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700 transition-transform duration-300 group-hover:scale-105">
+                <DuotoneChatDiscussionIcon className="h-7 w-7" />
               </div>
               <div>
                 <h3 className="text-[15px] sm:text-base font-bold text-[#041E42] dark:text-white">

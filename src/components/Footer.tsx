@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 import {
-  SewingPinIcon,
-  EnvelopeClosedIcon,
-  ClockIcon,
-  ArrowRightIcon,
-} from "@radix-ui/react-icons";
+  DuotoneLocationPinIcon,
+  DuotoneEnvelopeMailIcon,
+  DuotoneClockScheduleIcon,
+} from "@/components/ui/BrandIcons";
 
 export default function Footer() {
   return (
@@ -98,8 +98,8 @@ export default function Footer() {
             </h3>
             <ul className="mt-4 space-y-3 text-[13.5px] text-[#4A5D78] dark:text-slate-300">
               <li className="flex items-start gap-2.5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#005090] text-white mt-0.5">
-                  <SewingPinIcon className="h-3.5 w-3.5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700 mt-0.5">
+                  <DuotoneLocationPinIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <span className="block text-[11.5px] font-semibold text-[#4A5D78] dark:text-slate-400">
@@ -116,8 +116,8 @@ export default function Footer() {
                 </div>
               </li>
               <li className="flex items-start gap-2.5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#005090] text-white mt-0.5">
-                  <EnvelopeClosedIcon className="h-3.5 w-3.5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700 mt-0.5">
+                  <DuotoneEnvelopeMailIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <span className="block text-[11.5px] font-semibold text-[#4A5D78] dark:text-slate-400">
@@ -132,8 +132,8 @@ export default function Footer() {
                 </div>
               </li>
               <li className="flex items-start gap-2.5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#005090] text-white mt-0.5">
-                  <ClockIcon className="h-3.5 w-3.5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700 mt-0.5">
+                  <DuotoneClockScheduleIcon className="h-5 w-5" />
                 </div>
                 <div>
                   <span className="block text-[11.5px] font-semibold text-[#4A5D78] dark:text-slate-400">

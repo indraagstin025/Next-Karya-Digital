@@ -99,10 +99,10 @@ export function HeroSection() {
                     <div className="hidden sm:block h-6 w-[1px] bg-[#CBD5E1] dark:bg-slate-700/80" />
                   )}
                   <div className="group flex items-center gap-2.5">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#005090] text-white shadow-sm transition-transform duration-300 group-hover:scale-110">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF6FD] dark:bg-slate-800/90 border border-[#D5E6FA] dark:border-slate-700 shadow-2xs transition-transform duration-300 group-hover:scale-105">
                       {item.icon}
                     </div>
-                    <span className="text-xs sm:text-[12.5px] font-semibold text-[#041E42] dark:text-slate-200">
+                    <span className="text-xs sm:text-[13px] font-bold text-[#041E42] dark:text-slate-200">
                       {item.label}
                     </span>
                   </div>

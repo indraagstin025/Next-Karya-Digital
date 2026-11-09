@@ -1,22 +1,26 @@
 import React from "react";
 import {
-  DesktopIcon,
   CodeIcon,
-  LightningBoltIcon,
-  TargetIcon,
-  CheckCircledIcon,
   GlobeIcon,
   UpdateIcon,
   MobileIcon,
   MagnifyingGlassIcon,
   LayoutIcon,
   RocketIcon,
-  LayersIcon,
-  EnvelopeClosedIcon,
-  ClockIcon,
-  ChatBubbleIcon,
-  SewingPinIcon,
 } from "@radix-ui/react-icons";
+import {
+  DuotoneDigitalSolutionIcon,
+  DuotoneWebDevIcon,
+  DuotoneTechInnovationIcon,
+  DuotoneTargetProblemIcon,
+  DuotoneTransparentProgressIcon,
+  DuotoneLongTermCodeIcon,
+  DuotoneShieldGuaranteeIcon,
+  DuotoneLocationPinIcon,
+  DuotoneEnvelopeMailIcon,
+  DuotoneClockScheduleIcon,
+  DuotoneChatDiscussionIcon,
+} from "@/components/ui/BrandIcons";
 import type {
   HighlightItem,
   ServiceTeaserItem,
@@ -29,40 +33,40 @@ import type {
 
 export const HERO_HIGHLIGHTS: HighlightItem[] = [
   {
-    icon: <DesktopIcon className="h-4 w-4" />,
+    icon: <DuotoneDigitalSolutionIcon className="h-6 w-6" />,
     label: "Solusi Digital",
   },
   {
-    icon: <CodeIcon className="h-4 w-4" />,
+    icon: <DuotoneWebDevIcon className="h-6 w-6" />,
     label: "Pengembangan Web",
   },
   {
-    icon: <LightningBoltIcon className="h-4 w-4" />,
+    icon: <DuotoneTechInnovationIcon className="h-6 w-6" />,
     label: "Inovasi Teknologi",
   },
 ];
 
 export const ABOUT_FEATURES = [
   {
-    icon: <TargetIcon className="h-5 w-5" />,
+    icon: <DuotoneTargetProblemIcon className="h-7 w-7" />,
     title: "Dimulai dari Masalah Anda, Bukan dari Teknologi",
     description:
       "Kami dengarkan dulu kendala bisnis Anda, baru kami bangun solusinya. Jadi setiap fitur ada alasannya, dan setiap biaya yang Anda keluarkan terasa manfaatnya.",
   },
   {
-    icon: <LightningBoltIcon className="h-5 w-5" />,
+    icon: <DuotoneTransparentProgressIcon className="h-7 w-7" />,
     title: "Anda Tidak Perlu Menebak-nebak Progresnya",
     description:
       "Setiap tahap kami kabari. Anda bisa melihat, mengoreksi, dan meminta penyesuaian sebelum terlambat, tanpa drama revisi di akhir proyek.",
   },
   {
-    icon: <CodeIcon className="h-5 w-5" />,
+    icon: <DuotoneLongTermCodeIcon className="h-7 w-7" />,
     title: "Dibangun untuk Jangka Panjang, Bukan Sekadar Rilis",
     description:
       "Kode yang rapi, cepat, dan aman, sehingga website Anda siap ditambah fiturnya kapan pun bisnis Anda berkembang, tanpa harus dibangun ulang dari awal.",
   },
   {
-    icon: <CheckCircledIcon className="h-5 w-5" />,
+    icon: <DuotoneShieldGuaranteeIcon className="h-7 w-7" />,
     title: "Estimasi Jelas di Awal, Tenang Setelah Rilis",
     description:
       "Tidak ada biaya tiba-tiba. Setelah website live, bug kami perbaiki dan tim kami tetap mendampingi Anda.",
@@ -398,26 +402,26 @@ export const FAQ_ITEMS: FaqItem[] = [
 
 export const CONTACT_INFO_ITEMS: ContactInfoItem[] = [
   {
-    icon: <SewingPinIcon className="h-5 w-5" />,
+    icon: <DuotoneLocationPinIcon className="h-7 w-7" />,
     title: "Alamat Studio & Kantor",
     content: "Jl. Karyawangi No. 116, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559",
     isLink: true,
     linkHref: "https://maps.google.com/?q=Jl.+Karyawangi+No.+116,+Kec.+Parongpong,+Kabupaten+Bandung+Barat,+Jawa+Barat",
   },
   {
-    icon: <EnvelopeClosedIcon className="h-5 w-5" />,
+    icon: <DuotoneEnvelopeMailIcon className="h-7 w-7" />,
     title: "Email Resmi Konsultasi",
     content: "nextkarya@gmail.com",
     isLink: true,
     linkHref: "mailto:nextkarya@gmail.com",
   },
   {
-    icon: <ClockIcon className="h-5 w-5" />,
+    icon: <DuotoneClockScheduleIcon className="h-7 w-7" />,
     title: "Jam Kerja Operasional",
     content: "Senin - Jumat, 09.00 - 18.00 WIB",
   },
   {
-    icon: <ChatBubbleIcon className="h-5 w-5" />,
+    icon: <DuotoneChatDiscussionIcon className="h-7 w-7" />,
     title: "Komitmen Respons",
     content: "Tinjauan spesifikasi & estimasi dalam 1x24 jam kerja",
   },
