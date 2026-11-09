@@ -1,9 +1,6 @@
 import React from "react";
 import {
   CodeIcon,
-  GlobeIcon,
-  UpdateIcon,
-  MobileIcon,
   MagnifyingGlassIcon,
   LayoutIcon,
   RocketIcon,
@@ -20,6 +17,10 @@ import {
   DuotoneEnvelopeMailIcon,
   DuotoneClockScheduleIcon,
   DuotoneChatDiscussionIcon,
+  SdlcDevelopmentIcon,
+  SdlcDeploymentIcon,
+  SdlcDesignIcon,
+  SdlcMobileAppIcon,
 } from "@/components/ui/BrandIcons";
 import type {
   HighlightItem,
@@ -33,40 +34,40 @@ import type {
 
 export const HERO_HIGHLIGHTS: HighlightItem[] = [
   {
-    icon: <DuotoneDigitalSolutionIcon className="h-6 w-6" />,
+    icon: <DuotoneDigitalSolutionIcon className="h-8 w-8 sm:h-9 sm:w-9" />,
     label: "Solusi Digital",
   },
   {
-    icon: <DuotoneWebDevIcon className="h-6 w-6" />,
+    icon: <DuotoneWebDevIcon className="h-8 w-8 sm:h-9 sm:w-9" />,
     label: "Pengembangan Web",
   },
   {
-    icon: <DuotoneTechInnovationIcon className="h-6 w-6" />,
+    icon: <DuotoneTechInnovationIcon className="h-8 w-8 sm:h-9 sm:w-9" />,
     label: "Inovasi Teknologi",
   },
 ];
 
 export const ABOUT_FEATURES = [
   {
-    icon: <DuotoneTargetProblemIcon className="h-7 w-7" />,
+    icon: <DuotoneTargetProblemIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Dimulai dari Masalah Anda, Bukan dari Teknologi",
     description:
       "Kami dengarkan dulu kendala bisnis Anda, baru kami bangun solusinya. Jadi setiap fitur ada alasannya, dan setiap biaya yang Anda keluarkan terasa manfaatnya.",
   },
   {
-    icon: <DuotoneTransparentProgressIcon className="h-7 w-7" />,
+    icon: <DuotoneTransparentProgressIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Anda Tidak Perlu Menebak-nebak Progresnya",
     description:
       "Setiap tahap kami kabari. Anda bisa melihat, mengoreksi, dan meminta penyesuaian sebelum terlambat, tanpa drama revisi di akhir proyek.",
   },
   {
-    icon: <DuotoneLongTermCodeIcon className="h-7 w-7" />,
+    icon: <DuotoneLongTermCodeIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Dibangun untuk Jangka Panjang, Bukan Sekadar Rilis",
     description:
       "Kode yang rapi, cepat, dan aman, sehingga website Anda siap ditambah fiturnya kapan pun bisnis Anda berkembang, tanpa harus dibangun ulang dari awal.",
   },
   {
-    icon: <DuotoneShieldGuaranteeIcon className="h-7 w-7" />,
+    icon: <DuotoneShieldGuaranteeIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Estimasi Jelas di Awal, Tenang Setelah Rilis",
     description:
       "Tidak ada biaya tiba-tiba. Setelah website live, bug kami perbaiki dan tim kami tetap mendampingi Anda.",
@@ -83,7 +84,7 @@ export const SERVICES_TEASERS: ServiceTeaserItem[] = [
     tags: ["Company Profile", "Landing Page", "Optimasi SEO", "Panel Admin / CMS"],
     linkText: "Konsultasi Pembuatan Web",
     linkHref: "/kontak",
-    icon: <GlobeIcon className="h-6 w-6" />,
+    icon: <SdlcDevelopmentIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
   },
   {
     id: "redesign",
@@ -94,7 +95,7 @@ export const SERVICES_TEASERS: ServiceTeaserItem[] = [
     tags: ["Penyegaran UI/UX", "Kecepatan Loading", "Mobile-First", "Migrasi Konten Aman"],
     linkText: "Konsultasi Redesign",
     linkHref: "/kontak",
-    icon: <UpdateIcon className="h-6 w-6" />,
+    icon: <SdlcDeploymentIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
   },
   {
     id: "webapp",
@@ -105,7 +106,7 @@ export const SERVICES_TEASERS: ServiceTeaserItem[] = [
     tags: ["Dashboard Analitik", "Database Relasional", "Integrasi REST API", "Hak Akses Bertingkat"],
     linkText: "Konsultasi Web App",
     linkHref: "/kontak",
-    icon: <CodeIcon className="h-6 w-6" />,
+    icon: <SdlcDesignIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
   },
   {
     id: "mobile",
@@ -121,7 +122,7 @@ export const SERVICES_TEASERS: ServiceTeaserItem[] = [
     ],
     linkText: "Konsultasi Mobile App",
     linkHref: "/kontak",
-    icon: <MobileIcon className="h-6 w-6" />,
+    icon: <SdlcMobileAppIcon className="h-11 w-11 sm:h-12 sm:w-12" lightOnDark />,
   },
 ];
 
@@ -402,26 +403,26 @@ export const FAQ_ITEMS: FaqItem[] = [
 
 export const CONTACT_INFO_ITEMS: ContactInfoItem[] = [
   {
-    icon: <DuotoneLocationPinIcon className="h-7 w-7" />,
+    icon: <DuotoneLocationPinIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Alamat Studio & Kantor",
     content: "Jl. Karyawangi No. 116, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559",
     isLink: true,
     linkHref: "https://maps.google.com/?q=Jl.+Karyawangi+No.+116,+Kec.+Parongpong,+Kabupaten+Bandung+Barat,+Jawa+Barat",
   },
   {
-    icon: <DuotoneEnvelopeMailIcon className="h-7 w-7" />,
+    icon: <DuotoneEnvelopeMailIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Email Resmi Konsultasi",
     content: "nextkarya@gmail.com",
     isLink: true,
     linkHref: "mailto:nextkarya@gmail.com",
   },
   {
-    icon: <DuotoneClockScheduleIcon className="h-7 w-7" />,
+    icon: <DuotoneClockScheduleIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Jam Kerja Operasional",
     content: "Senin - Jumat, 09.00 - 18.00 WIB",
   },
   {
-    icon: <DuotoneChatDiscussionIcon className="h-7 w-7" />,
+    icon: <DuotoneChatDiscussionIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Komitmen Respons",
     content: "Tinjauan spesifikasi & estimasi dalam 1x24 jam kerja",
   },
