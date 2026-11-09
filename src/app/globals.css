@@ -229,6 +229,10 @@ html {
   html.nk-smooth-scroll {
     scroll-behavior: auto !important;
   }
+
+  html.nk-smooth-scroll iframe {
+    pointer-events: none;
+  }
 }
 
 body {

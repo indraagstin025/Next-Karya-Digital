@@ -9,7 +9,7 @@ export function GoogleMapsEmbed() {
     "https://www.google.com/maps/search/?api=1&query=Jl.+Karyawangi+No.+116,+Kec.+Parongpong,+Kabupaten+Bandung+Barat,+Jawa+Barat+40559";
 
   return (
-    <div className="overflow-hidden rounded-[24px] border border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_16px_40px_-12px_rgba(10,35,80,0.08)] transition-all duration-300">
+    <div className="overflow-hidden rounded-[24px] border border-[#E2E8F0] dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_16px_40px_-12px_rgba(10,35,80,0.08)]">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 sm:p-7 border-b border-[#E2E8F0] dark:border-slate-800 bg-gradient-to-r from-[#F8FAFC] via-white to-[#F8FAFC] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-900">
         <div className="flex items-start sm:items-center gap-3.5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#005090] text-white shadow-sm">

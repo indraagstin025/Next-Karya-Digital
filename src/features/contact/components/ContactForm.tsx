@@ -7,7 +7,7 @@ import { useContactForm } from "../hooks/useContactForm";
 import { CONTACT_SERVICES, CONTACT_SERVICE_LABELS } from "../schema";
 
 const FIELD_CLASS =
-  "w-full rounded-xl border bg-[#F8FAFC] dark:bg-slate-800 px-4 py-3 text-[13.5px] text-[#041E42] dark:text-white placeholder:text-[#5B6E8C] dark:placeholder:text-slate-400 transition-all duration-200 focus:border-[#005090] focus:bg-white dark:focus:bg-slate-900";
+  "w-full rounded-xl border bg-[#F8FAFC] dark:bg-slate-800 px-4 py-3 text-[13.5px] text-[#041E42] dark:text-white placeholder:text-[#5B6E8C] dark:placeholder:text-slate-400 transition-[border-color,background-color,box-shadow] duration-200 focus:border-[#005090] focus:bg-white dark:focus:bg-slate-900";
 const FIELD_OK = "border-[#5B789E] dark:border-slate-600";
 const FIELD_ERR = "border-rose-700 dark:border-rose-400";
 const LABEL_CLASS = "mb-2 block text-[13px] font-bold text-[#041E42] dark:text-slate-200";
@@ -264,7 +264,7 @@ export function ContactFormCard({ sourcePage = "/kontak" }: { sourcePage?: strin
 
 export function ContactForm() {
   return (
-    <ScrollReveal direction="right" delayMs={100}>
+    <ScrollReveal direction="up" delayMs={80}>
       <ContactFormCard sourcePage="/kontak" />
     </ScrollReveal>
   );

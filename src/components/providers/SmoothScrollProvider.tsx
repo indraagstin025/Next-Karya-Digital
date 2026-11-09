@@ -66,31 +66,32 @@ function hasScrollableAncestor(el: EventTarget | null, deltaY: number): boolean 
     node !== document.body &&
     node !== document.documentElement
   ) {
-    if (
-      node.hasAttribute("data-smooth-prevent") ||
-      node.getAttribute("role") === "dialog" ||
-      node.getAttribute("role") === "listbox" ||
-      node.getAttribute("role") === "menu" ||
-      node.tagName === "TEXTAREA" ||
-      node.tagName === "SELECT"
-    ) {
+    if (node.hasAttribute("data-smooth-prevent")) {
       return true;
     }
 
-    const style = window.getComputedStyle(node);
-    const overflowY = style.overflowY;
-    const isScrollableY =
-      (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") &&
-      node.scrollHeight > node.clientHeight + 1;
-
-    if (isScrollableY) {
-      const canScrollDown =
-        deltaY > 0 &&
-        node.scrollTop + node.clientHeight < node.scrollHeight - 1;
-      const canScrollUp = deltaY < 0 && node.scrollTop > 0;
-      if (canScrollDown || canScrollUp) {
-        return true;
+    // Textarea hanya menahan scroll halaman apabila sedang aktif difokuskan
+    // oleh pengguna DAN teks di dalamnya memang melebihi tinggi kotak.
+    if (node.tagName === "TEXTAREA") {
+      if (
+        document.activeElement === node &&
+        node.scrollHeight > node.clientHeight + 2
+      ) {
+        const canScrollDown =
+          deltaY > 0 &&
+          node.scrollTop + node.clientHeight < node.scrollHeight - 1;
+        const canScrollUp = deltaY < 0 && node.scrollTop > 0;
+        if (canScrollDown || canScrollUp) {
+          return true;
+        }
       }
+      node = node.parentElement;
+      continue;
+    }
+
+    const role = node.getAttribute("role");
+    if (role === "dialog" || role === "listbox" || role === "menu") {
+      return true;
     }
 
     node = node.parentElement;
