@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { PaperPlaneIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { useContactForm } from "../hooks/useContactForm";
 import { CONTACT_SERVICES, CONTACT_SERVICE_LABELS } from "../schema";
+import { buildWhatsAppDirectUrl } from "../whatsapp";
 
 const FIELD_CLASS =
   "w-full rounded-xl border bg-[#F8FAFC] dark:bg-slate-800 px-4 py-3 text-[13.5px] text-[#041E42] dark:text-white placeholder:text-[#5B6E8C] dark:placeholder:text-slate-400 transition-[border-color,background-color,box-shadow] duration-200 focus:border-[#005090] focus:bg-white dark:focus:bg-slate-900";
@@ -65,7 +66,7 @@ export function ContactFormCard({ sourcePage = "/kontak" }: { sourcePage?: strin
         </p>
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
           <a
-            href="https://wa.me/6281234567890?text=Halo%20Tim%20Next%20Karya%2C%20saya%20ingin%20berkonsultasi%20mengenai%20pembuatan%20website%2Faplikasi."
+            href={buildWhatsAppDirectUrl()}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-[#005090] hover:bg-[#003E70] px-6 py-3 text-[14px] font-bold text-white shadow-sm transition-colors"
@@ -246,16 +247,32 @@ export function ContactFormCard({ sourcePage = "/kontak" }: { sourcePage?: strin
         <div
           id="form-status"
           role={formStatus.type === "error" ? "alert" : "status"}
-          className={`nk-card-enter mt-4 p-3.5 rounded-xl text-[13px] font-medium ${
+          className={`nk-card-enter mt-4 p-4 rounded-xl text-[13px] font-medium ${
             formStatus.type === "success"
               ? "bg-emerald-50 text-emerald-900 border border-emerald-700 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-400"
               : "bg-rose-50 text-rose-900 border border-rose-700 dark:bg-rose-950 dark:text-rose-200 dark:border-rose-400"
           }`}
         >
-          <span className="font-bold">
-            {formStatus.type === "success" ? "Terkirim. " : "Belum terkirim. "}
-          </span>
-          {formStatus.message}
+          <div>
+            <span className="font-bold">
+              {formStatus.type === "success" ? "Terkirim. " : "Belum terkirim. "}
+            </span>
+            {formStatus.message}
+          </div>
+
+          {formStatus.whatsappUrl && (
+            <div className="mt-3">
+              <a
+                href={formStatus.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#005090] hover:bg-[#003E70] px-4 py-2 text-xs font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <span>Lanjutkan Chat di WhatsApp (+62 832-0117-314)</span>
+                <ExternalLinkIcon className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          )}
         </div>
       )}
     </form>
