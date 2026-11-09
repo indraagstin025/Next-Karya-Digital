@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { contactMessageSchema } from "./schema";
+import {
+  buildWhatsAppConsultationUrl,
+  DEFAULT_OFFICIAL_WHATSAPP,
+} from "./whatsapp";
 
 const baseInput = {
   name: "Budi Pratama",
@@ -48,5 +52,24 @@ describe("contactMessageSchema", () => {
     });
 
     expect(parsed.success).toBe(false);
+  });
+
+  it("builds a WhatsApp consultation URL targeting +628320117314 with form details", () => {
+    const url = buildWhatsAppConsultationUrl({
+      name: "Budi Pratama",
+      email: "budi@example.com",
+      whatsapp: "081234567890",
+      service: "website",
+      message: "Saya butuh website company profile untuk bisnis saya.",
+    });
+
+    expect(DEFAULT_OFFICIAL_WHATSAPP).toBe("628320117314");
+    expect(url.startsWith("https://wa.me/628320117314?text=")).toBe(true);
+    const decoded = decodeURIComponent(url.split("?text=")[1]);
+    expect(decoded).toContain("Budi Pratama");
+    expect(decoded).toContain("budi@example.com");
+    expect(decoded).toContain("081234567890");
+    expect(decoded).toContain("Pembuatan Website Bisnis / Landing Page");
+    expect(decoded).toContain("Saya butuh website company profile untuk bisnis saya.");
   });
 });
