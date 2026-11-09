@@ -114,8 +114,8 @@ export function ServicePricing({ plans }: { plans?: PublicPricingPlanDTO[] | nul
       <ScrollReveal delayMs={120}>
         <div className="mt-12 rounded-[26px] bg-white dark:bg-slate-900 border border-[#E2E8F0] dark:border-slate-800 p-7 sm:p-9 shadow-[0_14px_38px_-10px_rgba(10,35,80,0.06)] transition-all duration-300 hover:border-[#005090] grid gap-6 md:grid-cols-2 items-center">
           <div className="flex items-start gap-4 group">
-            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700 transition-transform duration-300 group-hover:scale-105">
-              <DuotoneAnalyticsChartIcon className="h-8 w-8" />
+            <div className="shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-105">
+              <DuotoneAnalyticsChartIcon className="h-12 w-12 sm:h-14 sm:w-14" />
             </div>
             <div>
               <h3 className="text-[16px] sm:text-[17px] font-extrabold text-[#041E42] dark:text-white">
@@ -130,8 +130,8 @@ export function ServicePricing({ plans }: { plans?: PublicPricingPlanDTO[] | nul
           </div>
 
           <div className="flex items-start gap-4 md:border-l md:border-slate-200 md:dark:border-slate-800 md:pl-6 group">
-            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-[#EEF6FD] dark:bg-slate-800 border border-[#D5E6FA] dark:border-slate-700 transition-transform duration-300 group-hover:scale-105">
-              <DuotoneChatDiscussionIcon className="h-8 w-8" />
+            <div className="shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-105">
+              <DuotoneChatDiscussionIcon className="h-12 w-12 sm:h-14 sm:w-14" />
             </div>
             <div>
               <h3 className="text-[16px] sm:text-[17px] font-extrabold text-[#041E42] dark:text-white">
