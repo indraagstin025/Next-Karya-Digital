@@ -5,380 +5,153 @@ export interface BrandIconProps {
 }
 
 /**
- * Sistem Ikon Vektor Duotone Next Karya (Navy #072146 + Teal #14B8A6).
- * Dirancang agar konsisten di seluruh halaman publik (Light & Dark Mode).
+ * Sistem Ikon Vektor Duotone Next Karya (mengikuti desain referensi SDLC:
+ * garis utama Navy #072146 + aksen Teal #14B8A6, tampil terbuka tanpa kotak latar).
  */
 
-/* ─── HERO HIGHLIGHTS ─── */
-
-export function DuotoneDigitalSolutionIcon({
-  className = "h-7 w-7",
+/* ─── 01. PLAN: Kaca Pembesar Berlapis + Grafik Batang ─── */
+export function SdlcPlanIcon({
+  className = "h-14 w-14 sm:h-16 sm:w-16",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
-      <rect
-        x="6"
-        y="8"
-        width="36"
-        height="25"
-        rx="4"
+      <circle
+        cx="26"
+        cy="26"
+        r="18"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
-      />
-      <path
-        d="M16 40H32"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <path
-        d="M24 33V40"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <path
-        d="M14 25L20 19L25 23L33 15"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
       />
       <circle
-        cx="33"
-        cy="15"
-        r="2.2"
-        className="fill-[#14B8A6] dark:fill-[#2DD4BF]"
+        cx="26"
+        cy="26"
+        r="13.5"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="1.6"
+        strokeOpacity="0.35"
+      />
+      <path
+        d="M39 39L53 53"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="3.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20 31.5V26"
+        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        d="M26 31.5V22"
+        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        d="M32 31.5V18.5"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="3"
+        strokeLinecap="round"
       />
     </svg>
   );
 }
 
-export function DuotoneWebDevIcon({ className = "h-7 w-7" }: BrandIconProps) {
+/* ─── 02. DESIGN: Simbol Kode </> + Garis Aksen Teal ─── */
+export function SdlcDesignIcon({
+  className = "h-14 w-14 sm:h-16 sm:w-16",
+}: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <path
-        d="M16 15L7 24L16 33"
+        d="M22 19L11 30L22 41"
         className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M32 15L41 24L32 33"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M27 12L21 36"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M17 41H31"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
         strokeWidth="2.8"
         strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export function DuotoneTechInnovationIcon({
-  className = "h-7 w-7",
-}: BrandIconProps) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect
-        x="13"
-        y="13"
-        width="22"
-        height="22"
-        rx="4.5"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-      />
-      <rect
-        x="19.5"
-        y="19.5"
-        width="9"
-        height="9"
-        rx="2"
-        className="fill-[#14B8A6]/20 stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.4"
+        strokeLinejoin="round"
       />
       <path
-        d="M19 7V13M29 7V13M19 35V41M29 35V41M7 19H13M7 29H13M35 19H41M35 29H41"
+        d="M42 19L53 30L42 41"
         className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-/* ─── TENTANG KAMI / KEUNGGULAN ─── */
-
-export function DuotoneTargetProblemIcon({
-  className = "h-10 w-10",
-}: BrandIconProps) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <circle
-        cx="24"
-        cy="24"
-        r="16"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-      />
-      <circle
-        cx="24"
-        cy="24"
-        r="9.5"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.4"
-      />
-      <circle
-        cx="24"
-        cy="24"
-        r="3.5"
-        className="fill-[#14B8A6] dark:fill-[#2DD4BF]"
-      />
-      <path
-        d="M34 14L41 7M41 7H35.5M41 7V12.5"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.5"
+        strokeWidth="2.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </svg>
-  );
-}
-
-export function DuotoneTransparentProgressIcon({
-  className = "h-10 w-10",
-}: BrandIconProps) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect
-        x="7"
-        y="9"
-        width="34"
-        height="30"
-        rx="4.5"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-      />
       <path
-        d="M14 18H28"
+        d="M35.5 16L28.5 44"
         className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <path
-        d="M14 25H34"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
         strokeWidth="2.8"
         strokeLinecap="round"
       />
       <path
-        d="M14 32H23"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
+        d="M23 51H41"
+        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
+        strokeWidth="3.4"
         strokeLinecap="round"
-      />
-      <circle
-        cx="32"
-        cy="32"
-        r="2.8"
-        className="fill-[#14B8A6] dark:fill-[#2DD4BF]"
       />
     </svg>
   );
 }
 
-export function DuotoneLongTermCodeIcon({
-  className = "h-10 w-10",
+/* ─── 03. DEVELOPMENT: Laptop dengan Simbol </> ─── */
+export function SdlcDevelopmentIcon({
+  className = "h-14 w-14 sm:h-16 sm:w-16",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <rect
-        x="8"
-        y="10"
-        width="32"
-        height="22"
+        x="11"
+        y="14"
+        width="42"
+        height="28"
         rx="3.5"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
       />
       <path
-        d="M5 32H43L40.5 37.5C39.9 38.5 38.8 39 37.6 39H10.4C9.2 39 8.1 38.5 7.5 37.5L5 32Z"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M19 17.5L15 21L19 24.5"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M29 17.5L33 21L29 24.5"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M25.5 16.5L22.5 25.5"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export function DuotoneShieldGuaranteeIcon({
-  className = "h-10 w-10",
-}: BrandIconProps) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <path
-        d="M24 6L38 11.5V22.5C38 31.8 31.9 39.4 24 42C16.1 39.4 10 31.8 10 22.5V11.5L24 6Z"
+        d="M6 42H58L55 48.5C54.3 49.8 53 50.5 51.5 50.5H12.5C11 50.5 9.7 49.8 9 48.5L6 42Z"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
         strokeLinejoin="round"
       />
       <path
-        d="M18.5 24.5L22.5 28.5L30.5 19.5"
+        d="M28 46H36"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M26 23L20.5 28L26 33"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="3"
+        strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </svg>
-  );
-}
-
-export function DuotonePartnerBadgeIcon({
-  className = "h-7 w-7",
-}: BrandIconProps) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <circle
-        cx="19"
-        cy="16"
-        r="6"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.5"
-      />
       <path
-        d="M9 36C9 30.5 13.5 26 19 26C24.5 26 29 30.5 29 36"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      <circle
-        cx="32"
-        cy="18"
-        r="4.5"
+        d="M38 23L43.5 28L38 33"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.4"
-      />
-      <path
-        d="M31 27.5C35.5 27.5 39 31 39 35.5"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export function DuotoneRocketVisionIcon({
-  className = "h-10 w-10",
-}: BrandIconProps) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <path
-        d="M39 9C31 9.5 24 13.5 19.5 19.5L28.5 28.5C34.5 24 38.5 17 39 9Z"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.6"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M19.5 19.5L13 21L10.5 26L16.5 27.5"
-        className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
-        d="M28.5 28.5L27 35L22 37.5L20.5 31.5"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle
-        cx="29.5"
-        cy="18.5"
-        r="2.8"
-        className="fill-[#14B8A6] dark:fill-[#2DD4BF]"
-      />
-      <path
-        d="M14.5 31L9 36.5M17.5 34L11.5 40"
+        d="M34 21.5L30 34.5"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
         strokeWidth="2.5"
         strokeLinecap="round"
@@ -387,131 +160,231 @@ export function DuotoneRocketVisionIcon({
   );
 }
 
-/* ─── ANALITIK, DISKUSI & KONTAK ─── */
-
-export function DuotoneAnalyticsChartIcon({
-  className = "h-10 w-10",
+/* ─── 04. TESTING: Papan Clipboard Checklist ─── */
+export function SdlcTestingIcon({
+  className = "h-14 w-14 sm:h-16 sm:w-16",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <rect
-        x="7"
-        y="8"
-        width="34"
-        height="32"
+        x="13"
+        y="14"
+        width="38"
+        height="41"
         rx="4.5"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
       />
       <path
-        d="M16 32V24"
-        className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="3"
-        strokeLinecap="round"
+        d="M24 14V11.5C24 10.1 25.1 9 26.5 9H37.5C38.9 9 40 10.1 40 11.5V14H24Z"
+        className="fill-[#FAFBFD] dark:fill-slate-900 stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.6"
+        strokeLinejoin="round"
       />
       <path
-        d="M24 32V17"
+        d="M20 29L23.5 32.5L29.5 26"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="3"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M35 29.5H43"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.6"
         strokeLinecap="round"
       />
       <path
-        d="M32 32V20"
+        d="M20 41L23.5 44.5L29.5 38"
+        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M35 41.5H43"
         className="stroke-[#072146] dark:stroke-slate-100"
-        strokeWidth="3"
+        strokeWidth="2.6"
         strokeLinecap="round"
       />
     </svg>
   );
 }
 
-export function DuotoneChatDiscussionIcon({
-  className = "h-10 w-10",
+/* ─── 05. DEPLOYMENT: Roket Meluncur + Semburan Teal ─── */
+export function SdlcDeploymentIcon({
+  className = "h-14 w-14 sm:h-16 sm:w-16",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <path
-        d="M10 13C10 10.2 12.2 8 15 8H33C35.8 8 38 10.2 38 13V27C38 29.8 35.8 32 33 32H21L13 38V32H15C12.2 32 10 29.8 10 27V13Z"
+        d="M51 13C40.5 13.5 31.5 18.5 25.5 26.5L37.5 38.5C45.5 32.5 50.5 23.5 51 13Z"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
         strokeLinejoin="round"
       />
       <path
-        d="M17 17.5H31"
-        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.7"
+        d="M42.5 15.5L48.5 21.5"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.2"
         strokeLinecap="round"
       />
       <path
-        d="M17 23.5H25"
+        d="M25.5 26.5L17 28.5L14 35L21.5 36.5"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M37.5 38.5L35.5 47L29 50L27.5 42.5"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="38"
+        cy="26"
+        r="3.8"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.4"
+      />
+      <path
+        d="M19 41L12 48"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.7"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M23 45L15 53"
+        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+      />
+      <path
+        d="M15 37L10 42"
+        className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
+        strokeWidth="2.8"
         strokeLinecap="round"
       />
     </svg>
   );
 }
 
-export function DuotoneLocationPinIcon({
-  className = "h-10 w-10",
+/* ─── 06. MAINTENANCE: Headset Dukungan & Pemeliharaan ─── */
+export function SdlcMaintenanceIcon({
+  className = "h-14 w-14 sm:h-16 sm:w-16",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <path
-        d="M24 41C24 41 37 29.8 37 19.5C37 12.3 31.2 6.5 24 6.5C16.8 6.5 11 12.3 11 19.5C11 29.8 24 41 24 41Z"
+        d="M14 33V29C14 19.1 22.1 11 32 11C41.9 11 50 19.1 50 29V33"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <rect
+        x="11"
+        y="29"
+        width="7.5"
+        height="13"
+        rx="3.75"
+        className="fill-[#14B8A6] dark:fill-[#2DD4BF] stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.4"
+      />
+      <rect
+        x="45.5"
+        y="29"
+        width="7.5"
+        height="13"
+        rx="3.75"
+        className="fill-[#14B8A6] dark:fill-[#2DD4BF] stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.4"
+      />
+      <path
+        d="M49 42V44C49 48.4 45.4 52 41 52H34"
+        className="stroke-[#072146] dark:stroke-slate-100"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <circle
+        cx="31.5"
+        cy="52"
+        r="2.4"
+        className="fill-[#072146] dark:fill-slate-100"
+      />
+    </svg>
+  );
+}
+
+/* ─── IKON KONTAK DENGAN GAYA GARIS DUOTONE SDLC YANG SAMA ─── */
+
+export function DuotoneLocationPinIcon({
+  className = "h-12 w-12",
+}: BrandIconProps) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden="true"
+      className={`${className} shrink-0`}
+    >
+      <path
+        d="M32 54C32 54 49 39.2 49 25.5C49 15.8 41.4 8 32 8C22.6 8 15 15.8 15 25.5C15 39.2 32 54 32 54Z"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
         strokeLinejoin="round"
       />
       <circle
-        cx="24"
-        cy="19.5"
-        r="5"
+        cx="32"
+        cy="25.5"
+        r="6.5"
         className="fill-[#14B8A6]/25 stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.6"
+        strokeWidth="2.8"
       />
     </svg>
   );
 }
 
 export function DuotoneEnvelopeMailIcon({
-  className = "h-10 w-10",
+  className = "h-12 w-12",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <rect
-        x="7"
-        y="11"
-        width="34"
-        height="26"
-        rx="4"
+        x="10"
+        y="15"
+        width="44"
+        height="34"
+        rx="5"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
       />
       <path
-        d="M9.5 14L24 25L38.5 14"
+        d="M13 19L32 33.5L51 19"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.7"
+        strokeWidth="2.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -520,35 +393,112 @@ export function DuotoneEnvelopeMailIcon({
 }
 
 export function DuotoneClockScheduleIcon({
-  className = "h-10 w-10",
+  className = "h-12 w-12",
 }: BrandIconProps) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={`${className} shrink-0`}
     >
       <circle
-        cx="24"
-        cy="24"
-        r="16"
+        cx="32"
+        cy="32"
+        r="21"
         className="stroke-[#072146] dark:stroke-slate-100"
         strokeWidth="2.6"
       />
       <path
-        d="M24 15V24L30 28"
+        d="M32 19V32L40.5 37"
         className="stroke-[#14B8A6] dark:stroke-[#2DD4BF]"
-        strokeWidth="2.8"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <circle
-        cx="24"
-        cy="24"
-        r="2.2"
+        cx="32"
+        cy="32"
+        r="2.6"
         className="fill-[#072146] dark:fill-slate-100"
       />
     </svg>
   );
 }
+
+/* ─── IKON LAYANAN MOBILE APP DENGAN GAYA GARIS DUOTONE SDLC ─── */
+export function SdlcMobileAppIcon({
+  className = "h-12 w-12",
+  lightOnDark = false,
+}: BrandIconProps & { lightOnDark?: boolean }) {
+  const strokeMain = lightOnDark
+    ? "stroke-white"
+    : "stroke-[#072146] dark:stroke-slate-100";
+  const strokeAccent = lightOnDark
+    ? "stroke-[#2DD4BF]"
+    : "stroke-[#14B8A6] dark:stroke-[#2DD4BF]";
+
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden="true"
+      className={`${className} shrink-0`}
+    >
+      <rect
+        x="17"
+        y="8"
+        width="30"
+        height="48"
+        rx="6"
+        className={strokeMain}
+        strokeWidth="2.6"
+      />
+      <path
+        d="M28 13.5H36"
+        className={strokeMain}
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M27.5 26L23 30.5L27.5 35"
+        className={strokeAccent}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M36.5 26L41 30.5L36.5 35"
+        className={strokeAccent}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M33.5 24.5L30.5 36.5"
+        className={strokeAccent}
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M27 49.5H37"
+        className={strokeAccent}
+        strokeWidth="2.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/* Alias ekspor agar seluruh pemanggilan ikon tetap konsisten */
+export const DuotoneDigitalSolutionIcon = SdlcPlanIcon;
+export const DuotoneWebDevIcon = SdlcDevelopmentIcon;
+export const DuotoneTechInnovationIcon = SdlcDeploymentIcon;
+export const DuotoneTargetProblemIcon = SdlcPlanIcon;
+export const DuotoneTransparentProgressIcon = SdlcTestingIcon;
+export const DuotoneLongTermCodeIcon = SdlcDevelopmentIcon;
+export const DuotoneShieldGuaranteeIcon = SdlcMaintenanceIcon;
+export const DuotonePartnerBadgeIcon = SdlcMaintenanceIcon;
+export const DuotoneRocketVisionIcon = SdlcDeploymentIcon;
+export const DuotoneAnalyticsChartIcon = SdlcPlanIcon;
+export const DuotoneChatDiscussionIcon = SdlcMaintenanceIcon;
