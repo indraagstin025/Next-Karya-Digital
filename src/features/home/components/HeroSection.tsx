@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { HeroIntroTypewriter } from "@/components/ui/ScrollTypewriter";
 import { HERO_HIGHLIGHTS } from "../data/homeData";
 
 export function HeroSection() {
@@ -53,27 +54,15 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 sm:px-9 lg:px-14 py-10 sm:py-14 lg:py-12">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-8">
-          <div className="max-w-[530px]">
-            <h1 className="text-[31px] sm:text-[38px] lg:text-[44px] xl:text-[48px] font-extrabold leading-[1.15] tracking-[-0.025em] text-[#041E42] dark:text-[#f4f8ff]">
-              <span className="block overflow-hidden">
-                <span className="block pb-[0.08em]">
-                  Bangun Website Profesional
-                </span>
-              </span>
-              <span className="block overflow-hidden">
-                <span className="block pb-[0.08em]">
-                  untuk Bisnis Anda yang{" "}
-                  <span className="text-[#005090] dark:text-[#0986C8]">
-                    Lebih Dipercaya.
-                  </span>
-                </span>
-              </span>
-            </h1>
-
-            <p className="mt-4 max-w-[490px] text-[14px] sm:text-[15px] leading-[1.68] text-[#4A5D78] dark:text-[#b5c5dd] font-normal">
-              Tingkatkan kredibilitas dan jangkauan pasar bisnis Anda. Next Karya Digital Solutions merancang website modern berkecepatan tinggi, sistem web kustom, dan aplikasi mobile yang ramah SEO serta mudah dihubungi oleh calon pelanggan.
-            </p>
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+          <div className="max-w-[575px]">
+            <HeroIntroTypewriter
+              line1="Bangun Website Profesional"
+              line2Prefix="untuk Bisnis Anda yang "
+              line2Accent="Lebih Dipercaya."
+              description="Tingkatkan kredibilitas dan jangkauan pasar bisnis Anda. Next Karya Digital Solutions merancang website modern berkecepatan tinggi, sistem web kustom, dan aplikasi mobile yang ramah SEO serta mudah dihubungi oleh calon pelanggan."
+              charsPerSecond={62}
+            />
 
             <div className="mt-6 flex flex-wrap items-center gap-3.5">
               <a
@@ -92,21 +81,23 @@ export function HeroSection() {
               </Link>
             </div>
 
-            <div className="mt-9 sm:mt-11 flex flex-wrap items-center gap-y-3 gap-x-4 sm:gap-x-5">
+            <div className="mt-9 sm:mt-11 flex flex-wrap sm:flex-nowrap items-center gap-y-3 gap-x-4 sm:gap-x-0">
               {HERO_HIGHLIGHTS.map((item, index) => (
-                <React.Fragment key={item.label}>
-                  {index > 0 && (
-                    <div className="hidden sm:block h-6 w-[1px] bg-[#CBD5E1] dark:bg-slate-700/80" />
-                  )}
-                  <div className="group flex items-center gap-2.5">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF6FD] dark:bg-slate-800/90 border border-[#D5E6FA] dark:border-slate-700 shadow-2xs transition-transform duration-300 group-hover:scale-105">
-                      {item.icon}
-                    </div>
-                    <span className="text-xs sm:text-[13px] font-bold text-[#041E42] dark:text-slate-200">
-                      {item.label}
-                    </span>
+                <div
+                  key={item.label}
+                  className={`group flex items-center gap-2 ${
+                    index > 0
+                      ? "sm:ml-3.5 lg:ml-4 sm:pl-3.5 lg:pl-4 sm:border-l sm:border-[#CBD5E1] dark:sm:border-slate-700/80"
+                      : ""
+                  }`}
+                >
+                  <div className="shrink-0 transition-transform duration-300 group-hover:scale-105">
+                    {item.icon}
                   </div>
-                </React.Fragment>
+                  <span className=" whitespace-nowrap text-xs sm:text-[13px] font-bold text-[#041E42] dark:text-slate-200">
+                    {item.label}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
