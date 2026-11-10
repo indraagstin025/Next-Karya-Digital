@@ -3,9 +3,10 @@ import { PortfolioPage } from "@/features/portfolio";
 import { getPublicPortfolios } from "@/lib/public-content";
 
 export const metadata: Metadata = {
-  title: "Portofolio & Studi Kasus | Next Karya Digital Solutions",
+  title: "Portofolio & Studi Kasus",
   description:
     "Studi kasus dan konsep solusi implementasi teknologi web serta mobile Next Karya Digital Solutions.",
+  alternates: { canonical: "/portofolio" },
 };
 
 export default async function Page() {
