@@ -10,7 +10,9 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPublicPage(SLUG);
   return {
-    title: page?.seoTitle || "Kebijakan Privasi | Next Karya Digital Solutions",
+    title: {
+      absolute: page?.seoTitle || "Kebijakan Privasi | Next Karya Digital Solutions",
+    },
     description:
       page?.seoDescription ||
       "Kebijakan privasi Next Karya Digital Solutions terkait data formulir konsultasi dan keamanan penyimpanan.",
