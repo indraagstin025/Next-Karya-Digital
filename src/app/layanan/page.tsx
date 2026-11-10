@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Layanan & Paket Website",
   description:
     "Layanan pembuatan website bisnis, pilihan paket layanan website, redesign, aplikasi web kustom, dan aplikasi mobile Android & iOS bersama Next Karya Digital Solutions.",
+  alternates: { canonical: "/layanan" },
 };
 
 export default async function Page() {
