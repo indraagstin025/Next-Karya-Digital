@@ -7,7 +7,9 @@ const SLUG = "syarat-ketentuan";
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPublicPage(SLUG);
   return {
-    title: page?.seoTitle || "Syarat & Ketentuan | Next Karya Digital Solutions",
+    title: {
+      absolute: page?.seoTitle || "Syarat & Ketentuan | Next Karya Digital Solutions",
+    },
     description:
       page?.seoDescription ||
       "Ketentuan layanan Next Karya Digital Solutions: ruang lingkup pekerjaan, pembayaran, revisi, hak kekayaan intelektual, dan batasan tanggung jawab.",
