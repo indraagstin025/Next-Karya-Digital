@@ -1,6 +1,6 @@
 import { CONTACT_SERVICE_LABELS, type CONTACT_SERVICES } from "./schema";
 
-export const DEFAULT_OFFICIAL_WHATSAPP = "628320117314";
+export const DEFAULT_OFFICIAL_WHATSAPP = "6283820117314";
 
 export function getOfficialWhatsAppNumber(): string {
   const raw =
