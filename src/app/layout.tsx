@@ -92,8 +92,21 @@ const jsonLd = {
       url: siteUrl,
       logo: `${siteUrl}/logo/logo-gabungan.png`,
       email: "nextkarya@gmail.com",
+      telephone: "+62-838-2011-7314",
       description:
-        "Mitra rekayasa perangkat lunak untuk pembuatan website bisnis, sistem kustom, dan aplikasi mobile di Indonesia.",
+        "Software house dan mitra rekayasa perangkat lunak untuk pembuatan website bisnis, sistem web kustom, dan aplikasi mobile profesional berbasis di Bandung Barat, Indonesia.",
+      sameAs: [
+        "https://www.instagram.com/nextkarya",
+        "https://wa.me/6283820117314",
+        "https://github.com/indraagstin025",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+62-838-2011-7314",
+        contactType: "customer service",
+        areaServed: "ID",
+        availableLanguage: ["Indonesian", "English"],
+      },
     },
     {
       "@type": "ProfessionalService",
@@ -103,7 +116,29 @@ const jsonLd = {
       logo: `${siteUrl}/logo/logo-gabungan.png`,
       image: `${siteUrl}/logo/logo-gabungan.png`,
       email: "nextkarya@gmail.com",
+      telephone: "+62-838-2011-7314",
       priceRange: "$$",
+      sameAs: [
+        "https://www.instagram.com/nextkarya",
+        "https://wa.me/6283820117314",
+        "https://github.com/indraagstin025",
+      ],
+      areaServed: [
+        "Kabupaten Bandung Barat",
+        "Kota Bandung",
+        "Jawa Barat",
+        "Jabodetabek",
+        "Indonesia",
+      ],
+      knowsAbout: [
+        "Jasa Pembuatan Website Bisnis",
+        "Pengembangan Aplikasi Web Kustom",
+        "Pembuatan Aplikasi Mobile (Android & iOS)",
+        "Sistem Dashboard & POS Kasir Retail",
+        "Rekayasa Perangkat Lunak (Software Engineering)",
+        "Desain UI/UX & Prototipe Produk Digital",
+        "Integrasi Sistem & Arsitektur Cloud",
+      ],
       address: {
         "@type": "PostalAddress",
         streetAddress: "Jl. Karyawangi No. 116, Kec. Parongpong",
