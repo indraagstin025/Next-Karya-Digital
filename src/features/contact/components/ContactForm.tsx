@@ -74,7 +74,7 @@ export function ContactFormCard({ sourcePage = "/kontak" }: { sourcePage?: strin
             <span>Chat via WhatsApp Resmi</span>
           </a>
           <a
-            href="mailto:nextkarya@gmail.com"
+            href="mailto:nextkaryasolutions@gmail.com"
             className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#5B789E] px-5 py-3 text-[13.5px] font-bold text-[#041E42] dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <span>Kirim Email</span>
