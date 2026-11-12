@@ -140,10 +140,10 @@ export default function Footer() {
                     Email Konsultasi
                   </span>
                   <a
-                    href="mailto:nextkarya@gmail.com"
+                    href="mailto:nextkaryasolutions@gmail.com"
                     className="font-bold text-[#005090] dark:text-[#0986C8] hover:underline"
                   >
-                    nextkarya@gmail.com
+                    nextkaryasolutions@gmail.com
                   </a>
                 </div>
               </li>
