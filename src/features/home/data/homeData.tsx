@@ -412,9 +412,9 @@ export const CONTACT_INFO_ITEMS: ContactInfoItem[] = [
   {
     icon: <DuotoneEnvelopeMailIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
     title: "Email Resmi Konsultasi",
-    content: "nextkarya@gmail.com",
+    content: "nextkaryasolutions@gmail.com",
     isLink: true,
-    linkHref: "mailto:nextkarya@gmail.com",
+    linkHref: "mailto:nextkaryasolutions@gmail.com",
   },
   {
     icon: <DuotoneClockScheduleIcon className="h-11 w-11 sm:h-12 sm:w-12" />,
