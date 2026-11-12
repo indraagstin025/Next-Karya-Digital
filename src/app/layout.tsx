@@ -91,7 +91,7 @@ const jsonLd = {
       name: "Next Karya Digital Solutions",
       url: siteUrl,
       logo: `${siteUrl}/logo/logo-gabungan.png`,
-      email: "nextkarya@gmail.com",
+      email: "nextkaryasolutions@gmail.com",
       telephone: "+62-838-2011-7314",
       description:
         "Software house dan mitra rekayasa perangkat lunak untuk pembuatan website bisnis, sistem web kustom, dan aplikasi mobile profesional berbasis di Bandung Barat, Indonesia.",
@@ -115,7 +115,7 @@ const jsonLd = {
       url: siteUrl,
       logo: `${siteUrl}/logo/logo-gabungan.png`,
       image: `${siteUrl}/logo/logo-gabungan.png`,
-      email: "nextkarya@gmail.com",
+      email: "nextkaryasolutions@gmail.com",
       telephone: "+62-838-2011-7314",
       priceRange: "$$",
       sameAs: [
