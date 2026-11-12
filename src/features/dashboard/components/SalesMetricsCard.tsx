@@ -134,7 +134,7 @@ export function SalesMetricsCard({
               />
               <div className="flex flex-col gap-0.5">
                 <span className="text-xl font-medium">Next Karya Digital Solutions</span>
-                <span className="text-muted-foreground text-sm">nextkarya@gmail.com</span>
+                <span className="text-muted-foreground text-sm">nextkaryasolutions@gmail.com</span>
               </div>
             </div>
 
