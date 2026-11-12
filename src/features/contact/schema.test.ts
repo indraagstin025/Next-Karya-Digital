@@ -54,7 +54,7 @@ describe("contactMessageSchema", () => {
     expect(parsed.success).toBe(false);
   });
 
-  it("builds a WhatsApp consultation URL targeting +628320117314 with form details", () => {
+  it("builds a WhatsApp consultation URL targeting +6283820117314 with form details", () => {
     const url = buildWhatsAppConsultationUrl({
       name: "Budi Pratama",
       email: "budi@example.com",
@@ -63,8 +63,8 @@ describe("contactMessageSchema", () => {
       message: "Saya butuh website company profile untuk bisnis saya.",
     });
 
-    expect(DEFAULT_OFFICIAL_WHATSAPP).toBe("628320117314");
-    expect(url.startsWith("https://wa.me/628320117314?text=")).toBe(true);
+    expect(DEFAULT_OFFICIAL_WHATSAPP).toBe("6283820117314");
+    expect(url.startsWith("https://wa.me/6283820117314?text=")).toBe(true);
     const decoded = decodeURIComponent(url.split("?text=")[1]);
     expect(decoded).toContain("Budi Pratama");
     expect(decoded).toContain("budi@example.com");
